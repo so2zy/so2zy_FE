@@ -1,5 +1,5 @@
-import { Header } from '@components/common/Header'
-import { Footer } from '@components/common/Footer'
+import { Header } from '@components/common/Header';
+import { Footer } from '@components/common/Footer';
 
 export const Main: React.FC = () => {
   return (
@@ -10,5 +10,5 @@ export const Main: React.FC = () => {
       <div>곳</div>
       <Footer />
     </>
-  )
-}
+  );
+};
