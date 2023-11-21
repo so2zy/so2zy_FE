@@ -1,9 +1,9 @@
-import React, { Suspense } from 'react'
-import './App.css'
-import { Route, BrowserRouter, Routes } from 'react-router-dom'
+import React, { Suspense } from 'react';
+import './App.css';
+import { Route, BrowserRouter, Routes } from 'react-router-dom';
 // import { GlobalStyle } from './styles/globalStyles'
 
-const Main = React.lazy(() => import('./pages/main'))
+const Main = React.lazy(() => import('./pages/main'));
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
         </div>
       </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
