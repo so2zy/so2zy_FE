@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
+import { theme } from '@styles/theme';
 
 interface CardProps {
   className?: string;
@@ -13,14 +14,22 @@ const Card: React.FC<CardProps> = (props: CardProps) => {
 
 export default Card;
 
+//컴포넌트 위치 표시를 위해 일단은 box-shadow를 넣어놨습니다~
 const StyledCard = styled.div`
-  border: 0.5px solid rgba(0, 0, 0, 0.1);
+  border: 0.5px solid ${theme.colors.gray2};
   border-radius: 8px;
-  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 4px 4px ${theme.colors.gray2};
 
-  padding: 3px;
+  padding: 1rem 4rem;
   margin: 2rem auto;
   width: 50%;
-  max-width: 100%;
   flex-direction: column;
+
+  // @media (max-width: 768px) {
+  //   width: 70%;
+  // }
+
+  // @media (max-width: 480px) {
+  //   width: 90%;
+  // }
 `;
