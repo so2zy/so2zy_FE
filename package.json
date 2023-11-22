@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@craco/craco": "^7.1.0",
+    "@tanstack/react-query": "^5.8.4",
+    "@tanstack/react-query-devtools": "^5.8.4",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -59,7 +61,11 @@
     "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "msw": "^2.0.8",
     "prettier": "^3.1.0",
     "tsconfig-paths-webpack-plugin": "^4.1.0"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }

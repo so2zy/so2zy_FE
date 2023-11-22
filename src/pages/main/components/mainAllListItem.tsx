@@ -1,35 +1,43 @@
 import { theme } from '@styles/theme';
+import { useQuery } from '@tanstack/react-query';
 import { FaStar } from 'react-icons/fa';
 import styled from 'styled-components';
+import {
+  MainItemProps,
+  MainListProps,
+  getAllProduct,
+  noProduct,
+} from './getPlaces';
 
-const MainAllListItem = () => {
+const MainAllListItem = ({ title }: MainListProps) => {
+  const { data } = useQuery<MainItemProps[]>({
+    queryKey: [title],
+    queryFn: title === '전체 숙소 보기' ? getAllProduct : noProduct,
+    refetchOnWindowFocus: false,
+    // refetchInterval: 1000,
+  });
+
   return (
     <StyledWraaper>
-      <StyledMainAllItem>
-        <StyledAllItemImage></StyledAllItemImage>
-        <StyledAllItemTitle>시그니엘 서울</StyledAllItemTitle>
-        <StyledAllItemDesc>
-          <StyledStar />
-          <StyledAllItemPriceList>
-            <StyledPriceOriginal>750,000원</StyledPriceOriginal>
-            <StyledPriceSale>539,000원</StyledPriceSale>
-          </StyledAllItemPriceList>
-          <StyledLookBtn>숙소 보기</StyledLookBtn>
-        </StyledAllItemDesc>
-      </StyledMainAllItem>
-      <StyledMainAllItem>
-        {' '}
-        <StyledAllItemImage></StyledAllItemImage>
-        <StyledAllItemTitle>인터컨티넨탈 알펜...</StyledAllItemTitle>
-        <StyledAllItemDesc>
-          <StyledStar />
-          <StyledAllItemPriceList>
-            <StyledPriceOriginal>750,000원</StyledPriceOriginal>
-            <StyledPriceSale>539,000원</StyledPriceSale>
-          </StyledAllItemPriceList>
-          <StyledLookBtn>숙소 보기</StyledLookBtn>
-        </StyledAllItemDesc>
-      </StyledMainAllItem>
+      {data &&
+        data?.map((item) => (
+          <StyledMainAllItem key={item.id}>
+            <StyledAllItemImage></StyledAllItemImage>
+            <StyledAllItemTitle>{item.name}</StyledAllItemTitle>
+            <StyledAllItemDesc>
+              <StyledStar />
+              <StyledAllItemPriceList>
+                <StyledPriceOriginal>
+                  {item.saleprice ? item.price : ''}
+                </StyledPriceOriginal>
+                <StyledPriceSale>
+                  {item.saleprice ? item?.saleprice : item.price}
+                </StyledPriceSale>
+              </StyledAllItemPriceList>
+              <StyledLookBtn>숙소 보기</StyledLookBtn>
+            </StyledAllItemDesc>
+          </StyledMainAllItem>
+        ))}
     </StyledWraaper>
   );
 };
@@ -91,6 +99,7 @@ const StyledPriceOriginal = styled.span`
 
 const StyledPriceSale = styled.span`
   font-size: 1.1rem;
+  font-weight: bold;
 `;
 
 const StyledLookBtn = styled.button`

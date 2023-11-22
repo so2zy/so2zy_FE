@@ -22,6 +22,7 @@ const StyledWrapper = styled.div`
   border-radius: 0.75rem;
   margin: 1.4rem auto 1rem;
   background-color: ${theme.colors.blue};
+  cursor: pointer;
 `;
 
 const StyledRegionText = styled.p`
