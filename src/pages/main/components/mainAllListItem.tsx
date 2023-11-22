@@ -11,7 +11,7 @@ import {
 
 const MainAllListItem = ({ title }: MainListProps) => {
   const { data } = useQuery<MainItemProps[]>({
-    queryKey: ['getAllProduct'],
+    queryKey: [title],
     queryFn: title === '전체 숙소 보기' ? getAllProduct : noProduct,
     refetchOnWindowFocus: false,
     // refetchInterval: 1000,
@@ -27,9 +27,11 @@ const MainAllListItem = ({ title }: MainListProps) => {
             <StyledAllItemDesc>
               <StyledStar />
               <StyledAllItemPriceList>
-                <StyledPriceOriginal>{item.price}</StyledPriceOriginal>
+                <StyledPriceOriginal>
+                  {item.saleprice ? item.price : ''}
+                </StyledPriceOriginal>
                 <StyledPriceSale>
-                  {item.saleprice ? item?.saleprice : ''}
+                  {item.saleprice ? item?.saleprice : item.price}
                 </StyledPriceSale>
               </StyledAllItemPriceList>
               <StyledLookBtn>숙소 보기</StyledLookBtn>
