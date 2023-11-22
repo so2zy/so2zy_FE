@@ -5,6 +5,7 @@ export const theme = {
     yellow: '#d9b70d', //찜에 사용하는 yellow
     gray1: '#f8f8f8', //좀 더 어두운 gray
     gray2: '#d1d1d1',
+    white: '#ffffff',
 
     error: '#CF0000',
     success: '#008000',
@@ -57,4 +58,4 @@ export const theme = {
       shadow: '0px 12px 40px rgba(0, 0, 0, 0.12)',
     },
   },
-}
+};
