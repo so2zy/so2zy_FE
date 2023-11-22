@@ -3,36 +3,39 @@ import { useQuery } from '@tanstack/react-query';
 import { FaStar } from 'react-icons/fa';
 import styled from 'styled-components';
 import {
-  getMostSell,
-  getFavorite,
-  MainListProps,
   MainItemProps,
+  MainListProps,
+  getAllProduct,
+  noProduct,
 } from './getPlaces';
 
 const MainAllListItem = ({ title }: MainListProps) => {
-  const { data } = useQuery<MainItemProps>({
-    queryKey: ['getPlaces'],
-    queryFn: title === '많이 판매된 숙소' ? getMostSell : getFavorite,
+  const { data } = useQuery<MainItemProps[]>({
+    queryKey: ['getAllProduct'],
+    queryFn: title === '전체 숙소 보기' ? getAllProduct : noProduct,
     refetchOnWindowFocus: false,
-    refetchInterval: 1000,
+    // refetchInterval: 1000,
   });
 
   return (
     <StyledWraaper>
-      <StyledMainAllItem>
-        <StyledAllItemImage></StyledAllItemImage>
-        <StyledAllItemTitle>{data?.name}</StyledAllItemTitle>
-        <StyledAllItemDesc>
-          <StyledStar />
-          <StyledAllItemPriceList>
-            <StyledPriceOriginal>{data?.price}</StyledPriceOriginal>
-            <StyledPriceSale>
-              {data?.saleprice ? data?.saleprice : ''}
-            </StyledPriceSale>
-          </StyledAllItemPriceList>
-          <StyledLookBtn>숙소 보기</StyledLookBtn>
-        </StyledAllItemDesc>
-      </StyledMainAllItem>
+      {data &&
+        data?.map((item) => (
+          <StyledMainAllItem key={item.id}>
+            <StyledAllItemImage></StyledAllItemImage>
+            <StyledAllItemTitle>{item.name}</StyledAllItemTitle>
+            <StyledAllItemDesc>
+              <StyledStar />
+              <StyledAllItemPriceList>
+                <StyledPriceOriginal>{item.price}</StyledPriceOriginal>
+                <StyledPriceSale>
+                  {item.saleprice ? item?.saleprice : ''}
+                </StyledPriceSale>
+              </StyledAllItemPriceList>
+              <StyledLookBtn>숙소 보기</StyledLookBtn>
+            </StyledAllItemDesc>
+          </StyledMainAllItem>
+        ))}
     </StyledWraaper>
   );
 };

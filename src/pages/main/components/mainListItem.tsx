@@ -8,58 +8,28 @@ import {
   getMostSell,
   getFavorite,
 } from './getPlaces';
-// props로 데이터 넘겨주고 틀은 찜 많은 숙소와 동일하게 가져감
+
 const MainListItem = ({ title }: MainListProps) => {
-  const { data } = useQuery<MainItemProps>({
-    queryKey: ['getPlaces'],
+  const { data } = useQuery<MainItemProps[]>({
+    queryKey: [title],
     queryFn: title === '많이 판매된 숙소' ? getMostSell : getFavorite,
-    refetchOnWindowFocus: false,
-    refetchInterval: 1000,
+    // refetchOnWindowFocus: false,
+    // refetchInterval: 1000,
   });
   return (
     <StyledWrapper>
-      <StyledMainPageItem>
-        <StyledItemImage></StyledItemImage>
-        <StyledItemDesc>
-          <StyledItemName>
-            {data?.id} {data?.name}
-          </StyledItemName>
-          <StyledStar />
-          <StyledItemPrice>{data?.price}~</StyledItemPrice>
-        </StyledItemDesc>
-      </StyledMainPageItem>
-      {/* <StyledMainPageItem>
-        <StyledItemImage></StyledItemImage>
-        <StyledItemDesc>
-          <StyledItemName>1. 파크 하얏트 서울</StyledItemName>
-          <StyledStar />
-          <StyledItemPrice>577,500원~</StyledItemPrice>
-        </StyledItemDesc>
-      </StyledMainPageItem>{' '}
-      <StyledMainPageItem>
-        <StyledItemImage></StyledItemImage>
-        <StyledItemDesc>
-          <StyledItemName>1. 파크 하얏트 서울</StyledItemName>
-          <StyledStar />
-          <StyledItemPrice>577,500원~</StyledItemPrice>
-        </StyledItemDesc>
-      </StyledMainPageItem>{' '}
-      <StyledMainPageItem>
-        <StyledItemImage></StyledItemImage>
-        <StyledItemDesc>
-          <StyledItemName>1. 파크 하얏트 서울</StyledItemName>
-          <StyledStar />
-          <StyledItemPrice>577,500원~</StyledItemPrice>
-        </StyledItemDesc>
-      </StyledMainPageItem>{' '}
-      <StyledMainPageItem>
-        <StyledItemImage></StyledItemImage>
-        <StyledItemDesc>
-          <StyledItemName>1. 파크 하얏트 서울</StyledItemName>
-          <StyledStar />
-          <StyledItemPrice>577,500원~</StyledItemPrice>
-        </StyledItemDesc>
-      </StyledMainPageItem> */}
+      {data?.map((item) => (
+        <StyledMainPageItem key={item.id}>
+          <StyledItemImage></StyledItemImage>
+          <StyledItemDesc>
+            <StyledItemName>
+              {item.id}. {item.name}
+            </StyledItemName>
+            <StyledStar />
+            <StyledItemPrice>{item.price}~</StyledItemPrice>
+          </StyledItemDesc>
+        </StyledMainPageItem>
+      ))}
     </StyledWrapper>
   );
 };

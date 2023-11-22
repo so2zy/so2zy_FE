@@ -41,3 +41,22 @@ export const getFavorite = async () => {
     return [];
   }
 };
+
+export const getAllProduct = async () => {
+  try {
+    const res = await axios.get('/api/main/allproduct');
+    if (res) {
+      return res.data;
+    } else {
+      console.log('모든 상품 받아오기 실패');
+      return [];
+    }
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
+
+export const noProduct = () => {
+  return [];
+};
