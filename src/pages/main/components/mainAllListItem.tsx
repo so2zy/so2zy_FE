@@ -1,31 +1,34 @@
 import { theme } from '@styles/theme';
+import { useQuery } from '@tanstack/react-query';
 import { FaStar } from 'react-icons/fa';
 import styled from 'styled-components';
+import {
+  getMostSell,
+  getFavorite,
+  MainListProps,
+  MainItemProps,
+} from './getPlaces';
 
-const MainAllListItem = () => {
+const MainAllListItem = ({ title }: MainListProps) => {
+  const { data } = useQuery<MainItemProps>({
+    queryKey: ['getPlaces'],
+    queryFn: title === '많이 판매된 숙소' ? getMostSell : getFavorite,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000,
+  });
+
   return (
     <StyledWraaper>
       <StyledMainAllItem>
         <StyledAllItemImage></StyledAllItemImage>
-        <StyledAllItemTitle>시그니엘 서울</StyledAllItemTitle>
+        <StyledAllItemTitle>{data?.name}</StyledAllItemTitle>
         <StyledAllItemDesc>
           <StyledStar />
           <StyledAllItemPriceList>
-            <StyledPriceOriginal>750,000원</StyledPriceOriginal>
-            <StyledPriceSale>539,000원</StyledPriceSale>
-          </StyledAllItemPriceList>
-          <StyledLookBtn>숙소 보기</StyledLookBtn>
-        </StyledAllItemDesc>
-      </StyledMainAllItem>
-      <StyledMainAllItem>
-        {' '}
-        <StyledAllItemImage></StyledAllItemImage>
-        <StyledAllItemTitle>인터컨티넨탈 알펜...</StyledAllItemTitle>
-        <StyledAllItemDesc>
-          <StyledStar />
-          <StyledAllItemPriceList>
-            <StyledPriceOriginal>750,000원</StyledPriceOriginal>
-            <StyledPriceSale>539,000원</StyledPriceSale>
+            <StyledPriceOriginal>{data?.price}</StyledPriceOriginal>
+            <StyledPriceSale>
+              {data?.saleprice ? data?.saleprice : ''}
+            </StyledPriceSale>
           </StyledAllItemPriceList>
           <StyledLookBtn>숙소 보기</StyledLookBtn>
         </StyledAllItemDesc>

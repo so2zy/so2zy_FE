@@ -1,11 +1,12 @@
+import { MainListProps } from './getPlaces';
 import MainAllListItem from './mainAllListItem';
-import { MainListProps, StyledTitle, StyledWrapper } from './mainListContainer';
+import { StyledTitle, StyledWrapper } from './mainListContainer';
 
 const MainAllListContainer = ({ title }: MainListProps) => {
   return (
     <StyledWrapper>
       <StyledTitle>{title}</StyledTitle>
-      <MainAllListItem />
+      <MainAllListItem title={title} />
     </StyledWrapper>
   );
 };

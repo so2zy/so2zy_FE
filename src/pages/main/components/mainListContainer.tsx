@@ -1,15 +1,13 @@
 import { theme } from '@styles/theme';
 import styled from 'styled-components';
 import MainListItem from './mainListItem';
+import { MainListProps } from './getPlaces';
 
-export interface MainListProps {
-  title: string;
-}
 const MainListContainer = ({ title }: MainListProps) => {
   return (
     <StyledWrapper>
       <StyledTitle>{title}</StyledTitle>
-      <MainListItem />
+      <MainListItem title={title} />
     </StyledWrapper>
   );
 };
