@@ -42,6 +42,7 @@ const StyledWraaper = styled.div`
 `;
 
 const StyledMainAllItem = styled.div`
+  cursor: pointer;
   display: flex;
   width: 32rem;
   height: 16rem;
@@ -101,4 +102,5 @@ const StyledLookBtn = styled.button`
   border-radius: 0.625rem;
   background-color: ${theme.colors.navy};
   color: #fff;
+  cursor: pointer;
 `;

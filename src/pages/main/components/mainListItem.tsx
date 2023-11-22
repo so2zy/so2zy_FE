@@ -64,6 +64,7 @@ const StyledMainPageItem = styled.div`
   border-radius: 1rem;
   box-shadow: ${theme.shadows.shadow2.shadow};
   position: relative;
+  cursor: pointer;
 `;
 
 const StyledItemImage = styled.div`
