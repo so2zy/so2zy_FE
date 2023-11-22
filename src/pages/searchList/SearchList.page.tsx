@@ -137,9 +137,15 @@ const StyledFilterSortWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   margin: 5rem auto 0;
-  width: 48%;
+  width: 47%;
   align-items: center;
   justify-items: center;
+
+  /* position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1; */
 `;
 
 const StyledFilter = styled.div`
