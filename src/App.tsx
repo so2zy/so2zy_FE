@@ -4,6 +4,7 @@ import { Route, BrowserRouter, Routes } from 'react-router-dom';
 // import { GlobalStyle } from './styles/globalStyles'
 
 const Main = React.lazy(() => import('./pages/main'));
+const SearchList = React.lazy(() => import('./pages/searchList'));
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Suspense fallback={<div>로딩중...</div>}>
             <Routes>
               <Route path="/" element={<Main />} />
+              <Route path="/searchList" element={<SearchList />} />
             </Routes>
           </Suspense>
         </div>

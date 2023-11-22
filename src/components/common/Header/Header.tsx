@@ -1,5 +1,12 @@
-const Header = () => {
-  return <div>헤더</div>
-}
+import styled from 'styled-components';
 
-export default Header
+const Header = () => {
+  return <StyledWrapper>헤더</StyledWrapper>;
+};
+
+export default Header;
+
+const StyledWrapper = styled.div`
+  border: 1px solid black;
+  height: 1.5rem;
+`;
