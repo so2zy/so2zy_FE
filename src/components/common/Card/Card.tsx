@@ -1,6 +1,6 @@
-import { theme } from '@styles/theme';
 import { ReactNode } from 'react';
 import styled from 'styled-components';
+import { theme } from '@styles/theme';
 
 interface CardProps {
   className?: string;
@@ -14,6 +14,7 @@ const Card: React.FC<CardProps> = (props: CardProps) => {
 
 export default Card;
 
+//컴포넌트 위치 표시를 위해 일단은 box-shadow를 넣어놨습니다~
 const StyledCard = styled.div`
   border: 0.5px solid ${theme.colors.gray2};
   border-radius: 8px;

@@ -27,5 +27,5 @@ const StyledWrapper = styled.div`
 const StyledRegionText = styled.p`
   font-weight: bold;
   font-size: 1.5rem;
-  color: ${theme.colors.white};
+  color: #fff;
 `;

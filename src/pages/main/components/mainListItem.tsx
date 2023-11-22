@@ -81,7 +81,7 @@ const StyledItemName = styled.p`
   font-weight: bold;
   /* font-size: 0.938rem; */
   font-size: 0.8rem;
-  margin: 0.5rem 1.55rem 0 1rem;
+  margin: 0.9rem 1.3rem 0 0.7rem;
   padding: 0;
 `;
 
@@ -92,9 +92,9 @@ const StyledItemPrice = styled.p`
   padding: 0;
 `;
 
-const StyledStar = styled(FaStar)`
+export const StyledStar = styled(FaStar)`
   color: ${theme.colors.yellow};
   position: absolute;
-  top: 10px;
+  top: 0.6rem;
   right: 0;
 `;
