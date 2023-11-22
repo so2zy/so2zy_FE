@@ -1,5 +1,5 @@
 import { Header } from '@components/common/Header';
-import { Footer } from '@components/common/Footer';
+// import { Footer } from '@components/common/Footer';
 import styled from 'styled-components';
 import { GrLinkPrevious } from 'react-icons/gr';
 import { theme } from '@styles/theme';
@@ -10,117 +10,140 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 // import { useParams } from 'react-router-dom';
 
-//객실 정보
-interface Room {
-  id: number;
-  name: string;
-  checkIn: string; //date객체로 굳이 받을 필요 없는지?
-  checkOut: string;
-  originalPrice: string;
-  salePrice: string;
-  roomPicture: string;
-  // number: number; //방 수량
+interface IAccommodations {
+  accommodationName: string;
+  latitude: number;
+  longitude: number;
+  addressCode: string;
+  phoneNumber: string;
+  accommodationImageList: ImageList[];
+  roomList: RoomList[];
 }
 
-//숙소 정보
-// interface PlaceData {
-//   [key: string]: {
-//     name: string;
-//     place: string;
-//     picture: string;
-//   };
-// }
+interface ImageList {
+  id: number;
+  url: string;
+}
 
-// interface Params {
-//   id?: string;
-// }
+interface RoomList {
+  id: number;
+  type: string;
+  price: number;
+  capacity: number;
+  maxCapacity: number;
+  checkIn: string;
+  checkOut: string;
+  stock: number;
+  roomImageList: ImageList[];
+}
 
 export const PlaceDetail: React.FC = () => {
-  const [placeName, setPlaceName] = useState<string>('');
-  const [placeLoc, setPlaceLoc] = useState<string>('');
-  const [placePic, setPlacePic] = useState<string>('');
-  const [rooms, setRooms] = useState<Room[]>([]);
-  // const { id } = useParams<Params>();
+  // const { id } = useParams();
+  const [accommodations, setAccommodations] = useState<IAccommodations>({
+    accommodationName: '',
+    latitude: 0,
+    longitude: 0,
+    addressCode: '',
+    phoneNumber: '',
+    accommodationImageList: [{ id: 0, url: '' }],
+    roomList: [
+      {
+        id: 0,
+        type: '',
+        price: 0,
+        capacity: 0,
+        maxCapacity: 0,
+        checkIn: '',
+        checkOut: '',
+        stock: 0,
+        roomImageList: [{ id: 0, url: '' }],
+      },
+    ],
+  });
+  const [isLoading, setIsLoading] = useState(true);
+
+  const getData = async () => {
+    axios.get(`/accommodations/1`).then((res) => {
+      setAccommodations(res.data[0]);
+      setIsLoading(false);
+    });
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get('/api/roomId');
-        setRooms(res.data);
-        // const res2 = await axios.get<PlaceData>(`/api/placeId/${id}`);
-        // const placeData = res2.data[id];
-        // setPlaceName(placeData.name);
-        // setPlaceLoc(placeData.place);
-        // setPlacePic(placeData.picture);
+    getData();
+  }, [isLoading]);
 
-        const res2 = await axios.get('/api/placeId');
-        setPlaceName(res2.data[0].name);
-        setPlaceLoc(res2.data[0].place);
-        setPlacePic(res2.data[0].picture);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  useEffect(() => {
+    if (accommodations) {
+      console.log(accommodations); //정상 출력됨
+    }
+  }, [accommodations]);
 
-    fetchData();
-  }, []);
-  return (
-    <>
-      <Header />
-      <StyledBar>
-        <StyledBefore />
-        <StyledTitle>{placeName}</StyledTitle>
-        <StyledSpan>
-          <StyledButton>11.19~11.20 1박</StyledButton>
-          <StyledButton>인원수 3명</StyledButton>
-        </StyledSpan>
-      </StyledBar>
+  if (isLoading) {
+    return <div>Loading...</div>;
+  } else {
+    return (
+      <>
+        <Header />
+        <StyledBar>
+          <StyledBefore />
+          <StyledTitle>{accommodations.accommodationName}</StyledTitle>
+          <StyledSpan>
+            <StyledButton>11.19~11.20 1박</StyledButton>
+            <StyledButton>인원수 3명</StyledButton>
+          </StyledSpan>
+        </StyledBar>
 
-      <StyledImg src={placePic} />
+        <StyledImg src={accommodations.accommodationImageList[0].url} />
+        {/*  */}
 
-      <StyledMainTitle>
-        {placeName}
-        <StyledStar
-        // className={isChecked ? 'checked' : 'unchecked'}
-        // onClick={() => {
-        //   setIsChecked((prev) => !prev);
-        //   setStarBtnClicked(!starBtnClicked);
-        // }}
-        />
-      </StyledMainTitle>
+        <StyledMainTitle>
+          {accommodations.accommodationName}
+          <StyledStar
+          // className={isChecked ? 'checked' : 'unchecked'}
+          // onClick={() => {
+          //   setIsChecked((prev) => !prev);
+          //   setStarBtnClicked(!starBtnClicked);
+          // }}
+          />
+        </StyledMainTitle>
 
-      <StyledLocation>
-        {/* map api */}
-        숙소 위치 보기
-        <MdPlace />
-      </StyledLocation>
-      <StyledDescription>{placeLoc}</StyledDescription>
-      <StyledLine />
+        <StyledLocation>
+          숙소 위치 보기
+          <MdPlace />
+        </StyledLocation>
+        <StyledDescription>
+          {accommodations.accommodationName}
+        </StyledDescription>
+        <StyledLine />
 
-      <StyledSubCategory>객실 선택</StyledSubCategory>
-      {rooms.map((room) => (
-        <StyledSubContainer key={room.id}>
-          <StyledDetailImg src={room.roomPicture} />
-          <StyledDetail>
-            <StyledWrapper>
-              <StyledRoomTitle>
-                {room.name} <StyledBag />
-              </StyledRoomTitle>
-            </StyledWrapper>
-            <StyledRoomType>숙박</StyledRoomType>
-            <StyledRoomTime>
-              체크인 {room.checkIn} ~ 체크아웃 {room.checkOut}
-            </StyledRoomTime>
-            <StyledRealPrice> {room.originalPrice}</StyledRealPrice>
-            <StyledSalePrice>{room.salePrice}</StyledSalePrice>
-            <StyledReservationButton>예약하기</StyledReservationButton>
-          </StyledDetail>
-        </StyledSubContainer>
-      ))}
-
-      <Footer />
-    </>
-  );
+        <StyledSubCategory>객실 선택</StyledSubCategory>
+        {accommodations.roomList.map((room) => (
+          <StyledSubContainer key={room.id}>
+            <StyledDetailImg />
+            <StyledDetail>
+              <StyledWrapper>
+                <StyledRoomTitle>
+                  {room.type}
+                  <StyledBag />
+                </StyledRoomTitle>
+              </StyledWrapper>
+              <StyledRoomType>숙박</StyledRoomType>
+              <StyledRoomTime>
+                체크인 {accommodations.roomList[0].checkIn} ~ 체크아웃
+                {accommodations.roomList[0].checkOut}
+              </StyledRoomTime>
+              <StyledRealPrice>
+                {/* {accommodations.roomList[0].price} */}
+              </StyledRealPrice>
+              <StyledSalePrice> {room.price}</StyledSalePrice>
+              <StyledReservationButton>예약하기</StyledReservationButton>
+            </StyledDetail>
+          </StyledSubContainer>
+        ))}
+      </>
+    );
+  }
 };
 
 const StyledLine = styled.hr`
