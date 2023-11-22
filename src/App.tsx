@@ -5,8 +5,10 @@ import { GlobalStyle } from './styles/globalStyles';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@styles/theme';
 import { Card } from '@components/common/Card';
-import PlaceDetail from './pages/placeDetail/components/PlaceDetail';
+import { PlaceDetail } from './pages/placeDetail/components/PlaceDetail.page';
+
 const Main = React.lazy(() => import('./pages/main'));
+// const PlaceDetail = React.lazy(() => import('./pages/placeDetail'));
 
 function App() {
   return (
