@@ -22,7 +22,7 @@ const MainAllListItem = ({ title }: MainListProps) => {
       {data &&
         data?.map((item) => (
           <StyledMainAllItem key={item.id}>
-            <StyledAllItemImage></StyledAllItemImage>
+            <StyledAllItemImage src={item.image} />
             <StyledAllItemTitle>{item.name}</StyledAllItemTitle>
             <StyledAllItemDesc>
               <StyledStar />
@@ -57,12 +57,13 @@ const StyledMainAllItem = styled.div`
   border-radius: 1rem;
   box-shadow: ${theme.shadows.shadow2.shadow};
   position: relative;
+  overflow: hidden;
 `;
 
-const StyledAllItemImage = styled.div`
+const StyledAllItemImage = styled.img`
   width: 10.5rem;
   border-radius: 0.625rem;
-  background-color: ${theme.colors.gray2};
+  /* background-color: ${theme.colors.gray2}; */
   margin: 1rem;
 `;
 
