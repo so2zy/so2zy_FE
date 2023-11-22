@@ -91,6 +91,7 @@ const StyledPriceOriginal = styled.span`
 
 const StyledPriceSale = styled.span`
   font-size: 1.1rem;
+  font-weight: bold;
 `;
 
 const StyledLookBtn = styled.button`
