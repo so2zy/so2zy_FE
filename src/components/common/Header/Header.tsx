@@ -171,6 +171,7 @@ const StyledHeaderRegionCover = styled.div`
 const StyledHeaderRegion = styled.div`
   margin-left: 4rem;
   font-size: 2rem;
+  font-weight: 800;
 `;
 
 const StyledHeaderSearchBar = styled.input`
@@ -261,7 +262,7 @@ const StyledHeaderWhiteContent = styled.div`
   }
   div:nth-child(2) {
     cursor: pointer;
-    font-size: medium;
+    font-weight: 800;
     display: flex;
     justify-content: center;
   }

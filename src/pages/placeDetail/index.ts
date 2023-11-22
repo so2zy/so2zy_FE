@@ -1,2 +1,3 @@
-import { PlaceDetail } from './PlaceDetail.page';
-export default PlaceDetail;
+import PlaceDetail from './components/PlaceDetail';
+
+export { PlaceDetail };
