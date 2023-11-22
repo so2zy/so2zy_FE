@@ -7,10 +7,11 @@ interface ItemProps {
   favorites: boolean;
   regularPrice: number;
   discountPrice: number;
+  // salesCount: number;
 }
 
 const Item: React.FC<ItemProps> = (props: ItemProps) => {
-  // const { name, image, favorites, regularPrice, discountPrice } = props;
+  // const { name, image, favorites, regularPrice, discountPrice, salesCount } = props;
   const { name, favorites, regularPrice, discountPrice } = props;
 
   return (
@@ -24,8 +25,9 @@ const Item: React.FC<ItemProps> = (props: ItemProps) => {
       <StyledInfo>
         <StyledNameWrapper>
           <StyledName>{name}</StyledName>
+          {/* {salesCount} */}
           <StyleStarWrapper>
-            <StyledStar>{favorites}</StyledStar>
+            <StyledStar className={favorites ? 'checked' : 'unchecked'} />
           </StyleStarWrapper>
         </StyledNameWrapper>
         <StyledPriceWrapper>
@@ -118,10 +120,10 @@ const StyledStar = styled(FaStar)`
   min-height: 100%;
   color: ${theme.colors.yellow};
   cursor: pointer;
-  // &.checked {
-  //   color: ${theme.colors.yellow};
-  // }
-  // &.unchecked {
-  //   color: ${theme.colors.gray1};
-  // }
+  &.checked {
+    color: ${theme.colors.yellow};
+  }
+  &.unchecked {
+    color: ${theme.colors.gray1};
+  }
 `;

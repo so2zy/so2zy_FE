@@ -12,6 +12,7 @@ interface Hotel {
   favorites: boolean;
   regularPrice: number;
   discountPrice: number;
+  salesCount: number;
 }
 
 export const SearchList: React.FC = () => {
@@ -33,11 +34,24 @@ export const SearchList: React.FC = () => {
   useEffect(() => {
     fetch('/api/searchList')
       .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setHotels(data);
+      .then((data: Hotel[]) => {
+        const sortedData = data.sort((a, b) => {
+          if (sortBy === '가격') {
+            const priceA =
+              sortOrder === 'asc' ? a.discountPrice : b.discountPrice;
+            const priceB =
+              sortOrder === 'asc' ? b.discountPrice : a.discountPrice;
+            return priceA - priceB;
+          } else if (sortBy === '판매량') {
+            const salesA = sortOrder === 'asc' ? a.salesCount : b.salesCount;
+            const salesB = sortOrder === 'asc' ? b.salesCount : a.salesCount;
+            return salesA - salesB;
+          }
+          return 0;
+        });
+        setHotels(sortedData);
       });
-  }, []);
+  }, [sortBy, sortOrder]);
 
   return (
     <div>
@@ -49,20 +63,46 @@ export const SearchList: React.FC = () => {
           <StyledReservation>예약가능여부</StyledReservation>
         </StyledFilter>
         <StyledSort>
-          <StyledPrice onClick={() => handleSortClick('가격')}>
-            <div style={{ marginRight: '.1rem' }}>가격</div>
+          <StyledPriceButton
+            onClick={() => handleSortClick('가격')}
+            className={sortBy === '가격' ? 'active' : ''}
+          >
+            <StyledPrice>가격</StyledPrice>
             <StyledSortWrapper>
-              <StyledSortUp viewBox="0 -250 320 512" />
-              <StyledSortDown viewBox="0 250 320 512" />
+              <StyledSortUp
+                viewBox="0 -250 320 512"
+                className={
+                  sortBy === '가격' && sortOrder === 'asc' ? 'active' : ''
+                }
+              />
+              <StyledSortDown
+                viewBox="0 250 320 512"
+                className={
+                  sortBy === '가격' && sortOrder === 'desc' ? 'active' : ''
+                }
+              />
             </StyledSortWrapper>
-          </StyledPrice>
-          <StyledSales onClick={() => handleSortClick('판매량')}>
-            <div style={{ marginRight: '.1rem' }}>판매량</div>
+          </StyledPriceButton>
+          <StyledSalesButton
+            onClick={() => handleSortClick('판매량')}
+            className={sortBy === '판매량' ? 'active' : ''}
+          >
+            <StyledSales>판매량</StyledSales>
             <StyledSortWrapper>
-              <StyledSortUp viewBox="0 -250 320 512" />
-              <StyledSortDown viewBox="0 250 320 512" />
+              <StyledSortUp
+                viewBox="0 -250 320 512"
+                className={
+                  sortBy === '판매량' && sortOrder === 'asc' ? 'active' : ''
+                }
+              />
+              <StyledSortDown
+                viewBox="0 250 320 512"
+                className={
+                  sortBy === '판매량' && sortOrder === 'desc' ? 'active' : ''
+                }
+              />
             </StyledSortWrapper>
-          </StyledSales>
+          </StyledSalesButton>
         </StyledSort>
       </StyledFilterSortWrapper>
       <StyledContainer>
@@ -75,6 +115,7 @@ export const SearchList: React.FC = () => {
               favorites={hotel.favorites}
               regularPrice={hotel.regularPrice}
               discountPrice={hotel.discountPrice}
+              // salesCount={hotel.salesCount}
             />
           );
         })}
@@ -144,7 +185,7 @@ const StyledReservation = styled.div`
   background-color: ${theme.colors.blue};
   color: white;
 `;
-const StyledPrice = styled.div`
+const StyledPriceButton = styled.div`
   display: flex;
   align-items: center;
   padding: 0.2rem 0.5rem 0;
@@ -153,8 +194,15 @@ const StyledPrice = styled.div`
   cursor: pointer;
   background-color: ${theme.colors.blue};
   color: white;
+  &.active {
+    font-weight: bold;
+  }
 `;
-const StyledSales = styled.div`
+const StyledPrice = styled.div`
+  margin-right: 0.1rem;
+`;
+
+const StyledSalesButton = styled.div`
   display: flex;
   align-items: center;
   padding: 0.2rem 0.5rem 0;
@@ -163,6 +211,13 @@ const StyledSales = styled.div`
   cursor: pointer;
   background-color: ${theme.colors.blue};
   color: white;
+  &.active {
+    font-weight: bold;
+  }
+`;
+
+const StyledSales = styled.div`
+  margin-right: 0.1rem;
 `;
 
 const StyledSortWrapper = styled.span`
@@ -175,7 +230,7 @@ const StyledSortDown = styled(SortDown)`
   height: 0.8125rem;
   fill: white;
   &.active {
-    fill: red;
+    fill: ${theme.colors.navy};
   }
 `;
 
@@ -184,6 +239,6 @@ const StyledSortUp = styled(SortUp)`
   height: 0.8125rem;
   fill: white;
   &.active {
-    fill: red;
+    fill: ${theme.colors.navy};
   }
 `;
