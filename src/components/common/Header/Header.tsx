@@ -8,5 +8,5 @@ export default Header;
 
 const StyledWrapper = styled.div`
   border: 1px solid black;
-  height: 1.5rem;
+  height: 3.5rem;
 `;

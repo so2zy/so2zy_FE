@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 // import { GrLinkPrevious } from 'react-icons/gr';
-// import { theme } from '@styles/theme';
+import { theme } from '@styles/theme';
 // import { FaStar } from 'react-icons/fa';
 // import { MdPlace } from 'react-icons/md';
 import { Item } from '@components/common/Item';
@@ -28,119 +28,112 @@ export const SearchList: React.FC = () => {
   }, []);
 
   return (
-    <StyledContainer>
-      {hotels.map((hotel) => {
-        return (
-          <Item
-            key={hotel.id}
-            name={hotel.name}
-            // image={hotel.image}
-            favorites={hotel.favorites}
-            regularPrice={hotel.regularPrice}
-            discountPrice={hotel.discountPrice}
-          />
-        );
-      })}
-    </StyledContainer>
+    <div>
+      <StyledFilterSortWrapper>
+        <StyledFilter>
+          <StyledDateRange>날짜 범위</StyledDateRange>
+          <StyledPeopleRange>인원수 범위</StyledPeopleRange>
+          <StyledPriceRange>가격 범위</StyledPriceRange>
+          <StyledReservation>예약가능여부</StyledReservation>
+        </StyledFilter>
+        <StyledSort>
+          <StyledPrice>가격</StyledPrice>
+          <StyledSales>판매량</StyledSales>
+        </StyledSort>
+      </StyledFilterSortWrapper>
+      <StyledContainer>
+        {hotels.map((hotel) => {
+          return (
+            <Item
+              key={hotel.id}
+              name={hotel.name}
+              // image={hotel.image}
+              favorites={hotel.favorites}
+              regularPrice={hotel.regularPrice}
+              discountPrice={hotel.discountPrice}
+            />
+          );
+        })}
+      </StyledContainer>
+    </div>
   );
 };
-
-// const StyledLine = styled.hr`
-//   color: ${theme.colors.gray3};
-//   // margin: 1.5rem 4rem;
-// `;
 
 const StyledContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   margin: 2rem auto;
   width: 50%;
-  border: 1px solid black;
+  align-items: center;
+  justify-items: center;
+  /* border: 0.5px solid ${theme.colors.gray2};
+  border-radius: 0.5rem;
+  box-shadow: 0px 2px 10px 0px ${theme.colors.gray2}; */
+`;
+
+const StyledFilterSortWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 1rem auto;
+  width: 48%;
   align-items: center;
   justify-items: center;
 `;
 
-// const StyledMainTitle = styled.div`
-//   display: inline-block;
-//   vertical-align: top;
-//   font-size: ${theme.fonts.subtitle3.fontSize};
-//   font-weight: ${theme.fonts.subtitle1.fontWeight};
-//   // margin: 0 4rem;
-//   display: flex;
-//   align-items: center;
-// `;
+const StyledFilter = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;
+const StyledSort = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;
 
-// const StyledStar = styled(FaStar)`
-//   margin-left: auto;
-//   vertical-align: top;
-//   font-size: ${theme.fonts.subtitle5.fontSize};
-//   color: ${theme.colors.yellow};
-
-//   // &.checked {
-//   //   color: ${theme.colors.yellow};
-//   // }
-//   // &.unchecked {
-//   //   color: ${theme.colors.gray1};
-//   // }
-// `;
-
-// const StyledLocation = styled.div`
-//   width: 100%;
-//   // margin: 0.5rem 4rem;
-//   text-align: start;
-//   color: ${theme.colors.navy};
-//   font-size: ${theme.fonts.subtitle5.fontSize};
-//   font-weight: ${theme.fonts.subtitle3.fontWeight};
-//   display: block;
-//   cursor: pointer;
-
-//   &:hover {
-//     border: none;
-//     color: ${theme.colors.gray2};
-//   }
-// `;
-
-// const StyledDescription = styled.div`
-//   width: 100%;
-//   margin: 0.5rem 0;
-//   text-align: start;
-//   display: block;
-//   color: gray;
-//   font-size: ${theme.fonts.body.fontSize};
-//   font-weight: ${theme.fonts.body.fontWeight};
-// `;
-
-// const StyledBar = styled.div`
-//   display: flex;
-//   align-items: center;
-//   padding: 0 1rem;
-// `;
-
-// const StyledBefore = styled(GrLinkPrevious)`
-//   vertical-align: top;
-// `;
-
-// const StyledTitle = styled.span`
-//   // flex: 1;
-//   margin-left: 18rem;
-//   text-align: center;
-//   vertical-align: top;
-//   font-size: ${theme.fonts.subtitle4.fontSize};
-//   font-weight: ${theme.fonts.subtitle3.fontWeight};
-// `;
-
-// const StyledSpan = styled.span`
-//   margin-left: auto;
-//   vertical-align: top;
-// `;
-
-// const StyledButton = styled.button`
-//   margin-left: 1px;
-//   vertical-align: top;
-//   background-color: ${theme.colors.blue};
-//   color: white;
-//   border: none;
-//   border-radius: 6px;
-//   height: 1.75rem;
-//   padding: 0.25rem;
-// `;
+const StyledDateRange = styled.div`
+  border: 0.5px solid ${theme.colors.gray2};
+  border-radius: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  background-color: ${theme.colors.blue};
+  color: white;
+`;
+const StyledPeopleRange = styled.div`
+  border: 0.5px solid ${theme.colors.gray2};
+  border-radius: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  background-color: ${theme.colors.blue};
+  color: white;
+`;
+const StyledPriceRange = styled.div`
+  border: 0.5px solid ${theme.colors.gray2};
+  border-radius: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  background-color: ${theme.colors.blue};
+  color: white;
+`;
+const StyledReservation = styled.div`
+  border: 0.5px solid ${theme.colors.gray2};
+  border-radius: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  background-color: ${theme.colors.blue};
+  color: white;
+`;
+const StyledPrice = styled.div`
+  border: 0.5px solid ${theme.colors.gray2};
+  border-radius: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  background-color: ${theme.colors.blue};
+  color: white;
+`;
+const StyledSales = styled.div`
+  border: 0.5px solid ${theme.colors.gray2};
+  border-radius: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  background-color: ${theme.colors.blue};
+  color: white;
+`;

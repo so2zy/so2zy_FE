@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { theme } from '@styles/theme';
-
+import { FaStar } from 'react-icons/fa';
 interface ItemProps {
   // image: string;
   name: string;
@@ -23,12 +23,14 @@ const Item: React.FC<ItemProps> = (props: ItemProps) => {
       </StyledImgWrapper>
       <StyledInfo>
         <StyledNameWrapper>
-          <div style={{ textAlign: 'left', fontWeight: 'bold' }}>{name}</div>
-          <div>찜{favorites}</div>
+          <StyledName>{name}</StyledName>
+          <StyleStarWrapper>
+            <StyledStar>{favorites}</StyledStar>
+          </StyleStarWrapper>
         </StyledNameWrapper>
         <StyledPriceWrapper>
           <StyledRegularPrice>{regularPrice}원</StyledRegularPrice>
-          <div style={{ fontWeight: 'bold' }}>{discountPrice}원</div>
+          <StyledDiscountPrice>{discountPrice}원</StyledDiscountPrice>
         </StyledPriceWrapper>
       </StyledInfo>
     </StyledItem>
@@ -39,36 +41,53 @@ export default Item;
 
 const StyledItem = styled.div`
   border: 0.5px solid ${theme.colors.gray2};
-  border-radius: 8px;
+  border-radius: 0.5rem;
   box-shadow: 4px 4px 4px ${theme.colors.gray2};
-  height: 10rem;
-  width: 20rem;
+  width: 90%;
+  height: 8.5rem;
   padding: 0.5rem;
-  margin: 1rem auto;
+  margin: 0.5rem auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 0.42fr 0.58fr;
+  background-color: ${theme.colors.gray3};
+  cursor: pointer;
   position: relative;
+  :hover {
+  }
 `;
 
 const StyledImgWrapper = styled.div`
   img {
     border-radius: 0.5rem;
-    width: 100%;
+    width: 90%;
     height: 100%;
   }
 `;
 
 const StyledInfo = styled.div`
+  min-width: 50%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 0.5rem 1rem;
+  padding: 1rem 0.75rem 0.5rem;
 `;
 
 const StyledNameWrapper = styled.div`
   display: flex;
   justify-content: space-between;
 `;
+
+const StyledName = styled.div`
+  display: flex;
+  align-items: center;
+  text-align: left;
+  font-weight: bold;
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
 const StyledPriceWrapper = styled.div`
   text-align: right;
 `;
@@ -78,4 +97,27 @@ const StyledRegularPrice = styled.div`
   text-decoration: line-through;
   text-decoration-color: gray;
   text-decoration-thickness: 2px;
+`;
+
+const StyledDiscountPrice = styled.div`
+  font-weight: bold;
+  font-size: 1.2rem;
+`;
+
+const StyleStarWrapper = styled.div`
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+`;
+
+const StyledStar = styled(FaStar)`
+  min-width: 100%;
+  min-height: 100%;
+  color: ${theme.colors.yellow};
+  cursor: pointer;
+  // &.checked {
+  //   color: ${theme.colors.yellow};
+  // }
+  // &.unchecked {
+  //   color: ${theme.colors.gray1};
+  // }
 `;

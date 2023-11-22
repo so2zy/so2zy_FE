@@ -59,6 +59,22 @@ export const handlers = [
         regularPrice: 600,
         discountPrice: 310,
       },
+      {
+        id: 8,
+        name: '크레센도 호텔',
+        image: '@assets/HotelCrescendo',
+        favorites: true,
+        regularPrice: 600,
+        discountPrice: 310,
+      },
+      {
+        id: 9,
+        name: '크레센도 호텔',
+        image: '@assets/HotelCrescendo',
+        favorites: true,
+        regularPrice: 600,
+        discountPrice: 310,
+      },
     ]);
   }),
   http.post('/api/messages', async ({ request }) => {
