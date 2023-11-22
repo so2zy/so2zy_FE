@@ -1,29 +1,85 @@
-// import { Header } from '@components/common/Header';
-// import { Footer } from '@components/common/Footer';
+import { Header } from '@components/common/Header';
+import { Footer } from '@components/common/Footer';
 import styled from 'styled-components';
 import { GrLinkPrevious } from 'react-icons/gr';
 import { theme } from '@styles/theme';
 import { FaStar } from 'react-icons/fa';
 import { MdPlace } from 'react-icons/md';
-// import { FaLocationArrow } from 'react-icons/fa';
 import { RiShoppingBagLine } from 'react-icons/ri';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+// import { useParams } from 'react-router-dom';
 
-const PlaceDetail = () => {
+//객실 정보
+interface Room {
+  id: number;
+  name: string;
+  checkIn: string; //date객체로 굳이 받을 필요 없는지?
+  checkOut: string;
+  originalPrice: string;
+  salePrice: string;
+  roomPicture: string;
+  // number: number; //방 수량
+}
+
+//숙소 정보
+// interface PlaceData {
+//   [key: string]: {
+//     name: string;
+//     place: string;
+//     picture: string;
+//   };
+// }
+
+// interface Params {
+//   id?: string;
+// }
+
+export const PlaceDetail: React.FC = () => {
+  const [placeName, setPlaceName] = useState<string>('');
+  const [placeLoc, setPlaceLoc] = useState<string>('');
+  const [placePic, setPlacePic] = useState<string>('');
+  const [rooms, setRooms] = useState<Room[]>([]);
+  // const { id } = useParams<Params>();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get('/api/roomId');
+        setRooms(res.data);
+        // const res2 = await axios.get<PlaceData>(`/api/placeId/${id}`);
+        // const placeData = res2.data[id];
+        // setPlaceName(placeData.name);
+        // setPlaceLoc(placeData.place);
+        // setPlacePic(placeData.picture);
+
+        const res2 = await axios.get('/api/placeId');
+        setPlaceName(res2.data[0].name);
+        setPlaceLoc(res2.data[0].place);
+        setPlacePic(res2.data[0].picture);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <>
+      <Header />
       <StyledBar>
         <StyledBefore />
-        <StyledTitle>롯데 호텔</StyledTitle>
+        <StyledTitle>{placeName}</StyledTitle>
         <StyledSpan>
           <StyledButton>11.19~11.20 1박</StyledButton>
           <StyledButton>인원수 3명</StyledButton>
         </StyledSpan>
       </StyledBar>
 
-      <StyledImg>. </StyledImg>
+      <StyledImg src={placePic} />
 
       <StyledMainTitle>
-        롯데 호텔
+        {placeName}
         <StyledStar
         // className={isChecked ? 'checked' : 'unchecked'}
         // onClick={() => {
@@ -32,64 +88,40 @@ const PlaceDetail = () => {
         // }}
         />
       </StyledMainTitle>
+
       <StyledLocation>
         {/* map api */}
         숙소 위치 보기
         <MdPlace />
-        {/* <FaLocationArrow /> */}
       </StyledLocation>
-      <StyledDescription>서울특별시 송파구 올림픽로 300</StyledDescription>
+      <StyledDescription>{placeLoc}</StyledDescription>
       <StyledLine />
 
       <StyledSubCategory>객실 선택</StyledSubCategory>
-      <StyledSubContainer>
-        <StyledDetailImg>.</StyledDetailImg>
-        <StyledDetail>
-          <StyledWrapper>
-            <StyledRoomTitle>STANDARD</StyledRoomTitle>
-            <StyledBag />
-          </StyledWrapper>
-          <StyledRoomType>숙박</StyledRoomType>
-          <StyledRoomTime>체크인 18:00~체크아웃 13:00</StyledRoomTime>
-          <StyledRealPrice>100,000원</StyledRealPrice>
-          <StyledSalePrice>90,000원</StyledSalePrice>
-          <StyledReservationButton>예약하기</StyledReservationButton>
-        </StyledDetail>
-      </StyledSubContainer>
+      {rooms.map((room) => (
+        <StyledSubContainer key={room.id}>
+          <StyledDetailImg src={room.roomPicture} />
+          <StyledDetail>
+            <StyledWrapper>
+              <StyledRoomTitle>
+                {room.name} <StyledBag />
+              </StyledRoomTitle>
+            </StyledWrapper>
+            <StyledRoomType>숙박</StyledRoomType>
+            <StyledRoomTime>
+              체크인 {room.checkIn} ~ 체크아웃 {room.checkOut}
+            </StyledRoomTime>
+            <StyledRealPrice> {room.originalPrice}</StyledRealPrice>
+            <StyledSalePrice>{room.salePrice}</StyledSalePrice>
+            <StyledReservationButton>예약하기</StyledReservationButton>
+          </StyledDetail>
+        </StyledSubContainer>
+      ))}
 
-      <StyledSubContainer>
-        <StyledDetailImg>.</StyledDetailImg>
-        <StyledDetail>
-          <StyledWrapper>
-            <StyledRoomTitle>STANDARD</StyledRoomTitle>
-            <StyledBag />
-          </StyledWrapper>
-          <StyledRoomType>숙박</StyledRoomType>
-          <StyledRoomTime>체크인 18:00~체크아웃 13:00</StyledRoomTime>
-          <StyledRealPrice>100,000원</StyledRealPrice>
-          <StyledSalePrice>90,000원</StyledSalePrice>
-          <StyledReservationButton>예약하기</StyledReservationButton>
-        </StyledDetail>
-      </StyledSubContainer>
-
-      <StyledSubContainer>
-        <StyledDetailImg>.</StyledDetailImg>
-        <StyledDetail>
-          <StyledWrapper>
-            <StyledRoomTitle>STANDARD</StyledRoomTitle>
-            <StyledBag />
-          </StyledWrapper>
-          <StyledRoomType>숙박</StyledRoomType>
-          <StyledRoomTime>체크인 18:00~체크아웃 13:00</StyledRoomTime>
-          <StyledRealPrice>100,000원</StyledRealPrice>
-          <StyledSalePrice>90,000원</StyledSalePrice>
-          <StyledReservationButton>예약하기</StyledReservationButton>
-        </StyledDetail>
-      </StyledSubContainer>
+      <Footer />
     </>
   );
 };
-export default PlaceDetail;
 
 const StyledLine = styled.hr`
   color: ${theme.colors.gray3};
@@ -98,7 +130,7 @@ const StyledLine = styled.hr`
 
 const StyledSubContainer = styled.div`
   margin: 1rem 0;
-  height: 12rem;
+  height: 13rem;
   // border: 0.5px solid ${theme.colors.gray2};
   border-radius: 8px;
   // box-shadow: 1px 1px 1px ${theme.colors.gray2};
@@ -166,7 +198,7 @@ const StyledDescription = styled.div`
 `;
 
 //호텔 이미지
-const StyledImg = styled.p`
+const StyledImg = styled.img`
   width: 45rem;
   height: 25rem;
   background-color: ${theme.colors.gray2};
@@ -175,7 +207,8 @@ const StyledImg = styled.p`
 `;
 
 //객실 이미지
-const StyledDetailImg = styled.p`
+const StyledDetailImg = styled.img`
+  padding: 0
   width: 45%;
   height: 100%;
   background-color: ${theme.colors.gray2};
@@ -263,7 +296,7 @@ const StyledBefore = styled(GrLinkPrevious)`
 `;
 
 const StyledTitle = styled.span`
-  margin-left: 18rem;
+  margin-left: 17rem;
   text-align: center;
   vertical-align: top;
   font-size: ${theme.fonts.subtitle4.fontSize};
