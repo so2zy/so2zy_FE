@@ -29,8 +29,12 @@ const Item: React.FC<ItemProps> = (props: ItemProps) => {
           </StyleStarWrapper>
         </StyledNameWrapper>
         <StyledPriceWrapper>
-          <StyledRegularPrice>{regularPrice}원</StyledRegularPrice>
-          <StyledDiscountPrice>{discountPrice}원</StyledDiscountPrice>
+          <StyledRegularPrice>
+            {regularPrice.toLocaleString('ko-KR')}원
+          </StyledRegularPrice>
+          <StyledDiscountPrice>
+            {discountPrice.toLocaleString('ko-KR')}원
+          </StyledDiscountPrice>
         </StyledPriceWrapper>
       </StyledInfo>
     </StyledItem>
@@ -44,7 +48,7 @@ const StyledItem = styled.div`
   border-radius: 0.5rem;
   box-shadow: 4px 4px 4px ${theme.colors.gray2};
   width: 90%;
-  height: 8.5rem;
+  height: 9rem;
   padding: 0.5rem;
   margin: 0.5rem auto;
   display: grid;
@@ -101,7 +105,7 @@ const StyledRegularPrice = styled.div`
 
 const StyledDiscountPrice = styled.div`
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 `;
 
 const StyleStarWrapper = styled.div`

@@ -8,8 +8,8 @@ export const handlers = [
         name: '글래드 호텔',
         image: '@assets/HotelGlad.jpg',
         favorites: true,
-        regularPrice: 100,
-        discountPrice: 50,
+        regularPrice: 100000,
+        discountPrice: 500000,
       },
       {
         id: 2,
