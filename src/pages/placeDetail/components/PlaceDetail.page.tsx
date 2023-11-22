@@ -8,14 +8,7 @@ import { MdPlace } from 'react-icons/md';
 import { RiShoppingBagLine } from 'react-icons/ri';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-
-//숙소 정보, 여기선 Place[1].name등이 사용 예정
-// interface Place {
-//   id: number;
-//   name: string;
-//   place: number;
-//   placePicture: string;
-// }
+// import { useParams } from 'react-router-dom';
 
 //객실 정보
 interface Room {
@@ -29,19 +22,39 @@ interface Room {
   // number: number; //방 수량
 }
 
+//숙소 정보
+// interface PlaceData {
+//   [key: string]: {
+//     name: string;
+//     place: string;
+//     picture: string;
+//   };
+// }
+
+// interface Params {
+//   id?: string;
+// }
+
 export const PlaceDetail: React.FC = () => {
-  const [placeName, setPlaceName] = useState();
-  const [placeLoc, setPlaceLoc] = useState();
-  const [placePic, setPlacePic] = useState();
+  const [placeName, setPlaceName] = useState<string>('');
+  const [placeLoc, setPlaceLoc] = useState<string>('');
+  const [placePic, setPlacePic] = useState<string>('');
   const [rooms, setRooms] = useState<Room[]>([]);
+  // const { id } = useParams<Params>();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await axios.get('/api/roomId');
         setRooms(res.data);
+        // const res2 = await axios.get<PlaceData>(`/api/placeId/${id}`);
+        // const placeData = res2.data[id];
+        // setPlaceName(placeData.name);
+        // setPlaceLoc(placeData.place);
+        // setPlacePic(placeData.picture);
+
         const res2 = await axios.get('/api/placeId');
-        setPlaceName(res2.data[0].name); //롯데호텔 데이터 출력
+        setPlaceName(res2.data[0].name);
         setPlaceLoc(res2.data[0].place);
         setPlacePic(res2.data[0].picture);
       } catch (error) {

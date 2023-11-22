@@ -36,7 +36,7 @@ export const handlers = [
       },
     ]);
   }),
-  http.get('/api/placeId', () => {
+  http.get(`/api/placeId`, () => {
     //숙소 타입
     return HttpResponse.json([
       {
