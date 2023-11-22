@@ -1,8 +1,8 @@
 import { theme } from '@styles/theme';
 import styled from 'styled-components';
-import Logo from '../../../assets/mainLogo.svg';
-import CartIcon from '../../../assets/shoppingBag.png';
-import HomeIcon from '../../../assets/home.png';
+import Logo from '@assets/mainLogo.svg';
+import CartIcon from '@assets/shoppingBag.png';
+import HomeIcon from '@assets/home.png';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BsArrowLeft } from 'react-icons/bs';
@@ -130,7 +130,7 @@ const StyledHeaderBox = styled.div`
   top: 0;
   left: 0;
   width: 100%;
-  height: 55px;
+  height: 3.5rem;
   z-index: 100;
   background-color: ${theme.colors.navy};
   color: white;
@@ -154,7 +154,7 @@ const StyledHeaderContent = styled.div`
 const StyledHeaderMainLogo = styled.div`
   ${sharedHeaderStyles}
   display: flex;
-  width: 120px;
+  width: 7.5rem;
   background-color: transparent;
   margin-right: 1rem;
   img {
@@ -235,7 +235,7 @@ const StyledHeaderWhiteBox = styled.div`
   top: 0;
   left: 0;
   width: 100%;
-  height: 55px;
+  height: 3.5rem;
   z-index: 100;
   background-color: white;
   color: black;
