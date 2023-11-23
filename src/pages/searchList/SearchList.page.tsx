@@ -7,10 +7,13 @@ import { ReactComponent as SortDown } from '@assets/images/sort-down.svg';
 import { ReactComponent as Check } from '@assets/images/check.svg';
 import { Modal } from '@components/Modal';
 import { isCheckedPriceState } from 'recoil/searchList';
-
+import { isCheckedPeopleState } from 'recoil/searchList';
+import { isClickedPriceState } from 'recoil/searchList';
+import { isClickedPeopleState } from 'recoil/searchList';
+import { peopleCountState } from 'recoil/searchList';
 import { priceAState } from 'recoil/searchList';
 import { priceBState } from 'recoil/searchList';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 interface Hotel {
   id: number;
@@ -28,10 +31,14 @@ export const SearchList: React.FC = () => {
   const [sortBy, setSortBy] = useState('가격순');
   const [sortOrder, setSortOrder] = useState('asc');
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [isCheckedReservation, setIsCheckedReservation] = useState(false);
-  const priceA = useRecoilValue(priceAState);
-  const priceB = useRecoilValue(priceBState);
-  const isCheckedPrice = useRecoilValue(isCheckedPriceState);
+  const [isClickedReservation, setIsClickedReservation] = useState(false); // 필터링 예약버튼 클릭 여부
+  const setIsClickedPrice = useSetRecoilState(isClickedPriceState); // 필터링 가격버튼 클릭 여부
+  const setIsClickedPeople = useSetRecoilState(isClickedPeopleState); // 필터링 인원수버튼 클릭 여부
+  const isCheckedPrice = useRecoilValue(isCheckedPriceState); // 가격 필터링 여부
+  const isCheckedPeople = useRecoilValue(isCheckedPeopleState); // 인원수 필터링 클릭여부
+  const priceA = useRecoilValue(priceAState); // 최소 가격
+  const priceB = useRecoilValue(priceBState); // 최대 가격
+  const peopleCount = useRecoilValue(peopleCountState); // 인원수
 
   const shortenPrice = (price: number) => {
     if (price === 0) {
@@ -43,12 +50,19 @@ export const SearchList: React.FC = () => {
       .slice(0, -4);
   };
 
-  const openModal = () => {
+  const openModal = (type: string) => {
+    if (type == '가격') {
+      setIsClickedPrice(true);
+    } else if (type == '인원수') {
+      setIsClickedPeople(true);
+    }
     setModalIsOpen(true);
   };
 
   const closeModal = () => {
     setModalIsOpen(false);
+    setIsClickedPrice(false);
+    setIsClickedPeople(false);
     fetchData();
   };
 
@@ -72,7 +86,7 @@ export const SearchList: React.FC = () => {
           const isPriceInRange =
             hotel.discountPrice >= priceA && hotel.discountPrice <= priceB;
           // 예약가능 여부 필터링
-          const isAvailable = isCheckedReservation ? hotel.isAvailable : true;
+          const isAvailable = isClickedReservation ? hotel.isAvailable : true;
 
           return isPriceInRange && isAvailable;
         });
@@ -98,24 +112,36 @@ export const SearchList: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, [sortBy, sortOrder, priceA, priceB, isCheckedReservation]);
+  }, [sortBy, sortOrder, priceA, priceB, isClickedReservation]);
 
   return (
     <div>
       <StyledFilterSortWrapper>
         <StyledFilter>
-          <StyledDateRange>날짜 범위</StyledDateRange>
-          <StyledPeopleRange>인원수 범위</StyledPeopleRange>
-          <StyledPriceRange onClick={openModal} $isChecked={isCheckedPrice}>
+          <StyledDateRangeButton>날짜 범위</StyledDateRangeButton>
+          <StyledPeopleRangeButton
+            onClick={() => {
+              openModal('인원수');
+            }}
+            $isChecked={isCheckedPeople}
+          >
+            인원수 {peopleCount}명
+          </StyledPeopleRangeButton>
+          <StyledPriceRangeButton
+            onClick={() => {
+              openModal('가격');
+            }}
+            $isChecked={isCheckedPrice}
+          >
             {shortenPrice(priceA)}만원 ~ {shortenPrice(priceB)}만원
-          </StyledPriceRange>
+          </StyledPriceRangeButton>
           <StyledReservationButton
             onClick={() => {
-              setIsCheckedReservation(!isCheckedReservation);
+              setIsClickedReservation(!isClickedReservation);
             }}
           >
-            <StyledCheck $isChecked={isCheckedReservation} />
-            <StyledReservation $isChecked={isCheckedReservation}>
+            <StyledCheck $isChecked={isClickedReservation} />
+            <StyledReservation $isChecked={isClickedReservation}>
               예약가능
             </StyledReservation>
           </StyledReservationButton>
@@ -218,7 +244,7 @@ const StyledSort = styled.div`
   gap: 0.5rem;
 `;
 
-const StyledDateRange = styled.div`
+const StyledDateRangeButton = styled.div`
   border: 0.5px solid ${theme.colors.gray2};
   border-radius: 0.5rem;
   cursor: pointer;
@@ -226,15 +252,17 @@ const StyledDateRange = styled.div`
   background-color: ${theme.colors.blue};
   color: white;
 `;
-const StyledPeopleRange = styled.div`
+const StyledPeopleRangeButton = styled.div<{ $isChecked: boolean }>`
   border: 0.5px solid ${theme.colors.gray2};
   border-radius: 0.5rem;
   cursor: pointer;
   padding: 0.5rem 0.5rem 0.25rem;
   background-color: ${theme.colors.blue};
   color: white;
+  font-weight: ${(props) => (props.$isChecked ? 'bold' : 'normal')};
 `;
-const StyledPriceRange = styled.div<{ $isChecked: boolean }>`
+
+const StyledPriceRangeButton = styled.div<{ $isChecked: boolean }>`
   border: 0.5px solid ${theme.colors.gray2};
   border-radius: 0.5rem;
   cursor: pointer;

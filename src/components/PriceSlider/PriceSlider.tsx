@@ -9,6 +9,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { useState } from 'react';
 import styled from 'styled-components';
 import { theme } from '@styles/theme';
+import { isClickedPriceState } from 'recoil/searchList';
 
 const marks = [
   {
@@ -31,7 +32,7 @@ export default function PriceSlider({
   const [priceA, setPriceA] = useRecoilState(priceAState);
   const [priceB, setPriceB] = useRecoilState(priceBState);
   const setIsCheckedPrice = useSetRecoilState(isCheckedPriceState);
-
+  const setIsClickedPrice = useSetRecoilState(isClickedPriceState);
   const [A, setA] = useState(priceA / 10000);
   const [B, setB] = useState(priceB / 10000);
 
@@ -39,7 +40,7 @@ export default function PriceSlider({
     setPriceA(A * 10000);
     setPriceB(B * 10000);
     setIsCheckedPrice(true);
-
+    setIsClickedPrice(false);
     closeModal();
   };
 

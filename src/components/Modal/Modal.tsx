@@ -1,8 +1,11 @@
 import React from 'react';
 import Modal from 'react-modal';
 import { PriceSlider } from '@components/PriceSlider';
+import { SelectPeople } from '@components/SelectPeople';
 import styled from 'styled-components';
-// import { theme } from '@styles/theme';
+import { isClickedPeopleState } from 'recoil/searchList';
+import { isClickedPriceState } from 'recoil/searchList';
+import { useRecoilValue } from 'recoil';
 
 interface ModalProps {
   isOpen: boolean;
@@ -30,6 +33,9 @@ const customStyles = {
 };
 
 const ModalComponent: React.FC<ModalProps> = ({ isOpen, closeModal }) => {
+  const isClickedPeople = useRecoilValue(isClickedPeopleState);
+  const isClickedPrice = useRecoilValue(isClickedPriceState);
+
   return (
     <Modal
       isOpen={isOpen}
@@ -38,7 +44,8 @@ const ModalComponent: React.FC<ModalProps> = ({ isOpen, closeModal }) => {
       contentLabel="Example Modal"
     >
       <StyledContentWrapper>
-        <PriceSlider closeModal={closeModal} />
+        {isClickedPrice && <PriceSlider closeModal={closeModal} />}
+        {isClickedPeople && <SelectPeople closeModal={closeModal} />}
       </StyledContentWrapper>
     </Modal>
   );
