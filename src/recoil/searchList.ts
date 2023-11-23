@@ -47,3 +47,13 @@ export const peopleCountState = atom({
   key: 'peopleCountState',
   default: 1,
 });
+
+export const startDateState = atom<Date | null>({
+  key: 'startDateState',
+  default: null,
+});
+
+export const endDateState = atom<Date | null>({
+  key: 'endDateState',
+  default: null,
+});
