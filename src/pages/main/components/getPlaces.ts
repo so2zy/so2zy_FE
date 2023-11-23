@@ -13,6 +13,31 @@ export interface MainItemProps {
   image: string;
 }
 
+export interface RegionSelectProps {
+  id: string;
+  name: 'string';
+  regions: string[];
+}
+
+export interface RegionModalProps {
+  isOpen: boolean;
+}
+
+export const getRegionList = async () => {
+  try {
+    const res = await axios.get('/api/main/selectregion');
+    if (res) {
+      return res.data;
+    } else {
+      console.log('지역 불러오기 실패');
+      return [];
+    }
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
+
 export const getMostSell = async () => {
   try {
     const res = await axios.get('/api/main/mostsell');

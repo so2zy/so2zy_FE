@@ -1,19 +1,24 @@
 import { theme } from '@styles/theme';
+import { useState } from 'react';
 import styled from 'styled-components';
+import RegionModal from './regionModal';
 
 const regionSelectBtn = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const onHandleClick = () => {
+    setModalOpen(!modalOpen);
+  };
   return (
-    <StyledWrapper>
-      {/* <StyledRegionBox> */}
+    <StyledWrapper onClick={onHandleClick}>
       <StyledRegionText>지역 선택</StyledRegionText>
-      {/* </StyledRegionBox> */}
+      <RegionModal isOpen={modalOpen} />
     </StyledWrapper>
   );
 };
 
 export default regionSelectBtn;
 
-const StyledWrapper = styled.div`
+const StyledWrapper = styled.button`
   width: 10rem;
   height: 2.5rem;
   display: flex;
@@ -29,4 +34,5 @@ const StyledRegionText = styled.p`
   font-weight: bold;
   font-size: 1.5rem;
   color: #fff;
+  margin: auto;
 `;

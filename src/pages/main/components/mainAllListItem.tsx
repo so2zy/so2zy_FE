@@ -13,8 +13,7 @@ const MainAllListItem = ({ title }: MainListProps) => {
   const { data } = useQuery<MainItemProps[]>({
     queryKey: [title],
     queryFn: title === '전체 숙소 보기' ? getAllProduct : noProduct,
-    refetchOnWindowFocus: false,
-    // refetchInterval: 1000,
+    refetchInterval: 1000,
   });
 
   return (
