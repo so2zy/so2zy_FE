@@ -24,6 +24,7 @@ interface Hotel {
   discountPrice: number;
   salesCount: number;
   isAvailable: boolean;
+  peopleCount: number;
 }
 
 export const SearchList: React.FC = () => {
@@ -82,13 +83,15 @@ export const SearchList: React.FC = () => {
       .then((res) => res.json())
       .then((data: Hotel[]) => {
         const filteredData = data.filter((hotel) => {
+          // 인원수 필터링
+          const isPeopleInRange = hotel.peopleCount >= peopleCount;
           // 가격 필터링
           const isPriceInRange =
             hotel.discountPrice >= priceA && hotel.discountPrice <= priceB;
           // 예약가능 여부 필터링
           const isAvailable = isClickedReservation ? hotel.isAvailable : true;
 
-          return isPriceInRange && isAvailable;
+          return isPeopleInRange && isPriceInRange && isAvailable;
         });
 
         const sortedData = filteredData.sort((a, b) => {
@@ -112,7 +115,7 @@ export const SearchList: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, [sortBy, sortOrder, priceA, priceB, isClickedReservation]);
+  }, [sortBy, sortOrder, priceA, priceB, isClickedReservation, peopleCount]);
 
   return (
     <div>
