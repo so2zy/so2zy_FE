@@ -65,7 +65,7 @@ const StyledWrapper = styled(Slider)`
 
 const StyledMainPageItem = styled.div`
   width: 11.75rem;
-  height: 13.5rem;
+  height: 10.5rem;
   border-radius: 1rem;
   box-shadow: ${theme.shadows.shadow1.shadow};
   position: relative;
@@ -75,7 +75,7 @@ const StyledMainPageItem = styled.div`
 
 const StyledItemImage = styled.img`
   width: 100%;
-  height: 10rem;
+  height: 7rem;
   border-top-right-radius: 1rem;
   border-top-left-radius: 1rem;
 `;
