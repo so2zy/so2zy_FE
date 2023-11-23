@@ -10,6 +10,7 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from '@styles/theme';
 import { Card } from '@components/common/Card';
 import PlaceDetail from './pages/placeDetail/components/PlaceDetail';
+
 const Main = React.lazy(() => import('./pages/main'));
 // const SearchList = React.lazy(() => import('./pages/searchList'));
 // const Card = React.lazy(() => import('./components/common/Card'));
