@@ -11,6 +11,7 @@ export const handlers = [
         regularPrice: 300000,
         discountPrice: 150000,
         salesCount: 38,
+        isAvailable: true,
       },
       {
         id: 2,
@@ -20,6 +21,7 @@ export const handlers = [
         regularPrice: 280000,
         discountPrice: 170000,
         salesCount: 15,
+        isAvailable: true,
       },
       {
         id: 3,
@@ -29,6 +31,7 @@ export const handlers = [
         regularPrice: 700000,
         discountPrice: 630000,
         salesCount: 89,
+        isAvailable: false,
       },
       {
         id: 4,
@@ -38,6 +41,7 @@ export const handlers = [
         regularPrice: 610000,
         discountPrice: 410000,
         salesCount: 44,
+        isAvailable: true,
       },
       {
         id: 5,
@@ -47,6 +51,7 @@ export const handlers = [
         regularPrice: 930000,
         discountPrice: 840000,
         salesCount: 61,
+        isAvailable: false,
       },
       {
         id: 6,
@@ -56,6 +61,7 @@ export const handlers = [
         regularPrice: 450000,
         discountPrice: 290000,
         salesCount: 3,
+        isAvailable: false,
       },
       {
         id: 7,
@@ -65,6 +71,7 @@ export const handlers = [
         regularPrice: 830000,
         discountPrice: 550000,
         salesCount: 50,
+        isAvailable: true,
       },
       {
         id: 8,
@@ -74,6 +81,7 @@ export const handlers = [
         regularPrice: 160000,
         discountPrice: 70000,
         salesCount: 97,
+        isAvailable: true,
       },
       {
         id: 9,
@@ -83,6 +91,7 @@ export const handlers = [
         regularPrice: 170000,
         discountPrice: 120000,
         salesCount: 72,
+        isAvailable: true,
       },
     ]);
   }),
