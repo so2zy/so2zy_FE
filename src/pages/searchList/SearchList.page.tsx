@@ -4,6 +4,10 @@ import { Item } from '@components/common/Item';
 import { useEffect, useState } from 'react';
 import { ReactComponent as SortUp } from '@assets/images/sort-up.svg';
 import { ReactComponent as SortDown } from '@assets/images/sort-down.svg';
+import { Modal } from '@components/Modal';
+import { priceAState } from 'recoil/searchList';
+import { priceBState } from 'recoil/searchList';
+import { useRecoilValue } from 'recoil';
 
 interface Hotel {
   id: number;
@@ -19,6 +23,28 @@ export const SearchList: React.FC = () => {
   const [hotels, setHotels] = useState<Hotel[]>([]);
   const [sortBy, setSortBy] = useState('가격순');
   const [sortOrder, setSortOrder] = useState('asc');
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const priceA = useRecoilValue(priceAState);
+  const priceB = useRecoilValue(priceBState);
+
+  const shortenPrice = (price: number) => {
+    if (price === 0) {
+      return '0';
+    }
+    return price
+      .toLocaleString()
+      .replace(/,|\.\d+/g, '')
+      .slice(0, -4);
+  };
+
+  const openModal = () => {
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+    fetchData();
+  };
 
   const handleSortClick = (field: string) => {
     if (field === sortBy) {
@@ -31,11 +57,16 @@ export const SearchList: React.FC = () => {
     }
   };
 
-  useEffect(() => {
+  const fetchData = () => {
     fetch('/api/searchList')
       .then((res) => res.json())
       .then((data: Hotel[]) => {
-        const sortedData = data.sort((a, b) => {
+        const filteredData = data.filter((hotel) => {
+          console.log('priceA', priceA);
+          return hotel.discountPrice >= priceA && hotel.discountPrice <= priceB;
+        });
+
+        const sortedData = filteredData.sort((a, b) => {
           if (sortBy === '가격') {
             const priceA =
               sortOrder === 'asc' ? a.discountPrice : b.discountPrice;
@@ -49,9 +80,14 @@ export const SearchList: React.FC = () => {
           }
           return 0;
         });
+
         setHotels(sortedData);
       });
-  }, [sortBy, sortOrder]);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [sortBy, sortOrder, priceA, priceB]);
 
   return (
     <div>
@@ -59,7 +95,9 @@ export const SearchList: React.FC = () => {
         <StyledFilter>
           <StyledDateRange>날짜 범위</StyledDateRange>
           <StyledPeopleRange>인원수 범위</StyledPeopleRange>
-          <StyledPriceRange>가격 범위</StyledPriceRange>
+          <StyledPriceRange onClick={openModal}>
+            {shortenPrice(priceA)}만원 ~ {shortenPrice(priceB)}만원
+          </StyledPriceRange>
           <StyledReservation>예약가능여부</StyledReservation>
         </StyledFilter>
         <StyledSort>
@@ -120,6 +158,7 @@ export const SearchList: React.FC = () => {
           );
         })}
       </StyledContainer>
+      <Modal isOpen={modalIsOpen} closeModal={closeModal} />
     </div>
   );
 };
