@@ -9,7 +9,8 @@
       "@hooks/*": ["hooks/*"],
       "@styles/*": ["styles/*"],
       "@utils/*": ["utils/*"],
-      "@components/*": ["components/*"]
+      "@components/*": ["components/*"],
+      "@mocks/*": ["mocks/*"]
     }
   }
 }
