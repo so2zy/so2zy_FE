@@ -43,7 +43,7 @@ interface RoomList {
 
 export const PlaceDetail: React.FC = () => {
   const { id } = useParams();
-  const [accommodations, setAccommodations] = useState<IAccommodations>({
+  const [accommodation, setAccommodation] = useState<IAccommodations>({
     id: 0,
     accommodationName: '',
     latitude: 0,
@@ -70,8 +70,13 @@ export const PlaceDetail: React.FC = () => {
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalLatitude, setModalLatitude] = useState<number>(0);
+  const [modalLongitude, setModalLongitude] = useState<number>(0);
 
-  const openModal = () => {
+  const openModal = (latitude: number, longitude: number) => {
+    console.log(latitude, longitude);
+    setModalLatitude(latitude);
+    setModalLongitude(longitude);
     setModalIsOpen(true);
   };
 
@@ -82,7 +87,7 @@ export const PlaceDetail: React.FC = () => {
   const getData = async () => {
     axios.get(`/accommodations/${id}`).then((res) => {
       console.log(`get test ${id}`);
-      setAccommodations(res.data); //테스트 -> 이제 이거 수정
+      setAccommodation(res.data); //테스트 -> 이제 이거 수정
       console.log(res.data);
       setIsLoading(false);
     });
@@ -93,10 +98,10 @@ export const PlaceDetail: React.FC = () => {
   }, [isLoading]);
 
   useEffect(() => {
-    if (accommodations) {
-      console.log(accommodations);
+    if (accommodation) {
+      console.log(accommodation);
     }
-  }, [accommodations]);
+  }, [accommodation]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -110,7 +115,7 @@ export const PlaceDetail: React.FC = () => {
               navigate('/'); //메인으로 이동
             }}
           />
-          <StyledTitle>{accommodations.accommodationName}</StyledTitle>
+          <StyledTitle>{accommodation.accommodationName}</StyledTitle>
           <StyledSpan>
             <StyledButton>11.19~11.20 1박</StyledButton>
             <StyledButton>인원수 3명</StyledButton>
@@ -118,10 +123,10 @@ export const PlaceDetail: React.FC = () => {
         </StyledBar>
 
         {/*숙소 이미지  */}
-        <StyledImg src={accommodations.accommodationImageList[0].url} />
+        <StyledImg src={accommodation.accommodationImageList[0].url} />
 
         <StyledMainTitle>
-          {accommodations.accommodationName}
+          {accommodation.accommodationName}
           <StyledStar
             className={isChecked ? 'checked' : 'unchecked'}
             onClick={() => {
@@ -130,18 +135,27 @@ export const PlaceDetail: React.FC = () => {
           />
         </StyledMainTitle>
 
-        <StyledLocation onClick={openModal}>
+        <StyledLocation
+          onClick={() =>
+            openModal(accommodation.latitude, accommodation.longitude)
+          }
+        >
           숙소 위치 보기
           <MdPlace />
         </StyledLocation>
-        <MapModal isOpen={modalIsOpen} onRequestClose={closeModal} />
+        <MapModal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          latitude={modalLatitude}
+          longitude={modalLongitude}
+        />
 
-        <StyledDescription>{accommodations.addressCode}</StyledDescription>
-        <StyledDescription> {accommodations.phoneNumber}</StyledDescription>
+        <StyledDescription>{accommodation.addressCode}</StyledDescription>
+        <StyledDescription> {accommodation.phoneNumber}</StyledDescription>
         <StyledLine />
 
         <StyledSubCategory>객실 선택</StyledSubCategory>
-        {accommodations.roomList.map((room) => (
+        {accommodation.roomList.map((room) => (
           <StyledSubContainer key={room.id}>
             <StyledDetailImg src={room.imageUrl} />
             <StyledDetail>
@@ -176,7 +190,7 @@ export const PlaceDetail: React.FC = () => {
   }
 };
 
-const StyledLine = styled.hr`
+export const StyledLine = styled.hr`
   color: ${theme.colors.gray3};
   margin: 1rem 0;
 `;
@@ -346,7 +360,7 @@ const StyledBefore = styled(GrLinkPrevious)`
 `;
 
 const StyledTitle = styled.span`
-  margin-left: 17rem;
+  margin-left: 15rem;
   text-align: center;
   vertical-align: top;
   font-size: ${theme.fonts.subtitle4.fontSize};

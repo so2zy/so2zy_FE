@@ -7,11 +7,11 @@ export const handlers = [
 
     return HttpResponse.json({
       id: 1, //백엔드에 추가요청(v1)
-      accommodationName: '롯데호텔',
-      latitude: 30.5,
-      longitude: 30.2,
-      addressCode: '서울특별시 송파구 올림픽로 300',
-      phoneNumber: '02-020-2021',
+      accommodationName: '소피텔 앰배서더 서울',
+      latitude: 37.51379512401881,
+      longitude: 127.10615978152588,
+      addressCode: '서울특별시 송파구 잠실로 209',
+      phoneNumber: '02-2092-6000',
       accommodationImageList: [
         {
           id: 1,
