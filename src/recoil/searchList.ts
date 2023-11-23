@@ -21,6 +21,11 @@ export const isCheckedPeopleState = atom({
   key: 'isCheckedPeopleState',
   default: false,
 });
+export const isCheckedCalendarState = atom({
+  // 날짜 필터링 여부
+  key: 'isCheckedCalendarState',
+  default: false,
+});
 
 export const isClickedPriceState = atom({
   // 필터링 가격버튼 클릭여부
@@ -30,6 +35,11 @@ export const isClickedPriceState = atom({
 export const isClickedPeopleState = atom({
   // 필터링 인원수버튼 클릭여부
   key: 'isClickedPeopleState',
+  default: false,
+});
+export const isClickedCalendarState = atom({
+  // 필터링 날짜버튼 클릭여부
+  key: 'isClickedCalendarState',
   default: false,
 });
 

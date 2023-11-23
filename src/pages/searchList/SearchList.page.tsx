@@ -8,8 +8,10 @@ import { ReactComponent as Check } from '@assets/images/check.svg';
 import { Modal } from '@components/Modal';
 import { isCheckedPriceState } from 'recoil/searchList';
 import { isCheckedPeopleState } from 'recoil/searchList';
+import { isCheckedCalendarState } from 'recoil/searchList';
 import { isClickedPriceState } from 'recoil/searchList';
 import { isClickedPeopleState } from 'recoil/searchList';
+import { isClickedCalendarState } from 'recoil/searchList';
 import { peopleCountState } from 'recoil/searchList';
 import { priceAState } from 'recoil/searchList';
 import { priceBState } from 'recoil/searchList';
@@ -35,8 +37,10 @@ export const SearchList: React.FC = () => {
   const [isClickedReservation, setIsClickedReservation] = useState(false); // 필터링 예약버튼 클릭 여부
   const setIsClickedPrice = useSetRecoilState(isClickedPriceState); // 필터링 가격버튼 클릭 여부
   const setIsClickedPeople = useSetRecoilState(isClickedPeopleState); // 필터링 인원수버튼 클릭 여부
+  const setIsClickedCalendar = useSetRecoilState(isClickedCalendarState); // 필터링 날짜 클릭 여부
   const isCheckedPrice = useRecoilValue(isCheckedPriceState); // 가격 필터링 여부
   const isCheckedPeople = useRecoilValue(isCheckedPeopleState); // 인원수 필터링 클릭여부
+  const isCheckedCalendar = useRecoilValue(isCheckedCalendarState); // 날짜 필터링 클릭여부
   const priceA = useRecoilValue(priceAState); // 최소 가격
   const priceB = useRecoilValue(priceBState); // 최대 가격
   const peopleCount = useRecoilValue(peopleCountState); // 인원수
@@ -56,6 +60,8 @@ export const SearchList: React.FC = () => {
       setIsClickedPrice(true);
     } else if (type == '인원수') {
       setIsClickedPeople(true);
+    } else if (type == '날짜') {
+      setIsClickedCalendar(true);
     }
     setModalIsOpen(true);
   };
@@ -64,6 +70,7 @@ export const SearchList: React.FC = () => {
     setModalIsOpen(false);
     setIsClickedPrice(false);
     setIsClickedPeople(false);
+    setIsClickedCalendar(false);
     fetchData();
   };
 
@@ -121,7 +128,14 @@ export const SearchList: React.FC = () => {
     <div>
       <StyledFilterSortWrapper>
         <StyledFilter>
-          <StyledDateRangeButton>날짜 범위</StyledDateRangeButton>
+          <StyledDateRangeButton
+            onClick={() => {
+              openModal('날짜');
+            }}
+            $isChecked={isCheckedCalendar}
+          >
+            날짜 범위
+          </StyledDateRangeButton>
           <StyledPeopleRangeButton
             onClick={() => {
               openModal('인원수');
@@ -247,13 +261,14 @@ const StyledSort = styled.div`
   gap: 0.5rem;
 `;
 
-const StyledDateRangeButton = styled.div`
+const StyledDateRangeButton = styled.div<{ $isChecked: boolean }>`
   border: 0.5px solid ${theme.colors.gray2};
   border-radius: 0.5rem;
   cursor: pointer;
   padding: 0.5rem 0.5rem 0.25rem;
   background-color: ${theme.colors.blue};
   color: white;
+  font-weight: ${(props) => (props.$isChecked ? 'bold' : 'normal')};
 `;
 const StyledPeopleRangeButton = styled.div<{ $isChecked: boolean }>`
   border: 0.5px solid ${theme.colors.gray2};
