@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { RecoilRoot } from 'recoil';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -25,7 +26,9 @@ enableMocking().then(() => {
   root.render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-        <App />
+        <RecoilRoot>
+          <App />
+        </RecoilRoot>
         <ReactQueryDevtools />
       </QueryClientProvider>
     </React.StrictMode>,
