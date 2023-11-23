@@ -8,19 +8,30 @@ import {
   getMostSell,
   getFavorite,
 } from './getPlaces';
-
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 const MainListItem = ({ title }: MainListProps) => {
   const { data } = useQuery<MainItemProps[]>({
     queryKey: [title],
     queryFn: title === '많이 판매된 숙소' ? getMostSell : getFavorite,
-    // refetchOnWindowFocus: false,
-    // refetchInterval: 1000,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000,
   });
+  const settings = {
+    infinite: true,
+    speed: 500,
+    slidesToShow: 5,
+    slidesToScroll: 1,
+    arrows: true,
+    autoplay: true,
+  };
+
   return (
-    <StyledWrapper>
+    <StyledWrapper {...settings}>
       {data?.map((item) => (
         <StyledMainPageItem key={item.id}>
-          <StyledItemImage></StyledItemImage>
+          <StyledItemImage src={item.image} alt="호텔 사진" />
           <StyledItemDesc>
             <StyledItemName>
               {item.id}. {item.name}
@@ -36,27 +47,38 @@ const MainListItem = ({ title }: MainListProps) => {
 
 export default MainListItem;
 
-const StyledWrapper = styled.div`
-  /* border: 1px solid black; */
+const StyledWrapper = styled(Slider)`
+  .slick-prev,
+  .slick-next {
+    background-color: ${theme.colors.navy};
+  }
+  border: none;
+  .slick-list {
+    margin-right: -1.125rem;
+    background: transparent;
+  }
+  .slick-slide {
+    padding-right: 1.125rem;
+    background: transparent;
+  }
   display: flex;
-  gap: 1.125rem;
 `;
 
 const StyledMainPageItem = styled.div`
   width: 11.75rem;
   height: 13.5rem;
-  /* border: 1px solid pink; */
   border-radius: 1rem;
-  box-shadow: ${theme.shadows.shadow2.shadow};
+  box-shadow: ${theme.shadows.shadow1.shadow};
   position: relative;
   cursor: pointer;
+  overflow: hidden;
 `;
 
-const StyledItemImage = styled.div`
+const StyledItemImage = styled.img`
+  width: 100%;
   height: 10rem;
   border-top-right-radius: 1rem;
   border-top-left-radius: 1rem;
-  background-color: ${theme.colors.gray2};
 `;
 
 const StyledItemDesc = styled.div`
@@ -65,14 +87,12 @@ const StyledItemDesc = styled.div`
 
 const StyledItemName = styled.p`
   font-weight: bold;
-  /* font-size: 0.938rem; */
   font-size: 0.8rem;
   margin: 0.9rem 1.3rem 0 0.7rem;
   padding: 0;
 `;
 
 const StyledItemPrice = styled.p`
-  /* font-size: 0.938rem; */
   font-size: 0.8rem;
   margin: 0;
   padding: 0;

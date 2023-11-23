@@ -10,6 +10,7 @@ export interface MainItemProps {
   name: string;
   price: string;
   saleprice?: string;
+  image: string;
 }
 
 export const getMostSell = async () => {
