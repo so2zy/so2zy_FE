@@ -18,7 +18,6 @@ const RegionModal = ({ isOpen }: RegionModalProps) => {
   const [selectedRegionList, setSelectedRegionList] = useState<string[]>([]);
 
   const handleRegionClick = (item: RegionSelectProps) => {
-    // 클릭한 지역의 regions를 선택된 지역에 추가
     setSelectedRegionList(item.regions);
     setSelectedRegion(item.name);
   };
@@ -105,7 +104,7 @@ const StyledRegionList = styled.div``;
 
 const StyledLine = styled.div`
   /* width: 1px; */
-  height: 30rem;
+  height: 32rem;
   width: 0.01rem;
   background-color: ${theme.colors.gray2};
   padding: 0;
@@ -130,8 +129,6 @@ const StyledRegionItem = styled.button<{ isSelected: boolean }>`
     box-shadow: ${theme.shadows.shadow3};
     transform: scale(1.1);
     color: ${theme.colors.yellow};
-    /* border: 1px solid;
-    border-color: ${theme.colors.yellow}; */
   }
   ${(props) =>
     props.isSelected &&
