@@ -8,7 +8,8 @@ import { MdPlace } from 'react-icons/md';
 import { RiShoppingBagLine } from 'react-icons/ri';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-// import { useParams } from 'react-router-dom';
+//  import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface IAccommodations {
   accommodationName: string;
@@ -28,13 +29,14 @@ interface ImageList {
 interface RoomList {
   id: number;
   type: string;
-  price: number;
+  originalPrice: number;
+  salePrice: number;
   capacity: number;
   maxCapacity: number;
   checkIn: string;
   checkOut: string;
   stock: number;
-  roomImageList: ImageList[];
+  imageUrl: string;
 }
 
 export const PlaceDetail: React.FC = () => {
@@ -50,17 +52,20 @@ export const PlaceDetail: React.FC = () => {
       {
         id: 0,
         type: '',
-        price: 0,
+        originalPrice: 0,
+        salePrice: 0,
         capacity: 0,
         maxCapacity: 0,
         checkIn: '',
         checkOut: '',
         stock: 0,
-        roomImageList: [{ id: 0, url: '' }],
+        imageUrl: '',
       },
     ],
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [isChecked, setIsChecked] = useState(false);
+  const navigate = useNavigate();
 
   const getData = async () => {
     axios.get(`/accommodations/1`).then((res) => {
@@ -75,7 +80,7 @@ export const PlaceDetail: React.FC = () => {
 
   useEffect(() => {
     if (accommodations) {
-      console.log(accommodations); //정상 출력됨
+      console.log(accommodations);
     }
   }, [accommodations]);
 
@@ -86,7 +91,11 @@ export const PlaceDetail: React.FC = () => {
       <>
         <Header />
         <StyledBar>
-          <StyledBefore />
+          <StyledBefore
+            onClick={() => {
+              navigate('/'); //메인으로 이동
+            }}
+          />
           <StyledTitle>{accommodations.accommodationName}</StyledTitle>
           <StyledSpan>
             <StyledButton>11.19~11.20 1박</StyledButton>
@@ -94,17 +103,16 @@ export const PlaceDetail: React.FC = () => {
           </StyledSpan>
         </StyledBar>
 
+        {/*숙소 이미지  */}
         <StyledImg src={accommodations.accommodationImageList[0].url} />
-        {/*  */}
 
         <StyledMainTitle>
           {accommodations.accommodationName}
           <StyledStar
-          // className={isChecked ? 'checked' : 'unchecked'}
-          // onClick={() => {
-          //   setIsChecked((prev) => !prev);
-          //   setStarBtnClicked(!starBtnClicked);
-          // }}
+            className={isChecked ? 'checked' : 'unchecked'}
+            onClick={() => {
+              setIsChecked((prev) => !prev);
+            }}
           />
         </StyledMainTitle>
 
@@ -112,32 +120,38 @@ export const PlaceDetail: React.FC = () => {
           숙소 위치 보기
           <MdPlace />
         </StyledLocation>
-        <StyledDescription>
-          {accommodations.accommodationName}
-        </StyledDescription>
+        <StyledDescription>{accommodations.addressCode}</StyledDescription>
+        <StyledDescription> {accommodations.phoneNumber}</StyledDescription>
         <StyledLine />
 
         <StyledSubCategory>객실 선택</StyledSubCategory>
         {accommodations.roomList.map((room) => (
           <StyledSubContainer key={room.id}>
-            <StyledDetailImg />
+            <StyledDetailImg src={room.imageUrl} />
             <StyledDetail>
               <StyledWrapper>
-                <StyledRoomTitle>
-                  {room.type}
-                  <StyledBag />
-                </StyledRoomTitle>
+                <StyledRoomTitle>{room.type}</StyledRoomTitle>
               </StyledWrapper>
               <StyledRoomType>숙박</StyledRoomType>
-              <StyledRoomTime>
-                체크인 {accommodations.roomList[0].checkIn} ~ 체크아웃
-                {accommodations.roomList[0].checkOut}
-              </StyledRoomTime>
-              <StyledRealPrice>
-                {/* {accommodations.roomList[0].price} */}
-              </StyledRealPrice>
-              <StyledSalePrice> {room.price}</StyledSalePrice>
-              <StyledReservationButton>예약하기</StyledReservationButton>
+              <StyledCapacity>
+                체크인 {room.checkIn}, 체크아웃
+                {room.checkOut}
+              </StyledCapacity>
+              <StyledCapacity>
+                ({room.capacity}명 기준/최대 {room.maxCapacity}명)
+              </StyledCapacity>
+              <StyledRealPrice>{room.originalPrice}원</StyledRealPrice>
+              <StyledSalePrice> {room.salePrice}원</StyledSalePrice>
+              {room.stock === 0 ? (
+                <StyledNoStock>예약불가</StyledNoStock>
+              ) : (
+                <ReservationWrapper>
+                  <StyledReservationButton>
+                    <RiShoppingBagLine />
+                  </StyledReservationButton>
+                  <StyledReservationButton>예약하기</StyledReservationButton>
+                </ReservationWrapper>
+              )}
             </StyledDetail>
           </StyledSubContainer>
         ))}
@@ -153,10 +167,8 @@ const StyledLine = styled.hr`
 
 const StyledSubContainer = styled.div`
   margin: 1rem 0;
-  height: 13rem;
-  // border: 0.5px solid ${theme.colors.gray2};
+  height: 13.5rem;
   border-radius: 8px;
-  // box-shadow: 1px 1px 1px ${theme.colors.gray2};
   display: flex;
 `;
 
@@ -177,12 +189,12 @@ const StyledStar = styled(FaStar)`
   color: ${theme.colors.yellow};
   cursor: pointer;
 
-  // &.checked {
-  //   color: ${theme.colors.yellow};
-  // }
-  // &.unchecked {
-  //   color: ${theme.colors.gray1};
-  // }
+  &.checked {
+    color: ${theme.colors.yellow};
+  }
+  &.unchecked {
+    color: ${theme.colors.gray1};
+  }
 `;
 
 // 위치보기부분
@@ -264,12 +276,8 @@ const StyledRoomTitle = styled.div`
   width: 100%;
   display: inline-flex;
   justify-content: space-between;
-`;
-
-const StyledBag = styled(RiShoppingBagLine)`
-  font-size: ${theme.fonts.subtitle4.fontSize};
-  color: ${theme.colors.navy};
-  cursor: pointer;
+  font-weight: ${theme.fonts.subtitle1.fontWeight};
+  font-size: ${theme.fonts.subtitle5.fontSize};
 `;
 
 const StyledRoomType = styled.div`
@@ -278,14 +286,17 @@ const StyledRoomType = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  color: ${theme.colors.navy};
+  font-weight: ${theme.fonts.subtitle1.fontWeight};
 `;
 
-const StyledRoomTime = styled.div`
+const StyledCapacity = styled.div`
   width: 100%;
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  font-size: ${theme.fonts.body.fontSize};
 `;
 
 const StyledRealPrice = styled.div`
@@ -310,7 +321,7 @@ const StyledSalePrice = styled.div`
 const StyledBar = styled.div`
   display: flex;
   align-items: center;
-  padding: 0 1rem;
+  padding: 0;
 `;
 
 const StyledBefore = styled(GrLinkPrevious)`
@@ -340,8 +351,14 @@ const StyledButton = styled.button`
   border: none;
   border-radius: 6px;
   height: 1.75rem;
-  padding-right: 0.25rem;
+  padding: 0.25rem;
   cursor: pointer;
+`;
+
+const ReservationWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 `;
 
 const StyledReservationButton = styled.button`
@@ -354,12 +371,20 @@ const StyledReservationButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-left: auto;
-  margin-right: 0.75rem;
+  margin-right: 0.25rem;
   padding: 0.25rem;
 
   &:hover {
     border: none;
     background-color: ${theme.colors.gray2};
   }
+`;
+
+const StyledNoStock = styled.div`
+  color: red;
+  align-items: center;
+  justify-content: flex-end;
+  display: flex;
+  margin-right: 0.75rem;
+  font-weight: ${theme.fonts.subtitle3.fontWeight};
 `;
