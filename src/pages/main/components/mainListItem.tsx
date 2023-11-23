@@ -15,8 +15,8 @@ const MainListItem = ({ title }: MainListProps) => {
   const { data } = useQuery<MainItemProps[]>({
     queryKey: [title],
     queryFn: title === '많이 판매된 숙소' ? getMostSell : getFavorite,
-    // refetchOnWindowFocus: false,
-    // refetchInterval: 1000,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000,
   });
   const settings = {
     infinite: true,
