@@ -6,13 +6,19 @@ import { ReactComponent as SortUp } from '@assets/images/sort-up.svg';
 import { ReactComponent as SortDown } from '@assets/images/sort-down.svg';
 import { ReactComponent as Check } from '@assets/images/check.svg';
 import { Modal } from '@components/Modal';
-import { isCheckedPriceState } from 'recoil/searchList';
-import { isCheckedPeopleState } from 'recoil/searchList';
-import { isClickedPriceState } from 'recoil/searchList';
-import { isClickedPeopleState } from 'recoil/searchList';
-import { peopleCountState } from 'recoil/searchList';
-import { priceAState } from 'recoil/searchList';
-import { priceBState } from 'recoil/searchList';
+import {
+  isCheckedPriceState,
+  isCheckedPeopleState,
+  isCheckedCalendarState,
+  isClickedPriceState,
+  isClickedPeopleState,
+  isClickedCalendarState,
+  peopleCountState,
+  priceAState,
+  priceBState,
+  startDateState,
+  endDateState,
+} from 'recoil/searchList';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 interface Hotel {
@@ -24,6 +30,7 @@ interface Hotel {
   discountPrice: number;
   salesCount: number;
   isAvailable: boolean;
+  peopleCount: number;
 }
 
 export const SearchList: React.FC = () => {
@@ -34,11 +41,16 @@ export const SearchList: React.FC = () => {
   const [isClickedReservation, setIsClickedReservation] = useState(false); // 필터링 예약버튼 클릭 여부
   const setIsClickedPrice = useSetRecoilState(isClickedPriceState); // 필터링 가격버튼 클릭 여부
   const setIsClickedPeople = useSetRecoilState(isClickedPeopleState); // 필터링 인원수버튼 클릭 여부
+  const setIsClickedCalendar = useSetRecoilState(isClickedCalendarState); // 필터링 날짜 클릭 여부
   const isCheckedPrice = useRecoilValue(isCheckedPriceState); // 가격 필터링 여부
   const isCheckedPeople = useRecoilValue(isCheckedPeopleState); // 인원수 필터링 클릭여부
+  const isCheckedCalendar = useRecoilValue(isCheckedCalendarState); // 날짜 필터링 클릭여부
   const priceA = useRecoilValue(priceAState); // 최소 가격
   const priceB = useRecoilValue(priceBState); // 최대 가격
   const peopleCount = useRecoilValue(peopleCountState); // 인원수
+  const startDate = useRecoilValue(startDateState);
+  const endDate = useRecoilValue(endDateState);
+  const [date, setDate] = useState('');
 
   const shortenPrice = (price: number) => {
     if (price === 0) {
@@ -55,6 +67,8 @@ export const SearchList: React.FC = () => {
       setIsClickedPrice(true);
     } else if (type == '인원수') {
       setIsClickedPeople(true);
+    } else if (type == '날짜') {
+      setIsClickedCalendar(true);
     }
     setModalIsOpen(true);
   };
@@ -63,6 +77,7 @@ export const SearchList: React.FC = () => {
     setModalIsOpen(false);
     setIsClickedPrice(false);
     setIsClickedPeople(false);
+    setIsClickedCalendar(false);
     fetchData();
   };
 
@@ -82,13 +97,15 @@ export const SearchList: React.FC = () => {
       .then((res) => res.json())
       .then((data: Hotel[]) => {
         const filteredData = data.filter((hotel) => {
+          // 인원수 필터링
+          const isPeopleInRange = hotel.peopleCount >= peopleCount;
           // 가격 필터링
           const isPriceInRange =
             hotel.discountPrice >= priceA && hotel.discountPrice <= priceB;
           // 예약가능 여부 필터링
           const isAvailable = isClickedReservation ? hotel.isAvailable : true;
 
-          return isPriceInRange && isAvailable;
+          return isPeopleInRange && isPriceInRange && isAvailable;
         });
 
         const sortedData = filteredData.sort((a, b) => {
@@ -112,13 +129,49 @@ export const SearchList: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, [sortBy, sortOrder, priceA, priceB, isClickedReservation]);
+  }, [sortBy, sortOrder, priceA, priceB, isClickedReservation, peopleCount]);
+
+  useEffect(() => {
+    // const timeDiff = endDate?.getTime() - startDate?.getTime();
+    if (!startDate && !endDate) {
+      const today = new Date();
+      const todayMonth = (today?.getMonth() + 1).toString();
+      const todayDate = today?.getDate();
+      setDate(`${todayMonth}.${todayDate}`);
+      return;
+    }
+    if (startDate && !endDate) {
+      const startMonth = (startDate?.getMonth() + 1).toString();
+      const startDay = startDate?.getDate();
+      setDate(`${startMonth}.${startDay}`);
+      return;
+    }
+    if (startDate && endDate) {
+      const differDate = Math.floor(
+        (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
+      );
+      const startMonth = (startDate?.getMonth() + 1).toString();
+      const startDay = startDate?.getDate();
+      const endMonth = (endDate?.getMonth() + 1).toString();
+      const endDay = endDate?.getDate();
+      setDate(
+        `${startMonth}.${startDay} ~ ${endMonth}.${endDay}, ${differDate}박`,
+      );
+    }
+  }, [startDate, endDate]);
 
   return (
     <div>
       <StyledFilterSortWrapper>
         <StyledFilter>
-          <StyledDateRangeButton>날짜 범위</StyledDateRangeButton>
+          <StyledDateRangeButton
+            onClick={() => {
+              openModal('날짜');
+            }}
+            $isChecked={isCheckedCalendar}
+          >
+            {date}
+          </StyledDateRangeButton>
           <StyledPeopleRangeButton
             onClick={() => {
               openModal('인원수');
@@ -244,13 +297,14 @@ const StyledSort = styled.div`
   gap: 0.5rem;
 `;
 
-const StyledDateRangeButton = styled.div`
+const StyledDateRangeButton = styled.div<{ $isChecked: boolean }>`
   border: 0.5px solid ${theme.colors.gray2};
   border-radius: 0.5rem;
   cursor: pointer;
   padding: 0.5rem 0.5rem 0.25rem;
   background-color: ${theme.colors.blue};
   color: white;
+  font-weight: ${(props) => (props.$isChecked ? 'bold' : 'normal')};
 `;
 const StyledPeopleRangeButton = styled.div<{ $isChecked: boolean }>`
   border: 0.5px solid ${theme.colors.gray2};
