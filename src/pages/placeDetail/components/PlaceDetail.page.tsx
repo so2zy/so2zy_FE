@@ -8,12 +8,12 @@ import { MdPlace } from 'react-icons/md';
 import { RiShoppingBagLine } from 'react-icons/ri';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-//  import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import MapModal from './MapModal';
 
 interface IAccommodations {
-  id: 0;
+  id: number;
   accommodationName: string;
   latitude: number;
   longitude: number;
@@ -42,7 +42,7 @@ interface RoomList {
 }
 
 export const PlaceDetail: React.FC = () => {
-  // const { id } = useParams();
+  const { id } = useParams();
   const [accommodations, setAccommodations] = useState<IAccommodations>({
     id: 0,
     accommodationName: '',
@@ -80,8 +80,10 @@ export const PlaceDetail: React.FC = () => {
   };
 
   const getData = async () => {
-    axios.get(`/accommodations/id`).then((res) => {
-      setAccommodations(res.data[0]);
+    axios.get(`/accommodations/${id}`).then((res) => {
+      console.log(`get test ${id}`);
+      setAccommodations(res.data); //테스트 -> 이제 이거 수정
+      console.log(res.data);
       setIsLoading(false);
     });
   };

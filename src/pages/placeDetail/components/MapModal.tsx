@@ -1,5 +1,7 @@
 import Modal from 'react-modal';
 import { VscChromeClose } from 'react-icons/vsc';
+// import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
 
 export interface AppModalProps {
   isOpen: boolean;
@@ -16,7 +18,29 @@ const customStyles = {
   },
 };
 
-const MapModal = ({ isOpen, onRequestClose }: AppModalProps) => {
+declare global {
+  interface Window {
+    kakao: any;
+  }
+}
+interface MapBoxProps {}
+
+const MapBox: React.FC<MapBoxProps> = () => {
+  useEffect(() => {
+    const container = document.getElementById(`map`);
+    const options = {
+      center: new window.kakao.maps.LatLng(33.450701, 126.570667),
+      level: 3,
+    };
+
+    const map = new window.kakao.maps.Map(container, options);
+    console.log(map);
+  }, []);
+
+  return <div id="map" style={{ width: '100vw', height: '100vh' }} />;
+};
+
+const MapModal: React.FC<AppModalProps> = ({ isOpen, onRequestClose }) => {
   return (
     <div>
       <Modal
@@ -25,7 +49,7 @@ const MapModal = ({ isOpen, onRequestClose }: AppModalProps) => {
         style={customStyles}
       >
         <VscChromeClose onClick={onRequestClose} />
-        <form>지도 넣을 예정~</form>
+        <MapBox />
       </Modal>
     </div>
   );
