@@ -10,11 +10,13 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from '@styles/theme';
 import { Card } from '@components/common/Card';
 import { PlaceDetail } from './pages/placeDetail/components/PlaceDetail.page';
+import Modal from 'react-modal';
 
 const Main = React.lazy(() => import('./pages/main'));
 // const SearchList = React.lazy(() => import('./pages/searchList'));
 // const Card = React.lazy(() => import('./components/common/Card'));
 // const PlaceDetail = React.lazy(() => import('./pages/placeDetail'));
+Modal.setAppElement('#root');
 
 function App() {
   return (

@@ -10,8 +10,10 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 //  import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import MapModal from './MapModal';
 
 interface IAccommodations {
+  id: 0;
   accommodationName: string;
   latitude: number;
   longitude: number;
@@ -42,6 +44,7 @@ interface RoomList {
 export const PlaceDetail: React.FC = () => {
   // const { id } = useParams();
   const [accommodations, setAccommodations] = useState<IAccommodations>({
+    id: 0,
     accommodationName: '',
     latitude: 0,
     longitude: 0,
@@ -66,9 +69,18 @@ export const PlaceDetail: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  const openModal = () => {
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
 
   const getData = async () => {
-    axios.get(`/accommodations/1`).then((res) => {
+    axios.get(`/accommodations/id`).then((res) => {
       setAccommodations(res.data[0]);
       setIsLoading(false);
     });
@@ -116,10 +128,12 @@ export const PlaceDetail: React.FC = () => {
           />
         </StyledMainTitle>
 
-        <StyledLocation>
+        <StyledLocation onClick={openModal}>
           숙소 위치 보기
           <MdPlace />
         </StyledLocation>
+        <MapModal isOpen={modalIsOpen} onRequestClose={closeModal} />
+
         <StyledDescription>{accommodations.addressCode}</StyledDescription>
         <StyledDescription> {accommodations.phoneNumber}</StyledDescription>
         <StyledLine />
