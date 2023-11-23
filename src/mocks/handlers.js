@@ -5,11 +5,12 @@ export const handlers = [
     //숙소 타입
     return HttpResponse.json([
       {
-        accommodationName: '롯데호텔', //string
-        latitude: 30.5, // number
-        longitude: 30.2, // number
-        addressCode: '경기도 고양시 일산동구', //string
-        phoneNumber: '01039966042', //string, 여기서의 phone number는 숙소 번호?
+        id: 1, //백엔드에 추가요청
+        accommodationName: '롯데호텔',
+        latitude: 30.5,
+        longitude: 30.2,
+        addressCode: '서울특별시 송파구 올림픽로 300',
+        phoneNumber: '02-020-2021',
         accommodationImageList: [
           //호텔 사진 여러장
           {
@@ -22,29 +23,28 @@ export const handlers = [
           {
             id: 1,
             type: 'deluxe',
-            price: 3000000,
+            originalPrice: 3000000,
+            salePrice: 2400000, //백엔드에 추가요청
             capacity: 3,
             maxCapacity: 4,
-            checkIn: '2023-11-16T01:44:54.366046',
-            checkOut: '2023-11-16T01:44:54.366046',
+            checkIn: '13:00', //백엔드에 수정요청
+            checkOut: '18:00', //백엔드에 수정요청
             stock: 4,
-            roomImageList: [
-              {
-                id: 1,
-                url: 'https://yaimg.yanolja.com/v5/2023/11/14/10/640/65534a484efab3.93517110.jpg',
-              },
-            ],
+            imageUrl:
+              'https://yaimg.yanolja.com/v5/2023/11/14/10/640/65534a484efab3.93517110.jpg', //백엔드에 수정요청
           },
           {
             id: 2,
             type: 'premium',
-            price: 500000,
+            originalPrice: 58000,
+            salePrice: 34000, //백엔드에 추가요청
             capacity: 2,
             maxCapacity: 4,
-            checkIn: '2023-11-16T01:44:54.366046',
-            checkOut: '2023-11-16T01:44:54.366046',
+            checkIn: '13:00',
+            checkOut: '18:00',
             stock: 0,
-            roomImageList: [],
+            imageUrl:
+              'https://yaimg.yanolja.com/v5/2023/11/14/10/640/65534a484efab3.93517110.jpg',
           },
         ],
       },
