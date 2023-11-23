@@ -4,7 +4,8 @@ import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
 import { priceAState } from 'recoil/searchList';
 import { priceBState } from 'recoil/searchList';
-import { useRecoilState } from 'recoil';
+import { isCheckedPriceState } from 'recoil/searchList';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { useState } from 'react';
 import styled from 'styled-components';
 import { theme } from '@styles/theme';
@@ -29,6 +30,7 @@ export default function PriceSlider({
   // priceA가 200000원이면 A는 20만원
   const [priceA, setPriceA] = useRecoilState(priceAState);
   const [priceB, setPriceB] = useRecoilState(priceBState);
+  const setIsCheckedPrice = useSetRecoilState(isCheckedPriceState);
 
   const [A, setA] = useState(priceA / 10000);
   const [B, setB] = useState(priceB / 10000);
@@ -36,6 +38,8 @@ export default function PriceSlider({
   const handleFilter = () => {
     setPriceA(A * 10000);
     setPriceB(B * 10000);
+    setIsCheckedPrice(true);
+
     closeModal();
   };
 

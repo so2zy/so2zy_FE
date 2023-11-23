@@ -4,7 +4,10 @@ import { Item } from '@components/common/Item';
 import { useEffect, useState } from 'react';
 import { ReactComponent as SortUp } from '@assets/images/sort-up.svg';
 import { ReactComponent as SortDown } from '@assets/images/sort-down.svg';
+import { ReactComponent as Check } from '@assets/images/check.svg';
 import { Modal } from '@components/Modal';
+import { isCheckedPriceState } from 'recoil/searchList';
+
 import { priceAState } from 'recoil/searchList';
 import { priceBState } from 'recoil/searchList';
 import { useRecoilValue } from 'recoil';
@@ -17,6 +20,7 @@ interface Hotel {
   regularPrice: number;
   discountPrice: number;
   salesCount: number;
+  isAvailable: boolean;
 }
 
 export const SearchList: React.FC = () => {
@@ -24,8 +28,10 @@ export const SearchList: React.FC = () => {
   const [sortBy, setSortBy] = useState('가격순');
   const [sortOrder, setSortOrder] = useState('asc');
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isCheckedReservation, setIsCheckedReservation] = useState(false);
   const priceA = useRecoilValue(priceAState);
   const priceB = useRecoilValue(priceBState);
+  const isCheckedPrice = useRecoilValue(isCheckedPriceState);
 
   const shortenPrice = (price: number) => {
     if (price === 0) {
@@ -62,8 +68,13 @@ export const SearchList: React.FC = () => {
       .then((res) => res.json())
       .then((data: Hotel[]) => {
         const filteredData = data.filter((hotel) => {
-          console.log('priceA', priceA);
-          return hotel.discountPrice >= priceA && hotel.discountPrice <= priceB;
+          // 가격 필터링
+          const isPriceInRange =
+            hotel.discountPrice >= priceA && hotel.discountPrice <= priceB;
+          // 예약가능 여부 필터링
+          const isAvailable = isCheckedReservation ? hotel.isAvailable : true;
+
+          return isPriceInRange && isAvailable;
         });
 
         const sortedData = filteredData.sort((a, b) => {
@@ -87,7 +98,7 @@ export const SearchList: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, [sortBy, sortOrder, priceA, priceB]);
+  }, [sortBy, sortOrder, priceA, priceB, isCheckedReservation]);
 
   return (
     <div>
@@ -95,10 +106,19 @@ export const SearchList: React.FC = () => {
         <StyledFilter>
           <StyledDateRange>날짜 범위</StyledDateRange>
           <StyledPeopleRange>인원수 범위</StyledPeopleRange>
-          <StyledPriceRange onClick={openModal}>
+          <StyledPriceRange onClick={openModal} $isChecked={isCheckedPrice}>
             {shortenPrice(priceA)}만원 ~ {shortenPrice(priceB)}만원
           </StyledPriceRange>
-          <StyledReservation>예약가능여부</StyledReservation>
+          <StyledReservationButton
+            onClick={() => {
+              setIsCheckedReservation(!isCheckedReservation);
+            }}
+          >
+            <StyledCheck $isChecked={isCheckedReservation} />
+            <StyledReservation $isChecked={isCheckedReservation}>
+              예약가능
+            </StyledReservation>
+          </StyledReservationButton>
         </StyledFilter>
         <StyledSort>
           <StyledPriceButton
@@ -214,22 +234,40 @@ const StyledPeopleRange = styled.div`
   background-color: ${theme.colors.blue};
   color: white;
 `;
-const StyledPriceRange = styled.div`
+const StyledPriceRange = styled.div<{ $isChecked: boolean }>`
   border: 0.5px solid ${theme.colors.gray2};
   border-radius: 0.5rem;
   cursor: pointer;
   padding: 0.5rem 0.5rem 0.25rem;
   background-color: ${theme.colors.blue};
   color: white;
+  font-weight: ${(props) => (props.$isChecked ? 'bold' : 'normal')};
 `;
-const StyledReservation = styled.div`
+const StyledReservationButton = styled.div`
   border: 0.5px solid ${theme.colors.gray2};
   border-radius: 0.5rem;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 0.5rem 0.5rem 0.25rem;
+
   background-color: ${theme.colors.blue};
   color: white;
 `;
+const StyledReservation = styled.div<{ $isChecked: boolean }>`
+  font-weight: ${(props) => (props.$isChecked ? 'bold' : 'normal')};
+`;
+
+const StyledCheck = styled(Check)<{ $isChecked: boolean }>`
+  display: ${(props) => (props.$isChecked ? 'block' : 'none')};
+  fill: ${(props) =>
+    props.$isChecked ? props.theme.colors.navy : 'transparent'};
+  margin-right: 0.2rem;
+  width: 1rem;
+  height: 1rem;
+`;
+
 const StyledPriceButton = styled.div`
   display: flex;
   align-items: center;

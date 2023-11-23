@@ -11,7 +11,7 @@ interface ModalProps {
 
 const customStyles = {
   content: {
-    top: '32%',
+    top: '50%',
     left: '50%',
     right: 'auto',
     bottom: 'auto',
