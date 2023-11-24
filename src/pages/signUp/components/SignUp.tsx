@@ -147,16 +147,22 @@ export const SignUp: React.FC = () => {
       join({ email, pw, userName });
     }
   };
+
   const handleEmailCheck = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     emailCheck({ email });
     setEmailCheckClicked(true);
     // checkIdDuplication(email);
   };
+
+  const handleLogoClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    navigate('/');
+  };
   return isSignUp ? null : (
     <>
       <StyledNoHeaderWrap>
-        <StyledMainLogoTwo>
+        <StyledMainLogoTwo onClick={handleLogoClick}>
           <img src={MainTwoIcon} />
         </StyledMainLogoTwo>
         <StyledSignUpWrap>
