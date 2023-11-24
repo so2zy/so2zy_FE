@@ -74,7 +74,7 @@ export const PlaceDetail: React.FC = () => {
   const [modalLongitude, setModalLongitude] = useState<number>(0);
 
   const openModal = (latitude: number, longitude: number) => {
-    console.log(latitude, longitude);
+    //console.log(latitude, longitude);
     setModalLatitude(latitude);
     setModalLongitude(longitude);
     setModalIsOpen(true);
