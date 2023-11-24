@@ -273,7 +273,7 @@ const StyledImg = styled.img`
 
 //객실 이미지
 const StyledDetailImg = styled.img`
-  padding: 0
+  padding: 0;
   width: 45%;
   height: 100%;
   background-color: ${theme.colors.gray2};

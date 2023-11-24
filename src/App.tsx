@@ -11,6 +11,7 @@ import { theme } from '@styles/theme';
 import { Card } from '@components/common/Card';
 import { PlaceDetail } from './pages/placeDetail/components/PlaceDetail.page';
 import Modal from 'react-modal';
+import Reservation from 'pages/reservation';
 
 const Main = React.lazy(() => import('./pages/main'));
 // const SearchList = React.lazy(() => import('./pages/searchList'));
@@ -65,6 +66,14 @@ function App() {
                 element={
                   <Card>
                     <PlaceDetail />
+                  </Card>
+                }
+              />
+              <Route
+                path="/reservation"
+                element={
+                  <Card>
+                    <Reservation />
                   </Card>
                 }
               />
