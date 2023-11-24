@@ -7,23 +7,15 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { RecoilRoot } from 'recoil';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement,
-);
-
 const queryClient = new QueryClient();
 
-async function enableMocking() {
-  if (process.env.NODE_ENV !== 'development') {
-    return;
-  }
-
-  const { worker } = await import('./mocks/browsers');
+async function deferRender() {
+  const { worker } = await import('./mocks/browsers.js');
   return worker.start();
 }
 
-enableMocking().then(() => {
-  root.render(
+deferRender().then(() => {
+  ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
         <RecoilRoot>
