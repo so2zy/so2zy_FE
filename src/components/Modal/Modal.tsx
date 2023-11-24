@@ -48,7 +48,7 @@ const ModalComponent: React.FC<ModalProps> = ({ isOpen, closeModal }) => {
   const dynamicStyles = {
     content: {
       ...customStyles.content,
-      height: isClickedCalendar ? '57.5%' : isClickedMap ? '75% ' : '35%',
+      height: isClickedCalendar ? '57.5%' : isClickedMap ? '67.5% ' : '35%',
       width: isClickedMap ? '45%' : '25%',
     },
     overlay: {
