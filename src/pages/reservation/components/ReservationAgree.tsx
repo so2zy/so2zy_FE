@@ -14,11 +14,11 @@ const ReservationAgree = () => {
           </CheckboxContainer>
           <CheckboxContainer>
             <Checkbox />
-            <CheckboxText>[필수]개인정보 제 3자 제공</CheckboxText>
+            <CheckboxText>[필수]만 14세 이상 이용 동의</CheckboxText>
           </CheckboxContainer>
           <CheckboxContainer>
             <Checkbox />
-            <CheckboxText>[필수]개인정보 제 3자 제공</CheckboxText>
+            <CheckboxText>[필수]개인정보 수집 및 이용</CheckboxText>
           </CheckboxContainer>
           <StyledPayText>
             <span>※ 이용규칙, 취소 및 환불 규칙</span>에 동의하실 경우
@@ -35,6 +35,8 @@ const StyledWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-left: 0.4rem;
+  margin-top: 2rem;
   /* border: 1px solid black; */
 `;
 
@@ -67,4 +69,5 @@ const CheckboxContainer = styled.div`
 const CheckboxText = styled.p`
   line-height: 2.65rem;
   font-weight: bold;
+  font-size: 0.95rem;
 `;
