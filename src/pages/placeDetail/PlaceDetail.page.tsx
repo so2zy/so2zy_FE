@@ -20,7 +20,7 @@ interface IAccommodations {
   addressCode: string;
   phoneNumber: string;
   accommodationImageList: ImageList[];
-  roomList: RoomList[];
+  roomInfoList: RoomList[];
 }
 
 interface ImageList {
@@ -31,14 +31,13 @@ interface ImageList {
 interface RoomList {
   id: number;
   type: string;
-  originalPrice: number;
-  salePrice: number;
+  price: number;
   capacity: number;
   maxCapacity: number;
   checkIn: string;
   checkOut: string;
   stock: number;
-  imageUrl: string;
+  url: string;
 }
 
 export const PlaceDetail: React.FC = () => {
@@ -51,18 +50,17 @@ export const PlaceDetail: React.FC = () => {
     addressCode: '',
     phoneNumber: '',
     accommodationImageList: [{ id: 0, url: '' }],
-    roomList: [
+    roomInfoList: [
       {
         id: 0,
         type: '',
-        originalPrice: 0,
-        salePrice: 0,
+        price: 0,
         capacity: 0,
         maxCapacity: 0,
         checkIn: '',
         checkOut: '',
         stock: 0,
-        imageUrl: '',
+        url: '',
       },
     ],
   });
@@ -74,7 +72,7 @@ export const PlaceDetail: React.FC = () => {
   const [modalLongitude, setModalLongitude] = useState<number>(0);
 
   const openModal = (latitude: number, longitude: number) => {
-    //console.log(latitude, longitude);
+    console.log(latitude, longitude);
     setModalLatitude(latitude);
     setModalLongitude(longitude);
     setModalIsOpen(true);
@@ -84,17 +82,20 @@ export const PlaceDetail: React.FC = () => {
     setModalIsOpen(false);
   };
 
-  const getData = async () => {
-    axios.get(`/accommodations/${id}`).then((res) => {
-      console.log(`get test ${id}`);
-      setAccommodation(res.data); //테스트 -> 이제 이거 수정
-      console.log(res.data);
-      setIsLoading(false);
-    });
+  const getData = async (id: any) => {
+    axios
+      .get(`http://43.202.50.38:8080/v1/accommodations/${id}`)
+      .then((res) => {
+        console.log(`get test ${id}`);
+        setAccommodation(res.data);
+        console.log(res.data);
+        setIsLoading(false);
+      });
   };
 
   useEffect(() => {
-    getData();
+    console.log(`get test ${id}`);
+    getData(id);
   }, [isLoading]);
 
   useEffect(() => {
@@ -155,9 +156,9 @@ export const PlaceDetail: React.FC = () => {
         <StyledLine />
 
         <StyledSubCategory>객실 선택</StyledSubCategory>
-        {accommodation.roomList.map((room) => (
+        {accommodation.roomInfoList.map((room) => (
           <StyledSubContainer key={room.id}>
-            <StyledDetailImg src={room.imageUrl} />
+            <StyledDetailImg src={room.url} />
             <StyledDetail>
               <StyledWrapper>
                 <StyledRoomTitle>{room.type}</StyledRoomTitle>
@@ -170,8 +171,8 @@ export const PlaceDetail: React.FC = () => {
               <StyledCapacity>
                 ({room.capacity}명 기준/최대 {room.maxCapacity}명)
               </StyledCapacity>
-              <StyledRealPrice>{room.originalPrice}원</StyledRealPrice>
-              <StyledSalePrice> {room.salePrice}원</StyledSalePrice>
+              <StyledRealPrice>{room.price}원</StyledRealPrice>
+              <StyledSalePrice> {room.price}원</StyledSalePrice>
               {room.stock === 0 ? (
                 <StyledNoStock>예약불가</StyledNoStock>
               ) : (
