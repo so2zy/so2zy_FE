@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { theme } from '@styles/theme';
 import { useEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
+import { useState } from 'react';
 declare global {
   interface Window {
     kakao: any;
@@ -19,21 +20,22 @@ const MapBox: React.FC = () => {
     };
 
     const map = new window.kakao.maps.Map(container, options);
+
     const positions = [
       {
-        content: '카카오',
+        name: '카카오',
         latlng: new window.kakao.maps.LatLng(33.450705, 126.570677),
       },
       {
-        content: '생태',
+        name: '생태',
         latlng: new window.kakao.maps.LatLng(33.450936, 126.569477),
       },
       {
-        content: '텃밭',
+        name: '텃밭',
         latlng: new window.kakao.maps.LatLng(33.450879, 126.56994),
       },
       {
-        content: '근린',
+        name: '근린',
         latlng: new window.kakao.maps.LatLng(33.451393, 126.570738),
       },
     ];
@@ -56,7 +58,8 @@ const MapBox: React.FC = () => {
             marginTop: '40px',
           }}
         >
-          {positions[i].content}
+          <div>{positions[i].name}</div>
+          <div>{positions[i].name}</div>
         </div>,
       );
 
@@ -70,7 +73,13 @@ const MapBox: React.FC = () => {
         position: marker.getPosition(),
       });
 
-      overlay.setMap(map);
+      overlay.setMap(null);
+      window.kakao.maps.event.addListener(marker, 'mouseover', function () {
+        overlay.setMap(map);
+      });
+      window.kakao.maps.event.addListener(marker, 'mouseout', function () {
+        overlay.setMap(null);
+      });
     }
   }, [latitude, longitude]);
 
