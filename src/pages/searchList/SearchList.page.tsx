@@ -20,6 +20,8 @@ import {
   endDateState,
 } from 'recoil/searchList';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 
 interface Hotel {
   id: number;
@@ -91,6 +93,23 @@ export const SearchList: React.FC = () => {
       setSortOrder('asc');
     }
   };
+
+  // const fetchRealData = () =>
+  //   axios
+  //     .get('http://43.202.50.38:8080/v1/accommodations')
+  //     .then((res) => res.data);
+
+  // const { data, error, isLoading } = useQuery({
+  //   queryKey: ['accommodations'],
+  //   queryFn: fetchRealData,
+  // });
+  // if (error) {
+  //   console.log('error', error);
+  // }
+  // if (isLoading) {
+  //   console.log('isLoading', isLoading);
+  // }
+  // console.log('data', data);
 
   const fetchData = () => {
     fetch('/api/searchList')
