@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import MapModal from './MapModal';
+import MapModal from './components/MapModal';
 
 interface IAccommodations {
   id: number;
@@ -204,7 +204,6 @@ const StyledSubContainer = styled.div`
 
 // 이미지 밑 이름
 const StyledMainTitle = styled.div`
-  display: inline-block;
   font-size: ${theme.fonts.subtitle3.fontSize};
   font-weight: ${theme.fonts.subtitle1.fontWeight};
   display: flex;
@@ -273,7 +272,7 @@ const StyledImg = styled.img`
 
 //객실 이미지
 const StyledDetailImg = styled.img`
-  padding: 0
+  padding: 0;
   width: 45%;
   height: 100%;
   background-color: ${theme.colors.gray2};
@@ -285,8 +284,7 @@ const StyledDetailImg = styled.img`
 const StyledDetail = styled.div`
   padding: 1rem 0 0 1rem;
   width: 55%;
-  height: 100%;
-  background-color: ${theme.colors.gray3};
+
   border-radius: 0 8px 8px 0;
   display: flex;
   flex-direction: column;

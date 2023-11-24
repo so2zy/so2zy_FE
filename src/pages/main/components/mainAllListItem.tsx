@@ -8,6 +8,7 @@ import {
   getAllProduct,
   noProduct,
 } from './getPlaces';
+// import { useInfiniteQuery } from '@tanstack/react-query';
 
 const MainAllListItem = ({ title }: MainListProps) => {
   const { data } = useQuery<MainItemProps[]>({
@@ -15,7 +16,26 @@ const MainAllListItem = ({ title }: MainListProps) => {
     queryFn: title === '전체 숙소 보기' ? getAllProduct : noProduct,
     refetchInterval: 1000,
   });
+  // const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  //   useInfiniteQuery<MainItemProps[]>({
+  //     queryKey = [title],
+  //     queryFn: ({ pageParam = 1 }) =>
+  //       title === '전체 숙소 보기'
+  //         ? getAllProduct(pageParam)
+  //         : noProduct(pageParam),
+  //     getNextPageParam: (lastPage, allPages) => {
+  //       const totalItems = allPages.flat().length;
+  //       return totalItems < lastPage.totalCount
+  //         ? allPages.length + 1
+  //         : undefined;
+  //     },
+  //   });
 
+  //   const handleLoadMore = () => {
+  //     if (hasNextPage && !isFetchingNextPage) {
+  //       fetchNextPage();
+  //     }
+  //   };
   return (
     <StyledWraaper>
       {data &&
