@@ -297,7 +297,7 @@ const StyledSort = styled.div`
   gap: 0.5rem;
 `;
 
-const StyledDateRangeButton = styled.div<{ $isChecked: boolean }>`
+const StyledDateRangeButton = styled.button<{ $isChecked: boolean }>`
   border: 0.5px solid ${theme.colors.gray2};
   border-radius: 0.5rem;
   cursor: pointer;
@@ -306,7 +306,7 @@ const StyledDateRangeButton = styled.div<{ $isChecked: boolean }>`
   color: white;
   font-weight: ${(props) => (props.$isChecked ? 'bold' : 'normal')};
 `;
-const StyledPeopleRangeButton = styled.div<{ $isChecked: boolean }>`
+const StyledPeopleRangeButton = styled.button<{ $isChecked: boolean }>`
   border: 0.5px solid ${theme.colors.gray2};
   border-radius: 0.5rem;
   cursor: pointer;
@@ -316,7 +316,7 @@ const StyledPeopleRangeButton = styled.div<{ $isChecked: boolean }>`
   font-weight: ${(props) => (props.$isChecked ? 'bold' : 'normal')};
 `;
 
-const StyledPriceRangeButton = styled.div<{ $isChecked: boolean }>`
+const StyledPriceRangeButton = styled.button<{ $isChecked: boolean }>`
   border: 0.5px solid ${theme.colors.gray2};
   border-radius: 0.5rem;
   cursor: pointer;
@@ -325,7 +325,7 @@ const StyledPriceRangeButton = styled.div<{ $isChecked: boolean }>`
   color: white;
   font-weight: ${(props) => (props.$isChecked ? 'bold' : 'normal')};
 `;
-const StyledReservationButton = styled.div`
+const StyledReservationButton = styled.button`
   border: 0.5px solid ${theme.colors.gray2};
   border-radius: 0.5rem;
   cursor: pointer;
@@ -350,7 +350,7 @@ const StyledCheck = styled(Check)<{ $isChecked: boolean }>`
   height: 1rem;
 `;
 
-const StyledPriceButton = styled.div`
+const StyledPriceButton = styled.button`
   display: flex;
   align-items: center;
   padding: 0.2rem 0.5rem 0;
@@ -367,7 +367,7 @@ const StyledPrice = styled.div`
   margin-right: 0.1rem;
 `;
 
-const StyledSalesButton = styled.div`
+const StyledSalesButton = styled.button`
   display: flex;
   align-items: center;
   padding: 0.2rem 0.5rem 0;

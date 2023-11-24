@@ -172,6 +172,7 @@ const StyledHeaderRegion = styled.div`
   margin-left: 4rem;
   font-size: 2rem;
   font-weight: 800;
+  padding: 0.375rem 0 0;
 `;
 
 const StyledHeaderSearchBar = styled.input`

@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import './App.css';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import SearchList from './pages/searchList';
+import RegionList from 'pages/regionList';
 import { Header } from '@components/common/Header';
 import SignUp from 'pages/signUp';
 import SignIn from 'pages/signIn';
@@ -54,6 +55,15 @@ function App() {
                   <>
                     <Header />
                     <SearchList />
+                  </>
+                }
+              />
+              <Route
+                path="/regionList"
+                element={
+                  <>
+                    <Header />
+                    <RegionList />
                   </>
                 }
               />
