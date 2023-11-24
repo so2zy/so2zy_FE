@@ -4,14 +4,14 @@ import styled from 'styled-components';
 const ReservationBtn = () => {
   return (
     <StyledWrapper>
-      <StyledBtnText>결제하기</StyledBtnText>
+      <StyledBtnText>78,500원 결제하기</StyledBtnText>
     </StyledWrapper>
   );
 };
 
 export default ReservationBtn;
 
-const StyledWrapper = styled.div`
+export const StyledWrapper = styled.div`
   width: 48rem;
   margin: 2rem auto 1rem auto;
   border: 1px solid black;
@@ -28,7 +28,7 @@ const StyledWrapper = styled.div`
   }
 `;
 
-const StyledBtnText = styled.p`
+export const StyledBtnText = styled.p`
   color: #fff;
   font-weight: bold;
 `;

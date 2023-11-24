@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 const ReservationAgree = () => {
   return (
-    <StyledWrapper>
+    <StyledRuleWrapper>
       <StyledEssentialTerms>
         <span>필수 약관 동의</span>
         <StyledEssentialCheckList>
@@ -26,12 +26,12 @@ const ReservationAgree = () => {
           </StyledPayText>
         </StyledEssentialCheckList>
       </StyledEssentialTerms>
-    </StyledWrapper>
+    </StyledRuleWrapper>
   );
 };
 export default ReservationAgree;
 
-const StyledWrapper = styled.div`
+export const StyledRuleWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -40,7 +40,7 @@ const StyledWrapper = styled.div`
   /* border: 1px solid black; */
 `;
 
-const StyledEssentialTerms = styled.div`
+export const StyledEssentialTerms = styled.div`
   /* border: 1px solid black; */
   margin: 2rem;
   text-align: start;
@@ -51,9 +51,9 @@ const StyledEssentialTerms = styled.div`
   }
 `;
 
-const StyledEssentialCheckList = styled.div``;
+export const StyledEssentialCheckList = styled.div``;
 
-const StyledPayText = styled.p`
+export const StyledPayText = styled.p`
   text-align: start;
   margin-left: 0.75rem;
   span {
@@ -62,11 +62,11 @@ const StyledPayText = styled.p`
   }
 `;
 
-const CheckboxContainer = styled.div`
+export const CheckboxContainer = styled.div`
   display: flex;
 `;
 
-const CheckboxText = styled.p`
+export const CheckboxText = styled.p`
   line-height: 2.65rem;
   font-weight: bold;
   font-size: 0.95rem;
