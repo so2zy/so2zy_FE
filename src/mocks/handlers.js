@@ -245,6 +245,7 @@ export const handlers = [
         discountPrice: 150000,
         salesCount: 38,
         isAvailable: true,
+        peopleCount: 6,
       },
       {
         id: 2,
@@ -255,6 +256,7 @@ export const handlers = [
         discountPrice: 170000,
         salesCount: 15,
         isAvailable: true,
+        peopleCount: 1,
       },
       {
         id: 3,
@@ -265,6 +267,7 @@ export const handlers = [
         discountPrice: 630000,
         salesCount: 89,
         isAvailable: false,
+        peopleCount: 5,
       },
       {
         id: 4,
@@ -275,6 +278,7 @@ export const handlers = [
         discountPrice: 410000,
         salesCount: 44,
         isAvailable: true,
+        peopleCount: 4,
       },
       {
         id: 5,
@@ -285,6 +289,7 @@ export const handlers = [
         discountPrice: 840000,
         salesCount: 61,
         isAvailable: false,
+        peopleCount: 3,
       },
       {
         id: 6,
@@ -295,6 +300,7 @@ export const handlers = [
         discountPrice: 290000,
         salesCount: 3,
         isAvailable: false,
+        peopleCount: 5,
       },
       {
         id: 7,
@@ -305,6 +311,7 @@ export const handlers = [
         discountPrice: 550000,
         salesCount: 50,
         isAvailable: true,
+        peopleCount: 1,
       },
       {
         id: 8,
@@ -315,6 +322,7 @@ export const handlers = [
         discountPrice: 70000,
         salesCount: 97,
         isAvailable: true,
+        peopleCount: 11,
       },
       {
         id: 9,
@@ -325,6 +333,7 @@ export const handlers = [
         discountPrice: 120000,
         salesCount: 72,
         isAvailable: true,
+        peopleCount: 6,
       },
     ]);
   }),
@@ -340,5 +349,84 @@ export const handlers = [
       },
       { status: 201 },
     );
+  }),
+  http.get('/api/main/selectregion', () => {
+    return HttpResponse.json([
+      {
+        id: 'Seoul',
+        name: '서울',
+        regions: [
+          '강남/역삼/삼성',
+          '신사/청담/압구정',
+          '서초/교대/사당',
+          '잠실/송파/강동',
+          '을지로/명동/중구/동대문',
+          '서울역/이태원/용산',
+          '종로/인사동',
+          '홍대/합정/마포/서대문',
+          '영등포역',
+          '구로/신도림/금천',
+          '김포공항/염창/강서',
+          '건대입구/성수/왕십리',
+          '성북/강북/노원/도봉',
+        ],
+      },
+      {
+        id: 'Busan',
+        name: '부산',
+        regions: [
+          '해운대/마린시티',
+          '벡스코/센텀시티',
+          '송정/기장/정관',
+          '광안리/경성대',
+          '부산역',
+          '자갈치/남포동/영도',
+          '송도/다대포',
+          '서면/연산/범일',
+        ],
+      },
+      {
+        id: 'GyeongGi',
+        name: '경기',
+        regions: [
+          '오산/평택',
+          '용인/동탄',
+          '남양주/구리/성남/분당',
+          '이천/광주/여주/하남',
+          '부천/광명/시흥/안산',
+          '수원/화성',
+        ],
+      },
+      {
+        id: 'InCheon',
+        name: '인천',
+        regions: [''],
+      },
+      {
+        id: 'GangWon',
+        name: '강원',
+        regions: [''],
+      },
+      {
+        id: 'ChongCheong',
+        name: '충청',
+        regions: [''],
+      },
+      {
+        id: 'JeonRa',
+        name: '전라',
+        regions: [''],
+      },
+      {
+        id: 'GyeongSang',
+        name: '경상',
+        regions: [''],
+      },
+      {
+        id: 'JeJu',
+        name: '제주',
+        regions: [''],
+      },
+    ]);
   }),
 ];
