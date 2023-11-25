@@ -18,10 +18,16 @@ import {
   priceBState,
   startDateState,
   endDateState,
+  searchInputState,
 } from 'recoil/searchList';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { useQuery } from '@tanstack/react-query';
-import { getSearchList, getSortList, nullData } from './getData';
+import {
+  getSearchList,
+  getSortList,
+  getNameFilterList,
+  nullData,
+} from './getData';
 
 interface Hotel {
   id: number;
@@ -54,6 +60,7 @@ export const SearchListReal: React.FC = () => {
   const endDate = useRecoilValue(endDateState);
   const [date, setDate] = useState('');
   const [title, setTitle] = useState('검색결과');
+  const searchedName = useRecoilValue(searchInputState); // 검색한 이름
 
   const shortenPrice = (price: number) => {
     if (price === 0) {
@@ -122,6 +129,15 @@ export const SearchListReal: React.FC = () => {
     queryFn: () => getSortList('desc', 'price'),
     enabled: false,
   });
+  const { data: filterNameData, refetch: filterNameRefetch } = useQuery({
+    queryKey: ['filterNameData'],
+    queryFn: () => getNameFilterList(searchedName),
+    enabled: false,
+  });
+
+  useEffect(() => {
+    filterNameRefetch();
+  }, [searchedName]);
 
   const fetchData = () => {
     fetch('/api/searchList')
@@ -291,6 +307,23 @@ export const SearchListReal: React.FC = () => {
         </StyledContainer>
       )}
       {sortDescData && (
+        <StyledContainer>
+          {hotels.map((hotel) => {
+            return (
+              <Item
+                key={hotel.id}
+                name={hotel.name}
+                // image={hotel.image}
+                favorites={hotel.favorites}
+                regularPrice={hotel.regularPrice}
+                discountPrice={hotel.discountPrice}
+                // salesCount={hotel.salesCount}
+              />
+            );
+          })}
+        </StyledContainer>
+      )}
+      {filterNameData && (
         <StyledContainer>
           {hotels.map((hotel) => {
             return (

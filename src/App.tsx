@@ -59,15 +59,7 @@ function App() {
                   </>
                 }
               />
-              <Route
-                path="/searchListReal"
-                element={
-                  <>
-                    <Header />
-                    <SearchListReal />
-                  </>
-                }
-              />
+              <Route path="/searchListReal" element={<SearchListReal />} />
               <Route
                 path="/searchList"
                 element={

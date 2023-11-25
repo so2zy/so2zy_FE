@@ -6,15 +6,31 @@ import HomeIcon from '@assets/home.png';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BsArrowLeft } from 'react-icons/bs';
+import { useSetRecoilState } from 'recoil';
+import { searchInputState } from '@recoil/searchList';
 
 const Header = () => {
   const userName = '채민석';
   const [login, setLogin] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+  const [localSearchInput, setLocalSearchInput] = useState('');
+  const setSearchInput = useSetRecoilState(searchInputState);
 
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalSearchInput(event.target.value);
+  };
+
+  const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      setSearchInput(localSearchInput);
+      setLocalSearchInput('');
+    }
+  };
   const isSearchPage =
-    location.pathname === '/' || location.pathname === '/searchList';
+    location.pathname === '/' ||
+    location.pathname === '/searchlist' ||
+    location.pathname === '/searchlistreal';
   const isReservedPage = ['/reservation', '/confirm', '/cart'].includes(
     location.pathname,
   );
@@ -89,7 +105,12 @@ const Header = () => {
               </StyledHeaderMainLogo>
             )}
             {isSearchPage && (
-              <StyledHeaderSearchBar placeholder="숙소를 검색해보세요" />
+              <StyledHeaderSearchBar
+                placeholder="숙소를 검색해보세요"
+                value={localSearchInput}
+                onChange={handleInputChange}
+                onKeyPress={handleEnterPress}
+              />
             )}
 
             <StyledHeaderRight>
