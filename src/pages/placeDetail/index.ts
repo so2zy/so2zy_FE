@@ -1,3 +1,3 @@
-import { PlaceDetail } from './components/PlaceDetail.page';
+import { PlaceDetail } from './PlaceDetail.page';
 
 export { PlaceDetail };

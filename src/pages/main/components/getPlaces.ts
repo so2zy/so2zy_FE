@@ -11,6 +11,8 @@ export interface MainItemProps {
   price: string;
   saleprice?: string;
   image: string;
+  islast?: boolean;
+  page?: number;
 }
 
 export interface RegionSelectProps {

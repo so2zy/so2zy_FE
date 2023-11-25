@@ -9,8 +9,11 @@ import { GlobalStyle } from './styles/globalStyles';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@styles/theme';
 import { Card } from '@components/common/Card';
-import { PlaceDetail } from './pages/placeDetail/components/PlaceDetail.page';
+import { PlaceDetail } from './pages/placeDetail/PlaceDetail.page';
 import Modal from 'react-modal';
+import Reservation from 'pages/reservation';
+import Cart from 'pages/cart';
+import Confirm from 'pages/confirm';
 
 const Main = React.lazy(() => import('./pages/main'));
 // const SearchList = React.lazy(() => import('./pages/searchList'));
@@ -65,6 +68,30 @@ function App() {
                 element={
                   <Card>
                     <PlaceDetail />
+                  </Card>
+                }
+              />
+              <Route
+                path="/reservation"
+                element={
+                  <Card>
+                    <Reservation />
+                  </Card>
+                }
+              />
+              <Route
+                path="/cart" //:id도 받아줘야함
+                element={
+                  <Card>
+                    <Cart />
+                  </Card>
+                }
+              />
+              <Route
+                path="/confirm" //:id도 받아줘야함
+                element={
+                  <Card>
+                    <Confirm />
                   </Card>
                 }
               />
