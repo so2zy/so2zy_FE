@@ -100,35 +100,18 @@ export const SearchListReal: React.FC = () => {
       setSortBy(field);
       setSortOrder('asc');
     }
-    if (field === 'price') {
-      if (sortOrder === 'asc') {
-        sortAscRefetch();
-      } else if (sortOrder === 'desc') {
-        sortDescRefetch();
-      }
-    }
   };
 
-  // const { data: searchData } = useQuery({
-  //   queryKey: [title],
-  //   queryFn: () => {
-  //     if (title === '검색결과') {
-  //       return getSearchList();
-  //     }
-  //   },
-  //   refetchInterval: 5000,
-  // });
+  useEffect(() => {
+    sortRefetch();
+  }, [{ sortBy, sortOrder }]); // 둘 중 하나라도 변하고 실행되면 안되고, 둘 다 변하고 실행돼야함
 
-  const { data: sortAscData, refetch: sortAscRefetch } = useQuery({
-    queryKey: ['sortAscData'],
-    queryFn: () => getSortList('asc', 'price'),
+  const { data: sortData, refetch: sortRefetch } = useQuery({
+    queryKey: ['sortData'],
+    queryFn: () => getSortList(sortOrder, sortBy),
     enabled: false,
   });
-  const { data: sortDescData, refetch: sortDescRefetch } = useQuery({
-    queryKey: ['sortDescData'],
-    queryFn: () => getSortList('desc', 'price'),
-    enabled: false,
-  });
+
   const { data: filterNameData, refetch: filterNameRefetch } = useQuery({
     queryKey: ['filterNameData'],
     queryFn: () => getNameFilterList(searchedName),
@@ -268,28 +251,46 @@ export const SearchListReal: React.FC = () => {
             </StyledSortWrapper>
           </StyledPriceButton>
           <StyledSalesButton
-            onClick={() => handleSortClick('판매량')}
-            className={sortBy === '판매량' ? 'active' : ''}
+            onClick={() => handleSortClick('likeCount')}
+            className={sortBy === 'likeCount' ? 'active' : ''}
           >
-            <StyledSales>판매량</StyledSales>
+            <StyledSales>좋아요</StyledSales>
             <StyledSortWrapper>
               <StyledSortUp
                 viewBox="0 -250 320 512"
                 className={
-                  sortBy === '판매량' && sortOrder === 'asc' ? 'active' : ''
+                  sortBy === 'likeCount' && sortOrder === 'asc' ? 'active' : ''
                 }
               />
               <StyledSortDown
                 viewBox="0 250 320 512"
                 className={
-                  sortBy === '판매량' && sortOrder === 'desc' ? 'active' : ''
+                  sortBy === 'likeCount' && sortOrder === 'desc' ? 'active' : ''
                 }
               />
             </StyledSortWrapper>
           </StyledSalesButton>
         </StyledSort>
       </StyledFilterSortWrapper>
-      {sortAscData && (
+      {sortData && (
+        <StyledContainer>
+          {sortData.map((hotel: any) => {
+            return (
+              <Item
+                key={hotel.id}
+                name={hotel.name}
+                // image={hotel.image}
+                favorites={hotel.favorites}
+                regularPrice={hotel.regularPrice}
+                discountPrice={hotel.discountPrice}
+                // salesCount={hotel.salesCount}
+              />
+            );
+          })}
+        </StyledContainer>
+      )}
+
+      {/* {filterNameData && (
         <StyledContainer>
           {hotels.map((hotel) => {
             return (
@@ -305,41 +306,7 @@ export const SearchListReal: React.FC = () => {
             );
           })}
         </StyledContainer>
-      )}
-      {sortDescData && (
-        <StyledContainer>
-          {hotels.map((hotel) => {
-            return (
-              <Item
-                key={hotel.id}
-                name={hotel.name}
-                // image={hotel.image}
-                favorites={hotel.favorites}
-                regularPrice={hotel.regularPrice}
-                discountPrice={hotel.discountPrice}
-                // salesCount={hotel.salesCount}
-              />
-            );
-          })}
-        </StyledContainer>
-      )}
-      {filterNameData && (
-        <StyledContainer>
-          {hotels.map((hotel) => {
-            return (
-              <Item
-                key={hotel.id}
-                name={hotel.name}
-                // image={hotel.image}
-                favorites={hotel.favorites}
-                regularPrice={hotel.regularPrice}
-                discountPrice={hotel.discountPrice}
-                // salesCount={hotel.salesCount}
-              />
-            );
-          })}
-        </StyledContainer>
-      )}
+      )} */}
 
       {/* {searchData && (
         <StyledContainer>

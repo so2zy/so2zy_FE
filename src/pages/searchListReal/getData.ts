@@ -44,6 +44,7 @@ export const getSortList = async (orderBy: string, orderCondition: string) => {
       `/v1/accommodations?orderBy=${orderBy}&orderCondition=${orderCondition}`,
     );
     if (res) {
+      console.log('getSortList', res.data);
       return res.data;
     } else {
       console.log('정렬 불러오기 실패');
@@ -58,6 +59,7 @@ export const getNameFilterList = async (name: string) => {
   try {
     const res = await axios.get(`/v1/accommodations?name=${name}`);
     if (res) {
+      console.log('getNameFilterList', res.data);
       return res.data;
     } else {
       console.log('이름 필터링 불러오기 실패');

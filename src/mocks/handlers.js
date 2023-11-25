@@ -466,6 +466,7 @@ export const handlers = [
       },
     ]);
   }),
+
   http.post('/api/messages', async ({ request }) => {
     const authToken = request.headers.get('Authorization');
     if (!authToken)
