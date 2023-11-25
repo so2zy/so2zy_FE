@@ -20,6 +20,13 @@ import {
   endDateState,
 } from 'recoil/searchList';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useQuery } from '@tanstack/react-query';
+import {
+  getSearchList,
+  getSortAscList,
+  getSortDescList,
+  nullData,
+} from './getData';
 
 interface Hotel {
   id: number;
@@ -33,7 +40,7 @@ interface Hotel {
   peopleCount: number;
 }
 
-export const SearchList: React.FC = () => {
+export const SearchListReal: React.FC = () => {
   const [hotels, setHotels] = useState<Hotel[]>([]);
   const [sortBy, setSortBy] = useState('가격순');
   const [sortOrder, setSortOrder] = useState('asc');
@@ -51,6 +58,7 @@ export const SearchList: React.FC = () => {
   const startDate = useRecoilValue(startDateState);
   const endDate = useRecoilValue(endDateState);
   const [date, setDate] = useState('');
+  const [title, setTitle] = useState('검색결과');
 
   const shortenPrice = (price: number) => {
     if (price === 0) {
@@ -91,6 +99,42 @@ export const SearchList: React.FC = () => {
       setSortOrder('asc');
     }
   };
+
+  const { data: searchData } = useQuery({
+    queryKey: [title],
+    queryFn: () => {
+      if (title === '검색결과') {
+        return getSearchList();
+      }
+    },
+    refetchInterval: 1000,
+  });
+
+  const { data: sortAscData } = useQuery({
+    queryKey: [sortOrder, sortBy],
+    queryFn: () => {
+      if (sortOrder === 'asc' && sortBy === '가격') {
+        return getSortAscList();
+      }
+    },
+    refetchInterval: 1000,
+  });
+  const { data: sortDescData } = useQuery({
+    queryKey: [sortBy, sortOrder],
+    queryFn: () => {
+      if (sortOrder === 'desc' && sortBy === '가격') {
+        return getSortDescList();
+      }
+    },
+    refetchInterval: 1000,
+  });
+  useEffect(() => {
+    if (sortOrder === 'desc' && sortBy === '가격') {
+      console.log('sortDescData', sortDescData);
+    } else if (sortOrder === 'asc' && sortBy === '가격') {
+      console.log('sortAscData', sortAscData);
+    }
+  }, [sortOrder, sortBy]);
 
   const fetchData = () => {
     fetch('/api/searchList')
@@ -242,21 +286,58 @@ export const SearchList: React.FC = () => {
           </StyledSalesButton>
         </StyledSort>
       </StyledFilterSortWrapper>
-      <StyledContainer>
-        {hotels.map((hotel) => {
-          return (
-            <Item
-              key={hotel.id}
-              name={hotel.name}
-              // image={hotel.image}
-              favorites={hotel.favorites}
-              regularPrice={hotel.regularPrice}
-              discountPrice={hotel.discountPrice}
-              // salesCount={hotel.salesCount}
-            />
-          );
-        })}
-      </StyledContainer>
+      {sortAscData && (
+        <StyledContainer>
+          {hotels.map((hotel) => {
+            return (
+              <Item
+                key={hotel.id}
+                name={hotel.name}
+                // image={hotel.image}
+                favorites={hotel.favorites}
+                regularPrice={hotel.regularPrice}
+                discountPrice={hotel.discountPrice}
+                // salesCount={hotel.salesCount}
+              />
+            );
+          })}
+        </StyledContainer>
+      )}
+      {sortDescData && (
+        <StyledContainer>
+          {hotels.map((hotel) => {
+            return (
+              <Item
+                key={hotel.id}
+                name={hotel.name}
+                // image={hotel.image}
+                favorites={hotel.favorites}
+                regularPrice={hotel.regularPrice}
+                discountPrice={hotel.discountPrice}
+                // salesCount={hotel.salesCount}
+              />
+            );
+          })}
+        </StyledContainer>
+      )}
+      {searchData && (
+        <StyledContainer>
+          {hotels.map((hotel) => {
+            return (
+              <Item
+                key={hotel.id}
+                name={hotel.name}
+                // image={hotel.image}
+                favorites={hotel.favorites}
+                regularPrice={hotel.regularPrice}
+                discountPrice={hotel.discountPrice}
+                // salesCount={hotel.salesCount}
+              />
+            );
+          })}
+        </StyledContainer>
+      )}
+
       <Modal isOpen={modalIsOpen} closeModal={closeModal} />
     </div>
   );
