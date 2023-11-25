@@ -13,7 +13,7 @@
     }
   },
   "rules": {
-    "react/jsx-uses-vars": 0, //사용안하면 나는 에러
+    "react/jsx-uses-vars": "off", //사용안하면 나는 에러
     "react/prop-types": 0,
     "react/react-in-jsx-scope": 0,
     "@typescript-eslint/explicit-module-boundary-types": 0,
