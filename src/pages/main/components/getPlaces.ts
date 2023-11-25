@@ -18,6 +18,7 @@ export interface MainItemProps {
   image: string; // 임시
   price: number;
   saleprice: number;
+  like: boolean;
 }
 export interface ImageList {
   id: number;
@@ -93,7 +94,7 @@ export const getFavorite = async () => {
 
 export const getAllProduct = async (page: any) => {
   try {
-    const res = await axios.get(`/api/main/allItems?page=${page}`);
+    const res = await axios.get(`/api/main/allitems?page=${page}`);
     if (res) {
       console.log('전체 숙소 조회 성공');
       return res.data;

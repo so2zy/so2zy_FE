@@ -57,6 +57,7 @@ export const handlers = [
         name: '파크 하얏트 서울',
         price: '59,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: false,
       },
       {
         id: 2,
@@ -64,6 +65,7 @@ export const handlers = [
         name: '네스트 호텔',
         price: '129,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: false,
       },
       {
         id: 3,
@@ -71,6 +73,7 @@ export const handlers = [
         name: '롯데호텔 제주',
         price: '1,129,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: false,
       },
       {
         id: 4,
@@ -78,6 +81,7 @@ export const handlers = [
         name: '콘래드 서울',
         price: '149,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: false,
       },
       {
         id: 5,
@@ -85,6 +89,7 @@ export const handlers = [
         name: '강릉 씨마크 호텔',
         price: '529,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: false,
       },
       {
         id: 11,
@@ -92,6 +97,7 @@ export const handlers = [
         name: '파크 하얏트 서울',
         price: '59,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: true,
       },
       {
         id: 12,
@@ -99,6 +105,7 @@ export const handlers = [
         name: '네스트 호텔',
         price: '129,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: false,
       },
       {
         id: 13,
@@ -106,6 +113,7 @@ export const handlers = [
         name: '롯데호텔 제주',
         price: '1,129,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: true,
       },
       {
         id: 14,
@@ -113,6 +121,7 @@ export const handlers = [
         name: '콘래드 서울',
         price: '149,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: false,
       },
       {
         id: 15,
@@ -120,6 +129,7 @@ export const handlers = [
         name: '강릉 씨마크 호텔',
         price: '529,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: true,
       },
     ]);
   }),
@@ -131,6 +141,7 @@ export const handlers = [
         name: '소피텔 앰배서더',
         price: '529,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: true,
       },
       {
         id: 7,
@@ -138,13 +149,15 @@ export const handlers = [
         name: '인터컨티넨탈 ...',
         price: '529,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: false,
       },
       {
         id: 8,
         ranking: 3,
-        name: '노보텔 앰배서더 ...',
+        name: '노보텔 앰배서더 가나다 라 마바사',
         price: '529,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: true,
       },
       {
         id: 9,
@@ -152,6 +165,7 @@ export const handlers = [
         name: '파라다이스 시티',
         price: '529,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: false,
       },
       {
         id: 10,
@@ -159,6 +173,7 @@ export const handlers = [
         name: '속초 롯데리조트',
         price: '529,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: true,
       },
       {
         id: 11,
@@ -166,6 +181,7 @@ export const handlers = [
         name: '파크 하얏트 서울',
         price: '59,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: true,
       },
       {
         id: 12,
@@ -173,6 +189,7 @@ export const handlers = [
         name: '네스트 호텔',
         price: '129,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: false,
       },
       {
         id: 13,
@@ -180,6 +197,7 @@ export const handlers = [
         name: '롯데호텔 제주',
         price: '1,129,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: true,
       },
       {
         id: 14,
@@ -187,6 +205,7 @@ export const handlers = [
         name: '콘래드 서울',
         price: '149,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: false,
       },
       {
         id: 15,
@@ -194,10 +213,88 @@ export const handlers = [
         name: '강릉 씨마크 호텔',
         price: '529,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        like: true,
       },
     ]);
   }),
-  http.get('/api/main/allItems', ({ request }) => {
+  // // 무한스크롤 사용 할 목업 데이터
+  // http.get('/api/main/allitems', ({ request }) => {
+  //   const url = new URL(request.url);
+  //   const curPage = url.searchParams.get('page');
+  //   if (!curPage) {
+  //     return new HttpResponse(null, { status: 404 });
+  //   }
+
+  //   // 각 페이지의 데이터를 담을 배열
+  //   let pages = [];
+
+  //   // 페이지 1의 데이터
+  //   pages.push([
+  //     {
+  //       id: 11,
+  //       ranking: 1,
+  //       name: '소피텔',
+  //       price: '529,000원',
+  //       image: 'https://i.ibb.co/868XYvH/1.jpg',
+  //       islast: false,
+  //       page: 1,
+  //     },
+  //     {
+  //       id: 12,
+  //       ranking: 2,
+  //       name: '터컨티넨탈 ...',
+  //       price: '529,000원',
+  //       saleprice: '329,000원',
+  //       image: 'https://i.ibb.co/868XYvH/1.jpg',
+  //       islast: false,
+  //       page: 1,
+  //     },
+  //   ]);
+
+  //   // 페이지 2의 데이터
+  //   pages.push([
+  //     {
+  //       id: 13,
+  //       ranking: 3,
+  //       name: '노보텔...',
+  //       price: '529,000원',
+  //       page: 2,
+  //       islast: false,
+  //     },
+  //     {
+  //       id: 14,
+  //       ranking: 4,
+  //       name: '시티',
+  //       price: '529,000원',
+  //       page: 2,
+  //       islast: false,
+  //     },
+  //   ]);
+
+  //   // 페이지 3의 데이터
+  //   pages.push([
+  //     {
+  //       id: 15,
+  //       ranking: 5,
+  //       name: '속초',
+  //       price: '529,000원',
+  //       page: 3,
+  //       islast: true,
+  //     },
+  //     {
+  //       id: 16,
+  //       ranking: 5,
+  //       name: '강릉',
+  //       price: '529,000원',
+  //       page: 3,
+  //       islast: true,
+  //     },
+  //   ]);
+
+  //   // 전체 페이지의 데이터와 각 페이지에 해당하는 정보를 반환
+  //   return HttpResponse.json({ pages: pages, pageParams: [1, 2, 3] });
+  // }),
+  http.get('/api/main/allitems', ({ request }) => {
     const url = new URL(request.url);
     const curPage = url.searchParams.get('page');
     if (!curPage) {
@@ -207,7 +304,7 @@ export const handlers = [
       {
         id: 11,
         ranking: 1,
-        name: '소피텔 앰배서더',
+        name: '소피텔',
         price: '529,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
         islast: false,
@@ -216,7 +313,7 @@ export const handlers = [
       {
         id: 12,
         ranking: 2,
-        name: '인터컨티넨탈 ...',
+        name: '터컨티넨탈 ...',
         price: '529,000원',
         saleprice: '329,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
@@ -226,7 +323,7 @@ export const handlers = [
       {
         id: 13,
         ranking: 3,
-        name: '노보텔 앰배서더 ...',
+        name: '노보텔...',
         price: '529,000원',
         page: 2,
         islast: false,
@@ -234,7 +331,7 @@ export const handlers = [
       {
         id: 14,
         ranking: 4,
-        name: '파라다이스 시티',
+        name: '시티',
         price: '529,000원',
         page: 2,
         islast: false,
@@ -242,7 +339,7 @@ export const handlers = [
       {
         id: 15,
         ranking: 5,
-        name: '속초 롯데리조트',
+        name: '속초',
         price: '529,000원',
         page: 3,
         islast: true,
@@ -250,70 +347,14 @@ export const handlers = [
       {
         id: 16,
         ranking: 5,
-        name: '강릉 롯데리조트',
+        name: '강릉',
         price: '529,000원',
         page: 3,
         islast: true,
       },
     ]);
   }),
-  // http.get(`/api/v1/accommodations/?pages=${pages}`, () => {
-  //   const { pages } = params;
-  //   console.log(pages);
-  //   return HttpResponse.json([
-  //     {
-  //       id: 11,
-  //       ranking: 1,
-  //       name: '소피텔 앰배서더',
-  //       price: '529,000원',
-  //       image: 'https://i.ibb.co/868XYvH/1.jpg',
-  //       pages: 1,
-  //       islast: false,
-  //     },
-  //     {
-  //       id: 12,
-  //       ranking: 2,
-  //       name: '인터컨티넨탈 ...',
-  //       price: '529,000원',
-  //       saleprice: '329,000원',
-  //       image: 'https://i.ibb.co/868XYvH/1.jpg',
-  //       pages: 1,
-  //       islast: false,
-  //     },
-  //     {
-  //       id: 13,
-  //       ranking: 3,
-  //       name: '노보텔 앰배서더 ...',
-  //       price: '529,000원',
-  //       pages: 2,
-  //       islast: false,
-  //     },
-  //     {
-  //       id: 14,
-  //       ranking: 4,
-  //       name: '파라다이스 시티',
-  //       price: '529,000원',
-  //       pages: 2,
-  //       islast: false,
-  //     },
-  // {
-  //   id: 15,
-  //   ranking: 5,
-  //   name: '속초 롯데리조트',
-  //   price: '529,000원',
-  //   page: 3,
-  //   islast: true,
-  // },
-  // {
-  //   id: 16,
-  //   ranking: 5,
-  //   name: '강릉 롯데리조트',
-  //   price: '529,000원',
-  //   page: 3,
-  //   islast: true,
-  // },
-  //   ]);
-  // }),
+
   http.get('/api/searchList', () => {
     return HttpResponse.json([
       {

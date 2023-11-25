@@ -7,12 +7,6 @@ import { MainListProps, getAllProduct } from './getPlaces';
 
 const MainAllListItem = ({ title }: MainListProps) => {
   console.log(title);
-  // const { data } = useQuery<MainItemProps[]>({
-  //   queryKey: [title],
-  //   queryFn: title === '전체 숙소 보기' ? getAllProduct : noProduct,
-  //   // refetchInterval: 1000,
-  // });
-
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: ['title'],
     queryFn: ({ pageParam }) => getAllProduct(pageParam),
@@ -24,19 +18,16 @@ const MainAllListItem = ({ title }: MainListProps) => {
       return lastPageParam + 1;
     },
   });
-
-  console.log(data);
-  console.log(data?.pages);
-  const handleLoadMore = () => {
+  const handleLoadMore = (pages: any) => {
     if (hasNextPage) {
-      fetchNextPage();
+      fetchNextPage(pages);
+      console.log(data);
     }
   };
   return (
     <StyledWraaper>
       {data &&
-        Array.isArray(data) &&
-        data?.pages.map((item) => (
+        data.pages.map((item) => (
           <StyledMainAllItem key={item.id}>
             <StyledAllItemImage src={item.image} />
             <StyledAllItemTitle>{item.name}</StyledAllItemTitle>
