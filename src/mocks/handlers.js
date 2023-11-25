@@ -197,7 +197,12 @@ export const handlers = [
       },
     ]);
   }),
-  http.get('/api/main/allproduct', () => {
+  http.get('/api/main/allItems', ({ request }) => {
+    const url = new URL(request.url);
+    const curPage = url.searchParams.get('page');
+    if (!curPage) {
+      return new HttpResponse(null, { status: 404 });
+    }
     return HttpResponse.json([
       {
         id: 11,
@@ -205,8 +210,8 @@ export const handlers = [
         name: '소피텔 앰배서더',
         price: '529,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
-        page: 1,
         islast: false,
+        page: 1,
       },
       {
         id: 12,
@@ -215,41 +220,41 @@ export const handlers = [
         price: '529,000원',
         saleprice: '329,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
+        islast: false,
         page: 1,
+      },
+      {
+        id: 13,
+        ranking: 3,
+        name: '노보텔 앰배서더 ...',
+        price: '529,000원',
+        page: 2,
         islast: false,
       },
-      // {
-      //   id: 13,
-      //   ranking: 3,
-      //   name: '노보텔 앰배서더 ...',
-      //   price: '529,000원',
-      //   page: 2,
-      //   islast: false,
-      // },
-      // {
-      //   id: 14,
-      //   ranking: 4,
-      //   name: '파라다이스 시티',
-      //   price: '529,000원',
-      //   page: 2,
-      //   islast: false,
-      // },
-      // {
-      //   id: 15,
-      //   ranking: 5,
-      //   name: '속초 롯데리조트',
-      //   price: '529,000원',
-      //   page: 3,
-      //   islast: true,
-      // },
-      // {
-      //   id: 16,
-      //   ranking: 5,
-      //   name: '강릉 롯데리조트',
-      //   price: '529,000원',
-      //   page: 3,
-      //   islast: true,
-      // },
+      {
+        id: 14,
+        ranking: 4,
+        name: '파라다이스 시티',
+        price: '529,000원',
+        page: 2,
+        islast: false,
+      },
+      {
+        id: 15,
+        ranking: 5,
+        name: '속초 롯데리조트',
+        price: '529,000원',
+        page: 3,
+        islast: true,
+      },
+      {
+        id: 16,
+        ranking: 5,
+        name: '강릉 롯데리조트',
+        price: '529,000원',
+        page: 3,
+        islast: true,
+      },
     ]);
   }),
   // http.get(`/api/v1/accommodations/?pages=${pages}`, () => {
