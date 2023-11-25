@@ -252,6 +252,63 @@ export const handlers = [
       // },
     ]);
   }),
+  // http.get(`/api/v1/accommodations/?pages=${pages}`, () => {
+  //   const { pages } = params;
+  //   console.log(pages);
+  //   return HttpResponse.json([
+  //     {
+  //       id: 11,
+  //       ranking: 1,
+  //       name: '소피텔 앰배서더',
+  //       price: '529,000원',
+  //       image: 'https://i.ibb.co/868XYvH/1.jpg',
+  //       pages: 1,
+  //       islast: false,
+  //     },
+  //     {
+  //       id: 12,
+  //       ranking: 2,
+  //       name: '인터컨티넨탈 ...',
+  //       price: '529,000원',
+  //       saleprice: '329,000원',
+  //       image: 'https://i.ibb.co/868XYvH/1.jpg',
+  //       pages: 1,
+  //       islast: false,
+  //     },
+  //     {
+  //       id: 13,
+  //       ranking: 3,
+  //       name: '노보텔 앰배서더 ...',
+  //       price: '529,000원',
+  //       pages: 2,
+  //       islast: false,
+  //     },
+  //     {
+  //       id: 14,
+  //       ranking: 4,
+  //       name: '파라다이스 시티',
+  //       price: '529,000원',
+  //       pages: 2,
+  //       islast: false,
+  //     },
+  // {
+  //   id: 15,
+  //   ranking: 5,
+  //   name: '속초 롯데리조트',
+  //   price: '529,000원',
+  //   page: 3,
+  //   islast: true,
+  // },
+  // {
+  //   id: 16,
+  //   ranking: 5,
+  //   name: '강릉 롯데리조트',
+  //   price: '529,000원',
+  //   page: 3,
+  //   islast: true,
+  // },
+  //   ]);
+  // }),
   http.get('/api/searchList', () => {
     return HttpResponse.json([
       {

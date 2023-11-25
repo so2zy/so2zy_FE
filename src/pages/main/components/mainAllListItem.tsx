@@ -10,33 +10,55 @@ import {
 } from './getPlaces';
 
 const MainAllListItem = ({ title }: MainListProps) => {
+  console.log(title);
   const { data } = useQuery<MainItemProps[]>({
     queryKey: [title],
     queryFn: title === '전체 숙소 보기' ? getAllProduct : noProduct,
-    refetchInterval: 1000,
+    // refetchInterval: 1000,
   });
-  return;
-  <StyledWraaper>
-    {data &&
-      data?.map((item) => (
-        <StyledMainAllItem key={item.id}>
-          <StyledAllItemImage src={item.accommodationImageLists[0]} />
-          <StyledAllItemTitle>{item.name}</StyledAllItemTitle>
-          <StyledAllItemDesc>
-            <StyledStar />
-            <StyledAllItemPriceList>
-              <StyledPriceOriginal>
-                {item.saleprice ? item.price : ''}
-              </StyledPriceOriginal>
-              <StyledPriceSale>
-                {item.saleprice ? item?.saleprice : item.price}
-              </StyledPriceSale>
-            </StyledAllItemPriceList>
-            <StyledLookBtn>숙소 보기</StyledLookBtn>
-          </StyledAllItemDesc>
-        </StyledMainAllItem>
-      ))}
-  </StyledWraaper>;
+
+  // const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
+  //   queryKey: ['title'],
+  //   queryFn: getAllRooms,
+  //   getNextPageParam: (lastPage, allPages) => {
+  //     return allPages.length + 1;
+  //   },
+  //   initialPageParam: 1,
+  // });
+
+  // const handleLoadMore = () => {
+  //   if (hasNextPage) {
+  //     fetchNextPage();
+  //   }
+  // };
+
+  return (
+    <StyledWraaper>
+      {data &&
+        Array.isArray(data) &&
+        data.map((item) => (
+          <StyledMainAllItem key={item.id}>
+            <StyledAllItemImage src={item.image} />
+            <StyledAllItemTitle>{item.name}</StyledAllItemTitle>
+            <StyledAllItemDesc>
+              <StyledStar />
+              <StyledAllItemPriceList>
+                <StyledPriceOriginal>
+                  {item.saleprice ? item.price : ''}
+                </StyledPriceOriginal>
+                <StyledPriceSale>
+                  {item.saleprice ? item?.saleprice : item.price}
+                </StyledPriceSale>
+              </StyledAllItemPriceList>
+              <StyledLookBtn>숙소 보기</StyledLookBtn>
+            </StyledAllItemDesc>
+          </StyledMainAllItem>
+        ))}
+      {/* <button onClick={handleLoadMore} disabled={isFetching}>
+        {isFetching ? '로딩 중...' : '더 보기'}
+      </button> */}
+    </StyledWraaper>
+  );
 };
 
 export default MainAllListItem;
