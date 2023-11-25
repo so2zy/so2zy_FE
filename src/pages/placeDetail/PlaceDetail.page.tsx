@@ -84,7 +84,7 @@ export const PlaceDetail: React.FC = () => {
 
   const getData = async (id: any) => {
     axios
-      .get(`http://43.202.50.38:8080/v1/accommodations/${id}`)
+      .get(`${process.env.REACT_APP_SERVER}/v1/accommodations/${id}`)
       .then((res) => {
         console.log(`get test ${id}`);
         setAccommodation(res.data);
@@ -103,6 +103,16 @@ export const PlaceDetail: React.FC = () => {
       console.log(accommodation);
     }
   }, [accommodation]);
+
+  //장바구니로 post하는 로직 추가
+  const addCart = async () => {
+    axios
+      .post(`${process.env.REACT_APP_SERVER}/v1/accommodations/${id}`)
+      .then((res) => {
+        console.log(res.data);
+      });
+  };
+  //예약으로 post하는 로직 추가
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -180,7 +190,14 @@ export const PlaceDetail: React.FC = () => {
                   <StyledReservationButton>
                     <RiShoppingBagLine />
                   </StyledReservationButton>
-                  <StyledReservationButton>예약하기</StyledReservationButton>
+                  <StyledReservationButton
+                    onClick={() => {
+                      addCart();
+                      navigate('/');
+                    }}
+                  >
+                    예약하기
+                  </StyledReservationButton>
                 </ReservationWrapper>
               )}
             </StyledDetail>
