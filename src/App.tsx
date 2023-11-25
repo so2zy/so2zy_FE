@@ -13,6 +13,7 @@ import { PlaceDetail } from './pages/placeDetail/PlaceDetail.page';
 import Modal from 'react-modal';
 import Reservation from 'pages/reservation';
 import Cart from 'pages/cart';
+import Confirm from 'pages/confirm';
 
 const Main = React.lazy(() => import('./pages/main'));
 // const SearchList = React.lazy(() => import('./pages/searchList'));
@@ -83,6 +84,14 @@ function App() {
                 element={
                   <Card>
                     <Cart />
+                  </Card>
+                }
+              />
+              <Route
+                path="/confirm" //:id도 받아줘야함
+                element={
+                  <Card>
+                    <Confirm />
                   </Card>
                 }
               />
