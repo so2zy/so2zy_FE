@@ -21,12 +21,7 @@ import {
 } from 'recoil/searchList';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { useQuery } from '@tanstack/react-query';
-import {
-  getSearchList,
-  getSortAscList,
-  getSortDescList,
-  nullData,
-} from './getData';
+import { getSearchList, getSortList, nullData } from './getData';
 
 interface Hotel {
   id: number;
@@ -42,7 +37,7 @@ interface Hotel {
 
 export const SearchListReal: React.FC = () => {
   const [hotels, setHotels] = useState<Hotel[]>([]);
-  const [sortBy, setSortBy] = useState('가격순');
+  const [sortBy, setSortBy] = useState('price');
   const [sortOrder, setSortOrder] = useState('asc');
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isClickedReservation, setIsClickedReservation] = useState(false); // 필터링 예약버튼 클릭 여부
@@ -71,7 +66,7 @@ export const SearchListReal: React.FC = () => {
   };
 
   const openModal = (type: string) => {
-    if (type == '가격') {
+    if (type == 'price') {
       setIsClickedPrice(true);
     } else if (type == '인원수') {
       setIsClickedPeople(true);
@@ -98,43 +93,35 @@ export const SearchListReal: React.FC = () => {
       setSortBy(field);
       setSortOrder('asc');
     }
+    if (field === 'price') {
+      if (sortOrder === 'asc') {
+        sortAscRefetch();
+      } else if (sortOrder === 'desc') {
+        sortDescRefetch();
+      }
+    }
   };
 
-  const { data: searchData } = useQuery({
-    queryKey: [title],
-    queryFn: () => {
-      if (title === '검색결과') {
-        return getSearchList();
-      }
-    },
-    refetchInterval: 1000,
-  });
+  // const { data: searchData } = useQuery({
+  //   queryKey: [title],
+  //   queryFn: () => {
+  //     if (title === '검색결과') {
+  //       return getSearchList();
+  //     }
+  //   },
+  //   refetchInterval: 5000,
+  // });
 
-  const { data: sortAscData } = useQuery({
-    queryKey: [sortOrder, sortBy],
-    queryFn: () => {
-      if (sortOrder === 'asc' && sortBy === '가격') {
-        return getSortAscList();
-      }
-    },
-    refetchInterval: 1000,
+  const { data: sortAscData, refetch: sortAscRefetch } = useQuery({
+    queryKey: ['sortAscData'],
+    queryFn: () => getSortList('asc', 'price'),
+    enabled: false,
   });
-  const { data: sortDescData } = useQuery({
-    queryKey: [sortBy, sortOrder],
-    queryFn: () => {
-      if (sortOrder === 'desc' && sortBy === '가격') {
-        return getSortDescList();
-      }
-    },
-    refetchInterval: 1000,
+  const { data: sortDescData, refetch: sortDescRefetch } = useQuery({
+    queryKey: ['sortDescData'],
+    queryFn: () => getSortList('desc', 'price'),
+    enabled: false,
   });
-  useEffect(() => {
-    if (sortOrder === 'desc' && sortBy === '가격') {
-      console.log('sortDescData', sortDescData);
-    } else if (sortOrder === 'asc' && sortBy === '가격') {
-      console.log('sortAscData', sortAscData);
-    }
-  }, [sortOrder, sortBy]);
 
   const fetchData = () => {
     fetch('/api/searchList')
@@ -153,7 +140,7 @@ export const SearchListReal: React.FC = () => {
         });
 
         const sortedData = filteredData.sort((a, b) => {
-          if (sortBy === '가격') {
+          if (sortBy === 'price') {
             const priceA =
               sortOrder === 'asc' ? a.discountPrice : b.discountPrice;
             const priceB =
@@ -245,21 +232,21 @@ export const SearchListReal: React.FC = () => {
         </StyledFilter>
         <StyledSort>
           <StyledPriceButton
-            onClick={() => handleSortClick('가격')}
-            className={sortBy === '가격' ? 'active' : ''}
+            onClick={() => handleSortClick('price')}
+            className={sortBy === 'price' ? 'active' : ''}
           >
             <StyledPrice>가격</StyledPrice>
             <StyledSortWrapper>
               <StyledSortUp
                 viewBox="0 -250 320 512"
                 className={
-                  sortBy === '가격' && sortOrder === 'asc' ? 'active' : ''
+                  sortBy === 'price' && sortOrder === 'asc' ? 'active' : ''
                 }
               />
               <StyledSortDown
                 viewBox="0 250 320 512"
                 className={
-                  sortBy === '가격' && sortOrder === 'desc' ? 'active' : ''
+                  sortBy === 'price' && sortOrder === 'desc' ? 'active' : ''
                 }
               />
             </StyledSortWrapper>
@@ -320,7 +307,8 @@ export const SearchListReal: React.FC = () => {
           })}
         </StyledContainer>
       )}
-      {searchData && (
+
+      {/* {searchData && (
         <StyledContainer>
           {hotels.map((hotel) => {
             return (
@@ -336,7 +324,7 @@ export const SearchListReal: React.FC = () => {
             );
           })}
         </StyledContainer>
-      )}
+      )} */}
 
       <Modal isOpen={modalIsOpen} closeModal={closeModal} />
     </div>

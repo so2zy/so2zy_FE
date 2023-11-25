@@ -38,39 +38,16 @@ export const getSearchList = async () => {
   }
 };
 
-export const getSortAscList = async () => {
+export const getSortList = async (orderBy: string, orderCondition: string) => {
   try {
-    const res = await axios.get('/v1/accommodations', {
-      params: {
-        orderBy: 'asc',
-        orderCondition: 'price',
-      },
-    });
+    const res = await axios.get(
+      `/v1/accommodations?orderBy=${orderBy}&orderCondition=${orderCondition}`,
+    );
 
     if (res) {
       return res.data;
     } else {
       console.log('가격 오름차순 함수 불러오기 실패');
-      return [];
-    }
-  } catch (error) {
-    console.log(error);
-    return [];
-  }
-};
-export const getSortDescList = async () => {
-  try {
-    const res = await axios.get('/v1/accommodations', {
-      params: {
-        orderBy: 'desc',
-        orderCondition: 'price',
-      },
-    });
-
-    if (res) {
-      return res.data;
-    } else {
-      console.log('가격 내림차순 함수 불러오기 실패');
       return [];
     }
   } catch (error) {
