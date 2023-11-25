@@ -22,12 +22,7 @@ import {
 } from 'recoil/searchList';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { useQuery } from '@tanstack/react-query';
-import {
-  getSearchList,
-  getSortList,
-  getNameFilterList,
-  nullData,
-} from './getData';
+import { getFilterAndSortData } from './getData';
 
 interface Hotel {
   id: number;
@@ -61,6 +56,9 @@ export const SearchListReal: React.FC = () => {
   const [date, setDate] = useState('');
   const [title, setTitle] = useState('검색결과');
   const searchedName = useRecoilValue(searchInputState); // 검색한 이름
+  const page = 0;
+  const size = 10;
+  const likeCount = undefined;
 
   const shortenPrice = (price: number) => {
     if (price === 0) {
@@ -103,24 +101,25 @@ export const SearchListReal: React.FC = () => {
   };
 
   useEffect(() => {
-    sortRefetch();
+    refetch();
   }, [{ sortBy, sortOrder }]); // 둘 중 하나라도 변하고 실행되면 안되고, 둘 다 변하고 실행돼야함
 
-  const { data: sortData, refetch: sortRefetch } = useQuery({
-    queryKey: ['sortData'],
-    queryFn: () => getSortList(sortOrder, sortBy),
+  const { data: filterAndSortData, refetch } = useQuery({
+    queryKey: ['filterAndSortData'],
+    queryFn: () =>
+      getFilterAndSortData(
+        searchedName,
+        page,
+        size,
+        likeCount,
+        priceA,
+        priceB,
+        sortOrder,
+        sortBy,
+      ),
     enabled: false,
   });
-
-  const { data: filterNameData, refetch: filterNameRefetch } = useQuery({
-    queryKey: ['filterNameData'],
-    queryFn: () => getNameFilterList(searchedName),
-    enabled: false,
-  });
-
-  useEffect(() => {
-    filterNameRefetch();
-  }, [searchedName]);
+  console.log('filterAndSortData', filterAndSortData);
 
   const fetchData = () => {
     fetch('/api/searchList')
@@ -272,23 +271,6 @@ export const SearchListReal: React.FC = () => {
           </StyledSalesButton>
         </StyledSort>
       </StyledFilterSortWrapper>
-      {sortData && (
-        <StyledContainer>
-          {sortData.map((hotel: any) => {
-            return (
-              <Item
-                key={hotel.id}
-                name={hotel.name}
-                // image={hotel.image}
-                favorites={hotel.favorites}
-                regularPrice={hotel.regularPrice}
-                discountPrice={hotel.discountPrice}
-                // salesCount={hotel.salesCount}
-              />
-            );
-          })}
-        </StyledContainer>
-      )}
 
       {/* {filterNameData && (
         <StyledContainer>
