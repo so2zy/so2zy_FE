@@ -25,9 +25,7 @@ export const SignUp: React.FC = () => {
   const navigate = useNavigate();
   const emailCheckUrl = 'http://43.202.50.38:8080/v1/members';
   const signUpUrl = 'http://43.202.50.38:8080/v1/members/register';
-  // 이메일 주소
 
-  // 데이터 요청 함수
   const checkEmail = async (email: string) => {
     try {
       const response = await axios.get(`${emailCheckUrl}/email/verify`, {
@@ -40,77 +38,16 @@ export const SignUp: React.FC = () => {
       });
 
       if (response.status === 200) {
-        console.log(response);
         setIsEmailDuplicated(false);
       } else {
         console.log('이메일 검증 실패');
         setIsEmailDuplicated(true);
       }
     } catch (error) {
-      console.error('에러:', error);
+      console.error('이메일 중복확인 에러:', error);
     }
   };
-  // const checkIdDuplication = async (email: string) => {
-  //   try {
-  //     const response = await axios.get(
-  //       'http://43.202.50.38:8080/v1/members/email/verify',
-  //       { email },
-  //       {
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           serverId: process.env.REACT_APP_SERVER_ID,
-  //         },
-  //       },
-  //     );
 
-  //     if (response.status === 200) {
-  //       const data = response.data;
-  //       setIsEmailDuplicated(data.isDuplicated);
-  //       console.log('중복', data.isDuplicated);
-  //       console.log(isIdentificationValid(email));
-  //     }
-  //   } catch (error) {
-  //     console.log(isIdentificationValid(email));
-  //     console.log('다음과 같은 이유로 중복검사를 할 수 없습니다 :', error);
-  //   }
-  // };
-  // 목업데이터 이메일 체크
-  // const emailCheck = async ({ email }: { email: string }) => {
-  //   const response = await axios.post('/api/emailCheck', { email });
-  //   if (response.status === 200) {
-  //     console.log('emailCheck', response.data);
-  //     if (response.data.isDuplicate) {
-  //       setIsEmailDuplicated(true);
-  //       console.log('중복된 이메일이존재합니다');
-  //     } else {
-  //       setIsEmailDuplicated(false);
-  //       console.log('사용가능한 이메일');
-  //     }
-  //   } else {
-  //     console.error('Failed to emailcheck');
-  //   }
-  // };
-  //목업데이터 회원가입
-  // const join = async ({
-  //   email,
-  //   pw,
-  //   userName,
-  // }: {
-  //   email: string;
-  //   pw: string;
-  //   userName: string;
-  // }) => {
-  //   const response = await axios.post('/api/join', { email, pw, userName });
-  //   console.log(response);
-  //   if (response.status === 200) {
-  //     console.log('sign', response.data);
-  //     setIsSignUp(true);
-  //     console.log('User joined successfully');
-  //     navigate('/signIn');
-  //   } else {
-  //     console.error('Failed to join user');
-  //   }
-  // };
   const handleSignUp = async (
     email: string,
     pw: string,
@@ -174,14 +111,16 @@ export const SignUp: React.FC = () => {
     }
   };
 
-  const handleLogoClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    navigate('/');
-  };
   return isSignUp ? null : (
     <>
       <StyledNoHeaderWrap>
-        <StyledMainLogoTwo onClick={handleLogoClick}>
+        <StyledMainLogoTwo
+          onClick={() => {
+            setEmail('');
+            setPw('');
+            navigate('/');
+          }}
+        >
           <img src={MainTwoIcon} />
         </StyledMainLogoTwo>
         <StyledSignUpWrap>

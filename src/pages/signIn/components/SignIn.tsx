@@ -1,21 +1,51 @@
+import { useState } from 'react';
 import { theme } from '@styles/theme';
 import styled from 'styled-components';
 import MainTwoIcon from '@assets/mainLogoTwo.svg';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { emailState, pwState } from 'recoil/atom';
+import axios from 'axios';
 export const SignIn: React.FC = () => {
   const [email, setEmail] = useRecoilState(emailState);
   const [pw, setPw] = useRecoilState(pwState);
-  // const [userName, setUserName] = useRecoilState(userNameState);
-  // const signInUrl = 'http://localhost:8080/v1/login';
+  const [signInButtonClick, setSignInButtonClick] = useState(false);
+  const signInUrl = 'http://43.202.50.38:8080/v1/login';
   const navigate = useNavigate();
-  const handleLogIn = () => {};
+  const handleSignIn = async (email: string, pw: string) => {
+    const params = new URLSearchParams({
+      username: email,
+      password: pw,
+    });
+    try {
+      const response = await axios.post(signInUrl, params.toString(), {
+        headers: {
+          accept: '*/*',
+        },
+      });
+      if (response.status === 200) {
+        console.log(response);
+      } else {
+        setSignInButtonClick(true);
+        console.log('로그인 실패');
+      }
+    } catch (error) {
+      console.error('로그인 에러:', error);
+      setSignInButtonClick(false);
+    }
+  };
+
   return (
     <StyledNoHeaderWrap>
       <StyledSignInContent>
         <StyledSignInLeft>
-          <StyledMainLogoTwo onClick={() => navigate('/')}>
+          <StyledMainLogoTwo
+            onClick={() => {
+              setEmail('');
+              setPw('');
+              navigate('/');
+            }}
+          >
             <img src={MainTwoIcon} />
           </StyledMainLogoTwo>
         </StyledSignInLeft>
@@ -46,14 +76,25 @@ export const SignIn: React.FC = () => {
             />
           </StyledInputWrap>
           <StyledSignInError>
-            로그인 정보가 일치하지 않습니다.
+            {signInButtonClick && '로그인 정보가 일치하지 않습니다.'}
           </StyledSignInError>
-          <StyledSignInButton onClick={handleLogIn} disabled={!email || !pw}>
+          <StyledSignInButton
+            onClick={() => handleSignIn(email, pw)}
+            disabled={!email || !pw}
+          >
             로그인
           </StyledSignInButton>
           <StyledSignInGoSignUp>
             <span>계정이 없으신가요?</span>
-            <span onClick={() => navigate('/signUp')}>회원가입</span>
+            <span
+              onClick={() => {
+                setEmail('');
+                setPw('');
+                navigate('/signUp');
+              }}
+            >
+              회원가입
+            </span>
           </StyledSignInGoSignUp>
         </StyledSignInRight>
       </StyledSignInContent>
