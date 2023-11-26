@@ -41,21 +41,6 @@ interface RoomList {
   url: string;
 }
 
-//예약 인터페이스
-interface IReservationData {
-  roomList: IReservationRoom[];
-  personnel: number;
-  agreement: boolean;
-  fromCart: boolean;
-}
-
-interface IReservationRoom {
-  roomId: number;
-  startDate: string;
-  endDate: string;
-  price: number;
-}
-
 export const PlaceDetail: React.FC = () => {
   const { id } = useParams();
   //조회
@@ -83,7 +68,7 @@ export const PlaceDetail: React.FC = () => {
   });
 
   //예약
-  const [reservationData] = useState<IReservationData>({
+  const reservationData = {
     roomList: [
       {
         roomId: 0,
@@ -95,7 +80,7 @@ export const PlaceDetail: React.FC = () => {
     personnel: 0,
     agreement: false,
     fromCart: false,
-  });
+  };
   const [isLoading, setIsLoading] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
@@ -157,7 +142,7 @@ export const PlaceDetail: React.FC = () => {
 
   //예약으로 post하는 로직
   // `${process.env.REACT_APP_SERVER}/v1/reservations
-  const sendPostRequest = async () => {
+  const makeReservation = async () => {
     try {
       const res = await axios.post('/v1/reservations', reservationData, {
         headers: {
@@ -255,7 +240,7 @@ export const PlaceDetail: React.FC = () => {
                     </StyledReservationButton>
                     <StyledReservationButton
                       onClick={() => {
-                        sendPostRequest();
+                        makeReservation();
                         // navigate('/');   //예약페이지로 이동
                       }}
                     >
