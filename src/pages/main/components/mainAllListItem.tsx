@@ -5,6 +5,7 @@ import { FaStar } from 'react-icons/fa';
 import styled from 'styled-components';
 import { MainItemProps, MainListProps, getAllProduct } from './getPlaces';
 import UseIntersectionObserver from '@utils/useIntersectionObserver';
+import ScrollTopBtn from '@components/common/ScrollToTop/ScrollToTop';
 
 const MainAllListItem = ({ title }: MainListProps) => {
   console.log(title);
@@ -66,6 +67,7 @@ const MainAllListItem = ({ title }: MainListProps) => {
                 </StyledMainAllItem>
               )),
           )}
+        <ScrollTopBtn />
       </StyledWrapper>
 
       {/* <button onClick={handleLoadMore}>더 보기</button> */}
