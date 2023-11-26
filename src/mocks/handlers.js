@@ -218,89 +218,11 @@ export const handlers = [
     ]);
   }),
   // // 무한스크롤 사용 할 목업 데이터
-  // http.get('/api/main/allitems', ({ request }) => {
-  //   const url = new URL(request.url);
-  //   const curPage = url.searchParams.get('page');
-  //   if (!curPage) {
-  //     return new HttpResponse(null, { status: 404 });
-  //   }
-
-  //   // 각 페이지의 데이터를 담을 배열
-  //   let pages = [];
-
-  //   // 페이지 1의 데이터
-  //   pages.push([
-  //     {
-  //       id: 11,
-  //       ranking: 1,
-  //       name: '소피텔',
-  //       price: '529,000원',
-  //       image: 'https://i.ibb.co/868XYvH/1.jpg',
-  //       islast: false,
-  //       page: 1,
-  //     },
-  //     {
-  //       id: 12,
-  //       ranking: 2,
-  //       name: '터컨티넨탈 ...',
-  //       price: '529,000원',
-  //       saleprice: '329,000원',
-  //       image: 'https://i.ibb.co/868XYvH/1.jpg',
-  //       islast: false,
-  //       page: 1,
-  //     },
-  //   ]);
-
-  //   // 페이지 2의 데이터
-  //   pages.push([
-  //     {
-  //       id: 13,
-  //       ranking: 3,
-  //       name: '노보텔...',
-  //       price: '529,000원',
-  //       page: 2,
-  //       islast: false,
-  //     },
-  //     {
-  //       id: 14,
-  //       ranking: 4,
-  //       name: '시티',
-  //       price: '529,000원',
-  //       page: 2,
-  //       islast: false,
-  //     },
-  //   ]);
-
-  //   // 페이지 3의 데이터
-  //   pages.push([
-  //     {
-  //       id: 15,
-  //       ranking: 5,
-  //       name: '속초',
-  //       price: '529,000원',
-  //       page: 3,
-  //       islast: true,
-  //     },
-  //     {
-  //       id: 16,
-  //       ranking: 5,
-  //       name: '강릉',
-  //       price: '529,000원',
-  //       page: 3,
-  //       islast: true,
-  //     },
-  //   ]);
-
-  //   // 전체 페이지의 데이터와 각 페이지에 해당하는 정보를 반환
-  //   return HttpResponse.json({ pages: pages, pageParams: [1, 2, 3] });
-  // }),
   http.get('/api/main/allitems', ({ request }) => {
     const url = new URL(request.url);
-    const curPage = url.searchParams.get('page');
-    if (!curPage) {
-      return new HttpResponse(null, { status: 404 });
-    }
-    return HttpResponse.json([
+    const page = Number(url.searchParams.get('page')) || 0;
+    const itemsPerPage = 2;
+    const data = [
       {
         id: 11,
         ranking: 1,
@@ -308,7 +230,6 @@ export const handlers = [
         price: '529,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
         islast: false,
-        page: 1,
       },
       {
         id: 12,
@@ -318,14 +239,12 @@ export const handlers = [
         saleprice: '329,000원',
         image: 'https://i.ibb.co/868XYvH/1.jpg',
         islast: false,
-        page: 1,
       },
       {
         id: 13,
         ranking: 3,
         name: '노보텔...',
         price: '529,000원',
-        page: 2,
         islast: false,
       },
       {
@@ -333,7 +252,6 @@ export const handlers = [
         ranking: 4,
         name: '시티',
         price: '529,000원',
-        page: 2,
         islast: false,
       },
       {
@@ -341,7 +259,6 @@ export const handlers = [
         ranking: 5,
         name: '속초',
         price: '529,000원',
-        page: 3,
         islast: true,
       },
       {
@@ -349,10 +266,17 @@ export const handlers = [
         ranking: 5,
         name: '강릉',
         price: '529,000원',
-        page: 3,
         islast: true,
       },
-    ]);
+    ];
+    const startIndex = page * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const responseData = data.slice(startIndex, endIndex);
+
+    return HttpResponse.json({
+      message: '성공',
+      data: responseData,
+    });
   }),
 
   http.get('/api/searchList', () => {

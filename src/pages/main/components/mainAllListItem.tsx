@@ -3,7 +3,7 @@ import { theme } from '@styles/theme';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { FaStar } from 'react-icons/fa';
 import styled from 'styled-components';
-import { MainListProps, getAllProduct } from './getPlaces';
+import { MainItemProps, MainListProps, getAllProduct } from './getPlaces';
 
 const MainAllListItem = ({ title }: MainListProps) => {
   console.log(title);
@@ -24,48 +24,65 @@ const MainAllListItem = ({ title }: MainListProps) => {
       console.log(data);
     }
   };
+
   return (
-    <StyledWraaper>
-      {data &&
-        data.pages.map((item) => (
-          <StyledMainAllItem key={item.id}>
-            <StyledAllItemImage src={item.image} />
-            <StyledAllItemTitle>{item.name}</StyledAllItemTitle>
-            <StyledAllItemDesc>
-              <StyledStar />
-              <StyledAllItemPriceList>
-                <StyledPriceOriginal>
-                  {item.saleprice ? item.price : ''}
-                </StyledPriceOriginal>
-                <StyledPriceSale>
-                  {item.saleprice ? item?.saleprice : item.price}
-                </StyledPriceSale>
-              </StyledAllItemPriceList>
-              <StyledLookBtn>숙소 보기</StyledLookBtn>
-            </StyledAllItemDesc>
-          </StyledMainAllItem>
-        ))}
+    <StyledContainer>
+      <StyledWrapper>
+        {data &&
+          data.pages?.length > 0 &&
+          data.pages.map(
+            (page) =>
+              page?.data?.map((item: MainItemProps) => (
+                <StyledMainAllItem key={item.id}>
+                  <StyledAllItemImage src={item.image} />
+                  <StyledAllItemTitle>{item.name}</StyledAllItemTitle>
+                  <StyledAllItemDesc>
+                    <StyledStar />
+                    <StyledAllItemPriceList>
+                      <StyledPriceOriginal>
+                        {item.saleprice ? item.price : ''}
+                      </StyledPriceOriginal>
+                      <StyledPriceSale>
+                        {item.saleprice ? item?.saleprice : item.price}
+                      </StyledPriceSale>
+                    </StyledAllItemPriceList>
+                    <StyledLookBtn>숙소 보기</StyledLookBtn>
+                  </StyledAllItemDesc>
+                </StyledMainAllItem>
+              )),
+          )}
+      </StyledWrapper>
+
       <button onClick={handleLoadMore}>더 보기</button>
-    </StyledWraaper>
+    </StyledContainer>
   );
 };
 
 export default MainAllListItem;
 
-const StyledWraaper = styled.div`
+const StyledContainer = styled.div`
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+const StyledWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.625rem;
 `;
 
 const StyledMainAllItem = styled.div`
   cursor: pointer;
   display: flex;
+  flex: 0 0 calc(50% - 0.625rem);
   width: 32rem;
   height: 16rem;
   border-radius: 1rem;
   box-shadow: ${theme.shadows.shadow2.shadow};
   position: relative;
   overflow: hidden;
+  margin-bottom: 3rem;
 `;
 
 const StyledAllItemImage = styled.img`
@@ -80,7 +97,6 @@ const StyledAllItemTitle = styled.div`
   margin-top: 1.2rem;
 `;
 const StyledAllItemDesc = styled.div`
-  /* margin-top: 1rem; */
   display: flex;
   flex-direction: column;
   justify-content: center;
