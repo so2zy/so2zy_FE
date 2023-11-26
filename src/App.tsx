@@ -1,5 +1,4 @@
 import React, { Suspense } from 'react';
-import './App.css';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import SearchList from './pages/searchList';
 import { Header } from '@components/common/Header';
@@ -31,22 +30,6 @@ function App() {
           <Suspense fallback={<div>로딩중...</div>}>
             <Routes>
               <Route
-                path="/signUp"
-                element={
-                  <Card>
-                    <SignUp />
-                  </Card>
-                }
-              />
-              <Route
-                path="/signIn"
-                element={
-                  <Card>
-                    <SignIn />
-                  </Card>
-                }
-              />
-              <Route
                 path="/"
                 element={
                   <Card>
@@ -71,6 +54,8 @@ function App() {
                   </Card>
                 }
               />
+              <Route path="/signUp" element={<SignUp />} />
+              <Route path="/signIn" element={<SignIn />} />
               <Route
                 path="/reservation"
                 element={
@@ -102,5 +87,9 @@ function App() {
     </ThemeProvider>
   );
 }
+
+// const PageWrap = styled.div`
+//   margin-top: 3.5rem;
+// `;
 
 export default App;
