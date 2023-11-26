@@ -74,7 +74,8 @@ const Header = () => {
                 ? '장바구니'
                 : location.pathname === '/reservation'
                   ? '예약'
-                  : '예약확인'}
+                  : ''}
+              {/* 로고 넣기 */}
             </div>
             <StyledHeaderHomeIcon>
               <img src={HomeIcon} alt="Cart Icon" onClick={handleHomeIcon} />

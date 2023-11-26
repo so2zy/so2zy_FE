@@ -229,7 +229,7 @@ export const StyledNoHeaderWrap = styled.div`
   width: 1080px;
   height: 800px;
   margin: 0 auto;
-  background-color: ${theme.colors.gray3};
+  background-color: ${theme.colors.gray1};
   @media (max-width: 1080px) {
     width: 100%;
   }

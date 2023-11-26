@@ -1,11 +1,11 @@
 export const theme = {
   colors: {
     navy: '#253C59', //primary navy
-    blue: '#99B4BF', //옵션에 사용하는 세번째 blue
+    blue: '#58788c', //옵션에 사용하는 두번째 blue
     yellow: '#D9B70D', //찜에 사용하는 yellow
-    gray1: '#9F9F9F', //좀 더 어두운 gray(추가)
-    gray2: '#D1D1D1', //중간 gray
-    gray3: '#F8F8F8',
+    gray1: '#f8f8f8', //제일 어두운 gray
+    gray2: '#AFAFAF', //중간 gray
+    gray3: '#757575',
 
     error: '#CF0000',
     success: '#008000',
@@ -13,7 +13,7 @@ export const theme = {
   fonts: {
     subtitle1: {
       fontSize: '2.5rem',
-      fontWeight: '1000',
+      fontWeight: '900',
       lineHeight: '1.5',
     },
     subtitle2: {

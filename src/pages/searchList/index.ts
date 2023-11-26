@@ -1,2 +1,3 @@
-import { SearhList } from './SearchList.page';
-export default SearhList;
+import { SearchList } from './SearchList.page';
+
+export default SearchList;
