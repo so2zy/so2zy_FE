@@ -22,6 +22,8 @@ import {
   isClickedMapState,
 } from 'recoil/searchList';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useQuery } from '@tanstack/react-query';
+import { getRegionListData } from '@utils/getData';
 
 interface Hotel {
   id: number;
@@ -54,6 +56,10 @@ export const RegionList: React.FC = () => {
   const startDate = useRecoilValue(startDateState);
   const endDate = useRecoilValue(endDateState);
   const [date, setDate] = useState('');
+  const page = 0;
+  const size = 10;
+  const latitude = 33.450701;
+  const longitude = 126.570667;
 
   const shortenPrice = (price: number) => {
     if (price === 0) {
@@ -98,6 +104,29 @@ export const RegionList: React.FC = () => {
       setSortOrder('asc');
     }
   };
+  useEffect(() => {
+    refetch();
+  }, [{ sortBy, sortOrder }]); // 둘 중 하나라도 변하고 실행되면 안되고, 둘 다 변하고 실행돼야함
+
+  const { data: regionListData, refetch } = useQuery({
+    queryKey: ['regionListData'],
+    queryFn: () =>
+      getRegionListData(
+        latitude,
+        longitude,
+        page,
+        size,
+        peopleCount,
+        startDate,
+        endDate,
+        priceA,
+        priceB,
+        sortOrder,
+        sortBy,
+      ),
+    enabled: false,
+  });
+  console.log('regionListData', regionListData);
 
   const fetchData = () => {
     fetch('/api/searchList')

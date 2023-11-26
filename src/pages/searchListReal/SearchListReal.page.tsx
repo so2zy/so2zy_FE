@@ -22,7 +22,7 @@ import {
 } from 'recoil/searchList';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { useQuery } from '@tanstack/react-query';
-import { getFilterAndSortData } from './getData';
+import { getSearchListData } from '@utils/getData';
 
 interface Hotel {
   id: number;
@@ -54,11 +54,9 @@ export const SearchListReal: React.FC = () => {
   const startDate = useRecoilValue(startDateState);
   const endDate = useRecoilValue(endDateState);
   const [date, setDate] = useState('');
-  const [title, setTitle] = useState('검색결과');
   const searchedName = useRecoilValue(searchInputState); // 검색한 이름
   const page = 0;
   const size = 10;
-  const likeCount = undefined;
 
   const shortenPrice = (price: number) => {
     if (price === 0) {
@@ -104,14 +102,16 @@ export const SearchListReal: React.FC = () => {
     refetch();
   }, [{ sortBy, sortOrder }]); // 둘 중 하나라도 변하고 실행되면 안되고, 둘 다 변하고 실행돼야함
 
-  const { data: filterAndSortData, refetch } = useQuery({
-    queryKey: ['filterAndSortData'],
+  const { data: searchListData, refetch } = useQuery({
+    queryKey: ['searchListData'],
     queryFn: () =>
-      getFilterAndSortData(
+      getSearchListData(
         searchedName,
         page,
         size,
-        likeCount,
+        peopleCount,
+        startDate,
+        endDate,
         priceA,
         priceB,
         sortOrder,
@@ -119,7 +119,7 @@ export const SearchListReal: React.FC = () => {
       ),
     enabled: false,
   });
-  console.log('filterAndSortData', filterAndSortData);
+  console.log('searchListData', searchListData);
 
   const fetchData = () => {
     fetch('/api/searchList')
