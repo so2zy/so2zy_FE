@@ -54,12 +54,32 @@ const MapBox: React.FC = () => {
             color: 'white',
             cursor: 'pointer',
             fontWeight: 'bold',
-            padding: '.45rem .5rem .15rem',
             marginTop: '40px',
+            display: 'flex',
+            padding: '.25rem .5rem',
+            gap: '0.25rem',
           }}
         >
-          <div>{positions[i].name}</div>
-          <div>{positions[i].name}</div>
+          <div
+            style={{
+              paddingTop: '.25rem',
+            }}
+          >
+            {positions[i].name}
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'white',
+              padding: '0 .2rem',
+              borderRadius: '.3rem',
+              color: 'black',
+            }}
+          >
+            x
+          </div>
         </div>,
       );
 
@@ -69,17 +89,19 @@ const MapBox: React.FC = () => {
       // 마커를 중심으로 커스텀 오버레이를 표시하기 위해 CSS를 이용해 위치를 설정합니다
       const overlay = new window.kakao.maps.CustomOverlay({
         content: content,
-        map: map,
+        map: null,
         position: marker.getPosition(),
       });
 
-      overlay.setMap(null);
-      window.kakao.maps.event.addListener(marker, 'mouseover', function () {
+      window.kakao.maps.event.addListener(marker, 'click', function () {
         overlay.setMap(map);
       });
-      window.kakao.maps.event.addListener(marker, 'mouseout', function () {
-        overlay.setMap(null);
-      });
+      const closeBtn = content.querySelector('div:last-child');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function () {
+          overlay.setMap(null);
+        });
+      }
     }
   }, [latitude, longitude]);
 
