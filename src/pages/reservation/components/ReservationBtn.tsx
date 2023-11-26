@@ -2,6 +2,7 @@ import { theme } from '@styles/theme';
 import styled from 'styled-components';
 
 const ReservationBtn = () => {
+  // props로 totalPrice 받아서 넣기
   return (
     <StyledWrapper>
       <StyledBtnText>78,500원 결제하기</StyledBtnText>
