@@ -53,7 +53,7 @@ export const SignIn: React.FC = () => {
       }
     } catch (error) {
       console.error('로그인 에러:', error);
-      setSignInButtonClick(false);
+      setSignInButtonClick(true);
     }
   };
 
