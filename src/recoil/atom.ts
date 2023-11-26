@@ -37,3 +37,8 @@ export const isLogInSelector = selector({
   key: 'isLoginSelector',
   get: ({ get }) => !!get(tokenAtom),
 });
+
+export const userKeyState = atom({
+  key: 'userKeyState',
+  default: '',
+});

@@ -3,24 +3,26 @@ import { theme } from '@styles/theme';
 import styled from 'styled-components';
 import MainTwoIcon from '@assets/mainLogoTwo.svg';
 import { useNavigate } from 'react-router-dom';
+import jwt from 'jsonwebtoken-promisified';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
   tokenAtom,
   refreshTokenAtom,
   emailState,
-  loginState,
   pwState,
+  userKeyState,
+  userNameState,
 } from 'recoil/atom';
 import axios from 'axios';
 export const SignIn: React.FC = () => {
   const [email, setEmail] = useRecoilState(emailState);
   const [pw, setPw] = useRecoilState(pwState);
   const [signInButtonClick, setSignInButtonClick] = useState(false);
-  const setLogin = useSetRecoilState(loginState);
   const signInUrl = 'http://43.202.50.38:8080/v1/login';
+  const setUserKey = useSetRecoilState(userKeyState);
   const setAccessToken = useSetRecoilState(tokenAtom);
+  const setUserName = useSetRecoilState(userNameState);
   const setRefreshToken = useSetRecoilState(refreshTokenAtom);
-
   const navigate = useNavigate();
   const handleSignIn = async (email: string, pw: string) => {
     const params = new URLSearchParams({
@@ -37,15 +39,26 @@ export const SignIn: React.FC = () => {
       if (response.status === 200) {
         const accessToken = response.data.accessToken;
         const refreshToken = response.data.refreshToken;
-        // const decodedToken = jwt.decode(accessToken);
-        // console.log(decodedToken);
-        console.log(accessToken);
-        console.log(refreshToken);
+        const decodedToken = jwt.decode(accessToken);
+        const decodedRefreshToken = jwt.decode(refreshToken);
+        const {
+          'user-key': userKey,
+          'user-name': userName,
+          iat,
+          exp,
+        } = decodedToken;
+        console.log(userKey, userName, iat, exp);
+        console.log(decodedToken);
+        console.log(decodedRefreshToken);
+        // console.log(accessToken);
+        // console.log(refreshToken);
+        setUserKey(userKey);
         setRefreshToken(refreshToken);
         setAccessToken(accessToken);
         setEmail(email);
         setPw(pw);
-        setLogin(true);
+        setUserName(userName);
+        setSignInButtonClick(false);
         navigate('/');
       } else {
         setSignInButtonClick(true);

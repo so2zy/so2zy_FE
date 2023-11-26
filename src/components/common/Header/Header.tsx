@@ -6,19 +6,24 @@ import HomeIcon from '@assets/home.png';
 // import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BsArrowLeft } from 'react-icons/bs';
-import { useRecoilState } from 'recoil';
-import { loginState, refreshTokenAtom, tokenAtom } from 'recoil/atom';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import {
+  isLogInSelector,
+  refreshTokenAtom,
+  tokenAtom,
+  userNameState,
+} from 'recoil/atom';
 
 const Header = () => {
-  const userName = '***';
-  const [login, setLogin] = useRecoilState(loginState);
+  const isUserLoggedIn = useRecoilValue(isLogInSelector);
   const [refreshToken, setRefreshToken] = useRecoilState(refreshTokenAtom);
   const [token, setToken] = useRecoilState(tokenAtom);
+  const [userName] = useRecoilState(userNameState);
+
   console.log(refreshToken);
   console.log(token);
   const navigate = useNavigate();
   const location = useLocation();
-
   const isSearchPage =
     location.pathname === '/' || location.pathname === '/searchList';
   const isReservedPage = ['/reservation', '/confirm', '/cart'].includes(
@@ -30,7 +35,6 @@ const Header = () => {
   }
 
   const handleMainLogoClick = () => {
-    setLogin(true);
     navigate('/');
   };
 
@@ -100,16 +104,13 @@ const Header = () => {
             )}
 
             <StyledHeaderRight>
-              {login && (
-                <StyledHeaderGreeting>
-                  {userName}님, 안녕하세요!
-                </StyledHeaderGreeting>
+              {isUserLoggedIn && (
+                <StyledHeaderGreeting>{userName}님</StyledHeaderGreeting>
               )}
 
-              {login ? (
+              {isUserLoggedIn ? (
                 <StyledHeaderLogOut
                   onClick={() => {
-                    setLogin(false);
                     setRefreshToken(undefined);
                     setToken(undefined);
                   }}
