@@ -43,7 +43,8 @@ export const SignIn: React.FC = () => {
         console.log(refreshToken);
         setRefreshToken(refreshToken);
         setAccessToken(accessToken);
-
+        setEmail(email);
+        setPw(pw);
         setLogin(true);
         navigate('/');
       } else {
@@ -52,7 +53,7 @@ export const SignIn: React.FC = () => {
       }
     } catch (error) {
       console.error('로그인 에러:', error);
-      setSignInButtonClick(false);
+      setSignInButtonClick(true);
     }
   };
 
