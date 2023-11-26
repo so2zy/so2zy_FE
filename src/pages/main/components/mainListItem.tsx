@@ -94,7 +94,6 @@ const StyledItemName = styled.p`
   font-weight: bold;
   font-size: 0.8rem;
   padding-bottom: 0.2rem;
-  /* margin: 0.9rem 1.3rem 0 0.7rem; */
 `;
 
 const StyledItemPrice = styled.p`
