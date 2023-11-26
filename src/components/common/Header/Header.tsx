@@ -3,13 +3,19 @@ import styled from 'styled-components';
 import Logo from '@assets/mainLogo.svg';
 import CartIcon from '@assets/shoppingBag.png';
 import HomeIcon from '@assets/home.png';
-import { useState } from 'react';
+// import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BsArrowLeft } from 'react-icons/bs';
+import { useRecoilState } from 'recoil';
+import { loginState, refreshTokenAtom, tokenAtom } from 'recoil/atom';
 
 const Header = () => {
-  const userName = '채민석';
-  const [login, setLogin] = useState(true);
+  const userName = '***';
+  const [login, setLogin] = useRecoilState(loginState);
+  const [refreshToken, setRefreshToken] = useRecoilState(refreshTokenAtom);
+  const [token, setToken] = useRecoilState(tokenAtom);
+  console.log(refreshToken);
+  console.log(token);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -100,7 +106,13 @@ const Header = () => {
               )}
 
               {login ? (
-                <StyledHeaderLogOut onClick={() => setLogin(false)}>
+                <StyledHeaderLogOut
+                  onClick={() => {
+                    setLogin(false);
+                    setRefreshToken(undefined);
+                    setToken(undefined);
+                  }}
+                >
                   로그아웃
                 </StyledHeaderLogOut>
               ) : (
