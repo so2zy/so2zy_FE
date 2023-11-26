@@ -1,5 +1,4 @@
 import { theme } from '@styles/theme';
-// import { useQuery } from '@tanstack/react-query';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { FaStar } from 'react-icons/fa';
 import styled from 'styled-components';
@@ -31,15 +30,8 @@ const MainAllListItem = ({ title }: MainListProps) => {
 
   const { setTarget } = UseIntersectionObserver({
     onIntersect: handleIntersect,
-    threshold: 0.5, // 설정에 따라 조절 가능
+    threshold: 0.5,
   });
-
-  // const handleLoadMore = () => {
-  //   if (hasNextPage) {
-  //     fetchNextPage();
-  //     console.log(data);
-  //   }
-  // };
 
   return (
     <StyledContainer>
@@ -69,8 +61,6 @@ const MainAllListItem = ({ title }: MainListProps) => {
           )}
         <ScrollTopBtn />
       </StyledWrapper>
-
-      {/* <button onClick={handleLoadMore}>더 보기</button> */}
       <div ref={(node) => setTarget(node)} />
     </StyledContainer>
   );
@@ -106,7 +96,6 @@ const StyledMainAllItem = styled.div`
 const StyledAllItemImage = styled.img`
   width: 10.5rem;
   border-radius: 0.625rem;
-  /* background-color: ${theme.colors.gray2}; */
   margin: 1rem;
 `;
 
