@@ -45,8 +45,6 @@ export const SignIn: React.FC = () => {
         setAccessToken(accessToken);
 
         setLogin(true);
-        setEmail('');
-        setPw('');
         navigate('/');
       } else {
         setSignInButtonClick(true);
