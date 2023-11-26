@@ -1,4 +1,4 @@
-import { atom } from 'recoil';
+import { atom, selector } from 'recoil';
 export interface CommonData {
   email: string;
   password: string;
@@ -23,4 +23,17 @@ export const userNameState = atom<string>({
 export const loginState = atom<boolean>({
   key: 'loginState',
   default: false,
+});
+export const tokenAtom = atom({
+  key: 'tokenAtom',
+  default: undefined,
+});
+export const refreshTokenAtom = atom({
+  key: 'refreshTokenAtom',
+  default: undefined,
+});
+
+export const isLogInSelector = selector({
+  key: 'isLoginSelector',
+  get: ({ get }) => !!get(tokenAtom),
 });

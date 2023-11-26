@@ -11,7 +11,7 @@ import {
   isIdentificationValid,
   isPasswordValid,
 } from '@utils/registerFunction';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 export const SignUp: React.FC = () => {
@@ -20,7 +20,9 @@ export const SignUp: React.FC = () => {
   const [emailCheckClicked, setEmailCheckClicked] = useState(false);
   const [pwCheck, setPwCheck] = useState('');
   const [userName, setUserName] = useRecoilState(userNameState);
-  const [isEmailDuplicated, setIsEmailDuplicated] = useState(true);
+  const [isEmailDuplicated, setIsEmailDuplicated] = useState<
+    boolean | undefined
+  >(undefined);
   const [isSignUp, setIsSignUp] = useState(false);
   const navigate = useNavigate();
   const emailCheckUrl = 'http://43.202.50.38:8080/v1/members';
@@ -36,15 +38,19 @@ export const SignUp: React.FC = () => {
           accept: '*/*',
         },
       });
-
+      console.log(response);
       if (response.status === 200) {
+        console.log('이메일 확인완료');
         setIsEmailDuplicated(false);
-      } else {
-        console.log('이메일 검증 실패');
-        setIsEmailDuplicated(true);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('이메일 중복확인 에러:', error);
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 400) {
+          setIsEmailDuplicated(true);
+          console.error('서버 응답:', error.response?.data?.detail);
+        }
+      }
     }
   };
 
@@ -130,7 +136,7 @@ export const SignUp: React.FC = () => {
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
-                setIsEmailDuplicated(false);
+                setIsEmailDuplicated(undefined);
                 setEmailCheckClicked(false);
               }}
               placeholder="이메일 입력"

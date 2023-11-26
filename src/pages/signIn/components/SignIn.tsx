@@ -3,14 +3,24 @@ import { theme } from '@styles/theme';
 import styled from 'styled-components';
 import MainTwoIcon from '@assets/mainLogoTwo.svg';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
-import { emailState, pwState } from 'recoil/atom';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import {
+  tokenAtom,
+  refreshTokenAtom,
+  emailState,
+  loginState,
+  pwState,
+} from 'recoil/atom';
 import axios from 'axios';
 export const SignIn: React.FC = () => {
   const [email, setEmail] = useRecoilState(emailState);
   const [pw, setPw] = useRecoilState(pwState);
   const [signInButtonClick, setSignInButtonClick] = useState(false);
+  const setLogin = useSetRecoilState(loginState);
   const signInUrl = 'http://43.202.50.38:8080/v1/login';
+  const setAccessToken = useSetRecoilState(tokenAtom);
+  const setRefreshToken = useSetRecoilState(refreshTokenAtom);
+
   const navigate = useNavigate();
   const handleSignIn = async (email: string, pw: string) => {
     const params = new URLSearchParams({
@@ -23,8 +33,21 @@ export const SignIn: React.FC = () => {
           accept: '*/*',
         },
       });
+      console.log(response);
       if (response.status === 200) {
-        console.log(response);
+        const accessToken = response.data.accessToken;
+        const refreshToken = response.data.refreshToken;
+        // const decodedToken = jwt.decode(accessToken);
+        // console.log(decodedToken);
+        console.log(accessToken);
+        console.log(refreshToken);
+        setRefreshToken(refreshToken);
+        setAccessToken(accessToken);
+
+        setLogin(true);
+        setEmail('');
+        setPw('');
+        navigate('/');
       } else {
         setSignInButtonClick(true);
         console.log('로그인 실패');
