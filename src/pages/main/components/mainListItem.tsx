@@ -50,7 +50,10 @@ export default MainListItem;
 const StyledWrapper = styled(Slider)`
   .slick-prev,
   .slick-next {
-    background-color: ${theme.colors.navy};
+    color: ${theme.colors.navy};
+    width: 4rem;
+    height: 4rem;
+    z-index: 999;
   }
   border: none;
   .slick-list {
