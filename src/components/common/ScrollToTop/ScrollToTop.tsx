@@ -50,4 +50,7 @@ const StyledWrapper = styled.button`
   color: #fff;
   line-height: 0.5rem;
   cursor: pointer;
+  &:hover {
+    background-color: ${theme.colors.blue};
+  }
 `;
