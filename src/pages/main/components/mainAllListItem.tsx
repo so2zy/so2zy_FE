@@ -4,6 +4,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { FaStar } from 'react-icons/fa';
 import styled from 'styled-components';
 import { MainItemProps, MainListProps, getAllProduct } from './getPlaces';
+import UseIntersectionObserver from '@utils/useIntersectionObserver';
 
 const MainAllListItem = ({ title }: MainListProps) => {
   console.log(title);
@@ -18,12 +19,26 @@ const MainAllListItem = ({ title }: MainListProps) => {
       return lastPageParam + 1;
     },
   });
-  const handleLoadMore = (pages: any) => {
-    if (hasNextPage) {
-      fetchNextPage(pages);
-      console.log(data);
-    }
+
+  const handleIntersect: IntersectionObserverCallback = (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting && hasNextPage) {
+        fetchNextPage();
+      }
+    });
   };
+
+  const { setTarget } = UseIntersectionObserver({
+    onIntersect: handleIntersect,
+    threshold: 0.5, // 설정에 따라 조절 가능
+  });
+
+  // const handleLoadMore = () => {
+  //   if (hasNextPage) {
+  //     fetchNextPage();
+  //     console.log(data);
+  //   }
+  // };
 
   return (
     <StyledContainer>
@@ -53,7 +68,8 @@ const MainAllListItem = ({ title }: MainListProps) => {
           )}
       </StyledWrapper>
 
-      <button onClick={handleLoadMore}>더 보기</button>
+      {/* <button onClick={handleLoadMore}>더 보기</button> */}
+      <div ref={(node) => setTarget(node)} />
     </StyledContainer>
   );
 };
