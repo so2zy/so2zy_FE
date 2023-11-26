@@ -43,7 +43,8 @@ export const SignIn: React.FC = () => {
         console.log(refreshToken);
         setRefreshToken(refreshToken);
         setAccessToken(accessToken);
-
+        setEmail(email);
+        setPw(pw);
         setLogin(true);
         navigate('/');
       } else {
