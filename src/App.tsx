@@ -9,11 +9,15 @@ import { GlobalStyle } from './styles/globalStyles';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@styles/theme';
 import { Card } from '@components/common/Card';
-import PlaceDetail from './pages/placeDetail/components/PlaceDetail';
+import { PlaceDetail } from './pages/placeDetail/components/PlaceDetail.page';
+import Modal from 'react-modal';
+import Reservation from 'pages/reservation';
 
 const Main = React.lazy(() => import('./pages/main'));
 // const SearchList = React.lazy(() => import('./pages/searchList'));
 // const Card = React.lazy(() => import('./components/common/Card'));
+// const PlaceDetail = React.lazy(() => import('./pages/placeDetail'));
+Modal.setAppElement('#root');
 
 function App() {
   return (
@@ -62,6 +66,14 @@ function App() {
                 element={
                   <Card>
                     <PlaceDetail />
+                  </Card>
+                }
+              />
+              <Route
+                path="/reservation"
+                element={
+                  <Card>
+                    <Reservation />
                   </Card>
                 }
               />

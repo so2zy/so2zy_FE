@@ -1,10 +1,11 @@
 export const theme = {
   colors: {
-    navy: '#253c59', //primary navy
-    blue: '#99b4bf', //옵션에 사용하는 세번째 blue
-    yellow: '#d9b70d', //찜에 사용하는 yellow
-    gray1: '#f8f8f8', //좀 더 어두운 gray
-    gray2: '#d1d1d1',
+    navy: '#253C59', //primary navy
+    blue: '#58788c', //옵션에 사용하는 두번째 blue
+    yellow: '#D9B70D', //찜에 사용하는 yellow
+    gray1: '#f8f8f8', //좀 더 어두운 gray(추가)
+    gray2: '#D1D1D1', //중간 gray
+
     gray3: '#F8F8F8',
 
     error: '#CF0000',
