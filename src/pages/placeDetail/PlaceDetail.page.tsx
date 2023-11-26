@@ -83,14 +83,13 @@ export const PlaceDetail: React.FC = () => {
   };
 
   const getData = async (id: any) => {
-    axios
-      .get(`${process.env.REACT_APP_SERVER}/v1/accommodations/${id}`)
-      .then((res) => {
-        console.log(`get test ${id}`);
-        setAccommodation(res.data);
-        console.log(res.data);
-        setIsLoading(false);
-      });
+    // `${process.env.REACT_APP_SERVER}/v1/accommodations/${id}`
+    axios.get(`/accommodations/${id}`).then((res) => {
+      console.log(`get test ${id}`);
+      setAccommodation(res.data);
+      console.log(res.data);
+      setIsLoading(false);
+    });
   };
 
   useEffect(() => {
@@ -105,13 +104,13 @@ export const PlaceDetail: React.FC = () => {
   }, [accommodation]);
 
   //장바구니로 post하는 로직 추가
-  const addCart = async () => {
-    axios
-      .post(`${process.env.REACT_APP_SERVER}/v1/accommodations/${id}`)
-      .then((res) => {
-        console.log(res.data);
-      });
-  };
+  // const addCart = async () => {
+  //   axios
+  //     .post(`${process.env.REACT_APP_SERVER}/v1/accommodations/${id}`)
+  //     .then((res) => {
+  //       console.log(res.data);
+  //     });
+  // };
   //예약으로 post하는 로직 추가
 
   if (isLoading) {
@@ -166,43 +165,44 @@ export const PlaceDetail: React.FC = () => {
         <StyledLine />
 
         <StyledSubCategory>객실 선택</StyledSubCategory>
-        {accommodation.roomInfoList.map((room) => (
-          <StyledSubContainer key={room.id}>
-            <StyledDetailImg src={room.url} />
-            <StyledDetail>
-              <StyledWrapper>
-                <StyledRoomTitle>{room.type}</StyledRoomTitle>
-              </StyledWrapper>
-              <StyledRoomType>숙박</StyledRoomType>
-              <StyledCapacity>
-                체크인 {room.checkIn}, 체크아웃
-                {room.checkOut}
-              </StyledCapacity>
-              <StyledCapacity>
-                ({room.capacity}명 기준/최대 {room.maxCapacity}명)
-              </StyledCapacity>
-              <StyledRealPrice>{room.price}원</StyledRealPrice>
-              <StyledSalePrice> {room.price}원</StyledSalePrice>
-              {room.stock === 0 ? (
-                <StyledNoStock>예약불가</StyledNoStock>
-              ) : (
-                <ReservationWrapper>
-                  <StyledReservationButton>
-                    <RiShoppingBagLine />
-                  </StyledReservationButton>
-                  <StyledReservationButton
-                    onClick={() => {
-                      addCart();
-                      navigate('/');
-                    }}
-                  >
-                    예약하기
-                  </StyledReservationButton>
-                </ReservationWrapper>
-              )}
-            </StyledDetail>
-          </StyledSubContainer>
-        ))}
+        {accommodation.roomInfoList &&
+          accommodation.roomInfoList.map((room) => (
+            <StyledSubContainer key={room.id}>
+              <StyledDetailImg src={room.url} />
+              <StyledDetail>
+                <StyledWrapper>
+                  <StyledRoomTitle>{room.type}</StyledRoomTitle>
+                </StyledWrapper>
+                <StyledRoomType>숙박</StyledRoomType>
+                <StyledCapacity>
+                  체크인 {room.checkIn}, 체크아웃
+                  {room.checkOut}
+                </StyledCapacity>
+                <StyledCapacity>
+                  ({room.capacity}명 기준/최대 {room.maxCapacity}명)
+                </StyledCapacity>
+                <StyledRealPrice>{room.price}원</StyledRealPrice>
+                <StyledSalePrice> {room.price}원</StyledSalePrice>
+                {room.stock === 0 ? (
+                  <StyledNoStock>예약불가</StyledNoStock>
+                ) : (
+                  <ReservationWrapper>
+                    <StyledReservationButton>
+                      <RiShoppingBagLine />
+                    </StyledReservationButton>
+                    <StyledReservationButton
+                      onClick={() => {
+                        // addCart();
+                        navigate('/');
+                      }}
+                    >
+                      예약하기
+                    </StyledReservationButton>
+                  </ReservationWrapper>
+                )}
+              </StyledDetail>
+            </StyledSubContainer>
+          ))}
       </>
     );
   }
