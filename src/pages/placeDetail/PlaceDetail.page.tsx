@@ -12,6 +12,7 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import MapModal from './components/MapModal';
 
+//숙소 조회 인터페이스
 interface IAccommodations {
   id: number;
   accommodationName: string;
@@ -40,8 +41,24 @@ interface RoomList {
   url: string;
 }
 
+//예약 인터페이스
+interface IReservationData {
+  roomList: IReservationRoom[];
+  personnel: number;
+  agreement: boolean;
+  fromCart: boolean;
+}
+
+interface IReservationRoom {
+  roomId: number;
+  startDate: string;
+  endDate: string;
+  price: number;
+}
+
 export const PlaceDetail: React.FC = () => {
   const { id } = useParams();
+  //조회
   const [accommodation, setAccommodation] = useState<IAccommodations>({
     id: 0,
     accommodationName: '',
@@ -64,9 +81,26 @@ export const PlaceDetail: React.FC = () => {
       },
     ],
   });
+
+  //예약
+  const [reservationData] = useState<IReservationData>({
+    roomList: [
+      {
+        roomId: 0,
+        startDate: '',
+        endDate: '',
+        price: 0,
+      },
+    ],
+    personnel: 0,
+    agreement: false,
+    fromCart: false,
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
+
+  //지도 모달
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalLatitude, setModalLatitude] = useState<number>(0);
   const [modalLongitude, setModalLongitude] = useState<number>(0);
@@ -82,14 +116,19 @@ export const PlaceDetail: React.FC = () => {
     setModalIsOpen(false);
   };
 
+  //숙소 정보 get하는 로직
+  // `${process.env.REACT_APP_SERVER}/v1/accommodations/${id}`
   const getData = async (id: any) => {
-    // `${process.env.REACT_APP_SERVER}/v1/accommodations/${id}`
-    axios.get(`/accommodations/${id}`).then((res) => {
+    try {
+      const res = await axios.get(`/accommodations/${id}`);
+
       console.log(`get test ${id}`);
       setAccommodation(res.data);
       console.log(res.data);
       setIsLoading(false);
-    });
+    } catch (error) {
+      console.error('숙소 정보 가져오기 실패', error);
+    }
   };
 
   useEffect(() => {
@@ -103,17 +142,36 @@ export const PlaceDetail: React.FC = () => {
     }
   }, [accommodation]);
 
-  //장바구니로 post하는 로직 추가
-  // const addCart = async () => {
-  //   axios
-  //     .post(`${process.env.REACT_APP_SERVER}/v1/accommodations/${id}`)
-  //     .then((res) => {
-  //       console.log(res.data);
-  //     });
-  // };
-  //예약으로 post하는 로직 추가
+  //장바구니로 post하는 로직
+  // `${process.env.REACT_APP_SERVER}/v1/carts/{member_id}/{room_id}
+  const memberId = 'test'; //유저 정보 받아오기
+  const roomId = 1; //클릭한 그 룸 아아디를 넘겨야함
+  const addCart = async () => {
+    try {
+      const res = await axios.post(`/v1/carts/${memberId}/${roomId}`);
+      console.log(res.data);
+    } catch (error) {
+      console.error('장바구니 실패', error);
+    }
+  };
+
+  //예약으로 post하는 로직
+  // `${process.env.REACT_APP_SERVER}/v1/reservations
+  const sendPostRequest = async () => {
+    try {
+      const res = await axios.post('/v1/reservations', reservationData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log(res.data);
+    } catch (error) {
+      console.error('예약 실패', error);
+    }
+  };
 
   if (isLoading) {
+    //로딩 애니메이션 컴포넌트 추가하기
     return <div>Loading...</div>;
   } else {
     return (
@@ -188,12 +246,17 @@ export const PlaceDetail: React.FC = () => {
                 ) : (
                   <ReservationWrapper>
                     <StyledReservationButton>
-                      <RiShoppingBagLine />
+                      <RiShoppingBagLine
+                        onClick={() => {
+                          addCart();
+                          // navigate('/');   //장바구니로 이동
+                        }}
+                      />
                     </StyledReservationButton>
                     <StyledReservationButton
                       onClick={() => {
-                        // addCart();
-                        navigate('/');
+                        sendPostRequest();
+                        // navigate('/');   //예약페이지로 이동
                       }}
                     >
                       예약하기
