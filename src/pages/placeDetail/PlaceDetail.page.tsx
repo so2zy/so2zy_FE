@@ -121,7 +121,7 @@ export const PlaceDetail: React.FC = () => {
   //장바구니로 post하는 로직
   // `${process.env.REACT_APP_SERVER}/v1/carts/{member_id}/{room_id}
   const [email] = useRecoilState(emailState); //이메일정보
-  const roomId = 1; //클릭한 그 룸 아아디를 넘겨야함
+  const roomId = 1; //클릭한 그 룸 아이디를 넘겨야함
   const addCart = async () => {
     try {
       const res = await axios.post(`/v1/carts/${email}/${roomId}`);
