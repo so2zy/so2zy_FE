@@ -5,19 +5,41 @@ export interface MainListProps {
 }
 
 export interface MainItemProps {
+  page: number;
   id: number;
-  ranking: number;
   name: string;
-  price: string;
-  saleprice?: string;
-  image: string;
-  islast?: boolean;
-  page?: number;
+  latitude: number;
+  longitude: number;
+  addressCode: string;
+  likeCount: number;
+  phoneNumber: string;
+  // roomList: RoomList[];
+  accommodationImageList: ImageList[];
+  image: string; // 임시
+  price: number;
+  saleprice: number;
+  like: boolean;
+}
+export interface ImageList {
+  id: number;
+  url: string;
+}
+
+export interface RoomList {
+  id: number;
+  type: string;
+  price: number;
+  capacity: number;
+  maxCapacity: number;
+  checkIn: string;
+  checkOut: string;
+  stock: number;
+  url: string;
 }
 
 export interface RegionSelectProps {
   id: string;
-  name: 'string';
+  name: string;
   regions: string[];
 }
 
@@ -70,10 +92,11 @@ export const getFavorite = async () => {
   }
 };
 
-export const getAllProduct = async () => {
+export const getAllProduct = async (page: any) => {
   try {
-    const res = await axios.get('/api/main/allproduct');
+    const res = await axios.get(`/api/main/allitems?page=${page}`);
     if (res) {
+      console.log('전체 숙소 조회 성공');
       return res.data;
     } else {
       console.log('모든 상품 받아오기 실패');
