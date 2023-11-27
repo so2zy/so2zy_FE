@@ -39,7 +39,6 @@ const Header = () => {
 
   const [searchInput, setSearchInput] = useState('');
   const [searchResult, setSearchResult] = useState([]);
-  console.log(searchResult); // 에러 방지
 
   console.log(refreshToken, token);
   const handleMainLogoClick = () => {
@@ -127,18 +126,14 @@ const Header = () => {
     300,
   );
 
-  const createQuery = (searchInput: string) => {
-    return `/api/searchList?name=${searchInput}`;
-  };
-
   const onInputChange = async (query: string) => {
     try {
-      const res = await axios.get(query);
+      const res = await axios.get(`/api/searchList?name=${query}`);
       if (res.data) {
         setSearchResult(res.data);
+        console.log(searchResult);
         if (res.data.length > 0) {
-          const searchQuery = createQuery(searchInput);
-          navigate(`${searchQuery}`);
+          navigate(`/search?name=${searchInput}`);
           console.log('성공');
         }
       } else {
@@ -151,8 +146,7 @@ const Header = () => {
   };
 
   useEffect(() => {
-    const searchQuery = createQuery(searchInput);
-    onInputChange(searchQuery);
+    onInputChange(searchInput);
   }, [searchInput]);
   return (
     <>
