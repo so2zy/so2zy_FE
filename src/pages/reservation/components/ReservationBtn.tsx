@@ -12,7 +12,7 @@ const ReservationBtn = () => {
 
 export default ReservationBtn;
 
-const StyledWrapper = styled.div`
+export const StyledWrapper = styled.div`
   width: 48rem;
   margin: 2rem auto 1rem auto;
   border: 1px solid black;
@@ -29,7 +29,7 @@ const StyledWrapper = styled.div`
   }
 `;
 
-const StyledBtnText = styled.p`
+export const StyledBtnText = styled.p`
   color: #fff;
   font-weight: bold;
 `;
