@@ -52,7 +52,8 @@ export default function PriceSlider({
           alignItems: 'center',
           justifyContent: 'center',
           fontWeight: 'bold',
-          fontSize: '1.2rem',
+          fontSize: '1.4rem',
+          fontFamily: 'GmarketSans',
         }}
         gutterBottom
       >
@@ -77,6 +78,8 @@ export default function PriceSlider({
           alignItems: 'center',
           justifyContent: 'center',
           fontSize: '1.1rem',
+          fontWeight: 'bold',
+          fontFamily: 'GmarketSans',
         }}
         gutterBottom
       >
