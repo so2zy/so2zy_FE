@@ -1,5 +1,5 @@
 import { theme } from '@styles/theme';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Logo from '@assets/mainLogo.svg';
 import CartIcon from '@assets/shoppingBag.png';
@@ -21,6 +21,8 @@ import {
   userKeyState,
   userNameState,
 } from 'recoil/atom';
+import { debounce } from 'lodash';
+import axios from 'axios';
 
 const Header = () => {
   const isUserLoggedIn = useRecoilValue(isLogInSelector);
@@ -34,6 +36,10 @@ const Header = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [searchInput, setSearchInput] = useState('');
+  const [searchResult, setSearchResult] = useState([]);
+  console.log(searchResult); // 에러 방지
 
   console.log(refreshToken, token);
   const handleMainLogoClick = () => {
@@ -113,6 +119,35 @@ const Header = () => {
   if (isSignUpOrSignIn) {
     return null;
   }
+
+  const handleInputChange = debounce(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchInput(e.target.value);
+    },
+    300,
+  );
+
+  const createQuery = (searchInput: string) => {
+    return `/api/search?place=${searchInput}`;
+  };
+
+  const onInputChange = async (query: string) => {
+    try {
+      const res = await axios.get(query);
+      if (res.data) {
+        setSearchResult(res.data);
+      } else {
+        console.error('검색어 입력 오류: ', searchInput);
+      }
+    } catch (error) {
+      console.error('검색 중 오류:', error);
+      setSearchResult([]);
+    }
+  };
+  useEffect(() => {
+    const searchQuery = createQuery(searchInput);
+    onInputChange(searchQuery);
+  }, [searchInput]);
   return (
     <>
       {isReservedPage ? (
@@ -148,7 +183,10 @@ const Header = () => {
               </StyledHeaderMainLogo>
             )}
             {isSearchPage && (
-              <StyledHeaderSearchBar placeholder="숙소를 검색해보세요" />
+              <StyledHeaderSearchBar
+                placeholder="숙소를 검색해보세요"
+                onChange={handleInputChange}
+              />
             )}
 
             <StyledHeaderRight>

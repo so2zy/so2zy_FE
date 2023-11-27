@@ -24,6 +24,7 @@
     "crypto-browserify": "^3.12.0",
     "date-fns": "^2.30.0",
     "jsonwebtoken-promisified": "^1.0.3",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-datepicker": "^4.23.0",
     "react-dom": "^18.2.0",
@@ -68,6 +69,7 @@
   },
   "devDependencies": {
     "@types/jsonwebtoken-promisified": "^1.0.4",
+    "@types/lodash": "^4.14.202",
     "@types/react-datepicker": "^4.19.3",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",

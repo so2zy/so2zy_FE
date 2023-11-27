@@ -19,9 +19,7 @@ export const StyledWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* margin: 1.5rem 1rem 5.5rem 1rem; */
   margin: 2rem 0 5.5rem 0;
-  /* border: 1px solid black; */
   width: 100%;
 `;
 
