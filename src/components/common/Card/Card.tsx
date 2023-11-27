@@ -20,7 +20,7 @@ const StyledCard = styled.div`
   border-radius: 8px;
   box-shadow: 4px 4px 4px ${theme.colors.gray2};
 
-  padding: 1rem 4rem;
+  padding: 1rem 2rem;
   margin: 2rem auto;
   width: 50%;
   flex-direction: column;
