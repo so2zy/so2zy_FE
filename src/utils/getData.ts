@@ -3,8 +3,6 @@ import axios from 'axios';
 // 판매량 정렬 아직 없음, 날짜/인원수/예약가능 필터링 아직 없음
 export const getSearchListData = async (
   name?: string,
-  // page?: number,
-  // size?: number,
   peopleCount?: number,
   isAvailable?: boolean,
   startDate?: Date | null,
@@ -13,6 +11,8 @@ export const getSearchListData = async (
   highestPrice?: number,
   orderBy?: string,
   orderCondition?: string,
+  page?: number,
+  size?: number,
 ) => {
   try {
     let url = `/v1/accommodations?`;
@@ -27,6 +27,8 @@ export const getSearchListData = async (
     if (lowestPrice !== undefined) url += `&lowestPrice=${lowestPrice}`;
     if (highestPrice !== undefined) url += `&highestPrice=${highestPrice}`;
     if (isAvailable !== undefined) url += `&isAvailable=${isAvailable}`;
+    if (page !== undefined) url += `&page=${page}`;
+    if (size !== undefined) url += `&size=${size}`;
     // 정렬
     if (orderBy !== undefined) url += `&orderBy=${orderBy}`;
     if (orderCondition !== undefined)

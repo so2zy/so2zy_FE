@@ -21,8 +21,9 @@ import {
   searchInputState,
 } from 'recoil/searchList';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { getSearchListData } from '@utils/getData';
+import InfiniteScroll from 'react-infinite-scroller';
 
 interface Hotel {
   id: number;
@@ -55,8 +56,7 @@ export const SearchListReal: React.FC = () => {
   const endDate = useRecoilValue(endDateState);
   const [date, setDate] = useState('');
   const searchedName = useRecoilValue(searchInputState); // 검색한 이름
-  const page = 0;
-  const size = 10;
+  const size = 6;
 
   const shortenPrice = (price: number) => {
     if (price === 0) {
@@ -97,25 +97,31 @@ export const SearchListReal: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    refetch();
-    console.log('searchListData', searchListData);
-  }, [
-    { sortBy, sortOrder },
-    searchedName,
-    peopleCount,
-    isClickedReservation,
-    { startDate, endDate },
-    { priceA, priceB },
-  ]);
+  // useEffect(() => {
+  //   refetch();
+  //   console.log('searchListData', searchListData);
+  // }, [
+  //   sortBy,
+  //   sortOrder,
+  //   searchedName,
+  //   peopleCount,
+  //   isClickedReservation,
+  //   startDate,
+  //   endDate,
+  //   priceA,
+  //   priceB,
+  // ]);
 
-  const { data: searchListData, refetch } = useQuery({
+  const {
+    data: searchListData,
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery({
     queryKey: ['searchListData'],
-    queryFn: () =>
+    queryFn: ({ pageParam = 0 }) =>
       getSearchListData(
         searchedName,
-        // page,
-        // size,
         peopleCount,
         isClickedReservation,
         startDate,
@@ -124,8 +130,15 @@ export const SearchListReal: React.FC = () => {
         priceB,
         sortOrder,
         sortBy,
+        pageParam,
+        size,
       ),
-    enabled: false,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPosts) => {
+      return lastPage.currentPage !== allPosts[0].totalPages
+        ? lastPage.currentPage + 1
+        : undefined;
+    },
   });
 
   useEffect(() => {
@@ -241,11 +254,10 @@ export const SearchListReal: React.FC = () => {
           </StyledSalesButton>
         </StyledSort>
       </StyledFilterSortWrapper>
-
-      {searchListData && (
-        <StyledContainer>
-          {searchListData.map((hotel: any) => {
-            return (
+      <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
+        {searchListData?.pages.map((page, pageIndex) => (
+          <StyledContainer key={pageIndex}>
+            {page.data.map((hotel: any) => (
               <Item
                 key={hotel.id}
                 name={hotel.name}
@@ -255,28 +267,10 @@ export const SearchListReal: React.FC = () => {
                 discountPrice={hotel.discountPrice}
                 // salesCount={hotel.salesCount}
               />
-            );
-          })}
-        </StyledContainer>
-      )}
-
-      {/* {searchData && (
-        <StyledContainer>
-          {hotels.map((hotel) => {
-            return (
-              <Item
-                key={hotel.id}
-                name={hotel.name}
-                // image={hotel.image}
-                favorites={hotel.favorites}
-                regularPrice={hotel.regularPrice}
-                discountPrice={hotel.discountPrice}
-                // salesCount={hotel.salesCount}
-              />
-            );
-          })}
-        </StyledContainer>
-      )} */}
+            ))}
+          </StyledContainer>
+        ))}
+      </InfiniteScroll>
 
       <Modal isOpen={modalIsOpen} closeModal={closeModal} />
     </div>

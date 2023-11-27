@@ -299,6 +299,8 @@ export const handlers = [
     const highestPriceFilter = parseInt(url.searchParams.get('highestPrice'));
     const isAvailableFilter = url.searchParams.get('isAvailable');
     const nameFilter = url.searchParams.get('name');
+    const page = parseInt(url.searchParams.get('page'));
+    const size = parseInt(url.searchParams.get('size'));
 
     const data = [
       {
@@ -444,6 +446,15 @@ export const handlers = [
       return orderBy === 'asc' ? valueA - valueB : valueB - valueA;
     });
 
-    return HttpResponse.json(sortedData);
+    const totalItems = sortedData.length;
+    const totalPages = Math.ceil(totalItems / size);
+    const paginatedData = sortedData.slice((page - 1) * size, page * size);
+
+    return HttpResponse.json({
+      data: paginatedData,
+      totalPages,
+      currentPage: page,
+      size: size,
+    });
   }),
 ];
