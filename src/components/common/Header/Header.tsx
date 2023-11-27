@@ -46,13 +46,13 @@ const Header = () => {
 
   const handleArrowLeft = () => {
     if (location.pathname === '/cart') {
-      navigate('/placeDetail');
+      history.back();
     } else if (location.pathname === '/reservation') {
-      navigate('/cart');
+      history.back();
     } else if (location.pathname === '/confirm') {
-      navigate('/reservation');
+      history.back();
     } else {
-      navigate('/');
+      history.back();
     }
   };
 
