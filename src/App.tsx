@@ -13,6 +13,8 @@ import Modal from 'react-modal';
 import Reservation from 'pages/reservation';
 import Cart from 'pages/cart';
 import Confirm from 'pages/confirm';
+import { Loading } from '@components/common/Loading';
+import { NotFound } from '@components/common/NotFound';
 
 const Main = React.lazy(() => import('./pages/main'));
 // const SearchList = React.lazy(() => import('./pages/searchList'));
@@ -27,7 +29,7 @@ function App() {
       <BrowserRouter>
         <Header />
         <div className="App">
-          <Suspense fallback={<div>로딩중...</div>}>
+          <Suspense fallback={<Loading />}>
             <Routes>
               <Route
                 path="/"
@@ -80,6 +82,7 @@ function App() {
                   </Card>
                 }
               />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
         </div>
