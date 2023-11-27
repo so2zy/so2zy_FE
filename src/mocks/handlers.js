@@ -1,54 +1,50 @@
 import { http, HttpResponse } from 'msw';
 
 export const handlers = [
-  // http.get(`/accommodations/:id`, ({ params }) => {
-  //   const { id } = params;
-  //   console.log(`handler test ${id}`);
+  http.get(`/accommodations/:id`, ({ params }) => {
+    const { id } = params;
+    console.log(`handler test ${id}`);
 
-  //   return HttpResponse.json({
-  //     id: 1, //백엔드에 추가요청(v1)
-  //     accommodationName: '소피텔 앰배서더 서울',
-  //     latitude: 37.51379512401881,
-  //     longitude: 127.10615978152588,
-  //     addressCode: '서울특별시 송파구 잠실로 209',
-  //     phoneNumber: '02-2092-6000',
-  //     accommodationImageList: [
-  //       {
-  //         id: 1,
-  //         url: 'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg', //이미지 url
-  //       },
-  //     ],
-  //     roomList: [
-  //       {
-  //         id: 1,
-  //         type: 'deluxe',
-  //         originalPrice: 3000000, //백엔드에 수정요청(v2)
-  //         salePrice: 2400000, //백엔드에 추가요청(v2)
-  //         capacity: 3,
-  //         maxCapacity: 4,
-  //         checkIn: '13:00', //백엔드에 수정요청(v1)
-  //         checkOut: '18:00', //백엔드에 수정요청(v1)
-  //         stock: 4, //날짜랑 같이 관리 필요해서 백엔드에 요청(v2)
-  //         //백엔드에 수정요청(v1)
-  //         imageUrl:
-  //           'https://yaimg.yanolja.com/v5/2023/11/14/10/640/65534a484efab3.93517110.jpg', //백엔드에 수정요청
-  //       },
-  //       {
-  //         id: 2,
-  //         type: 'premium',
-  //         originalPrice: 58000,
-  //         salePrice: 34000,
-  //         capacity: 2,
-  //         maxCapacity: 4,
-  //         checkIn: '13:00',
-  //         checkOut: '18:00',
-  //         stock: 0,
-  //         imageUrl:
-  //           'https://yaimg.yanolja.com/v5/2023/11/14/10/640/65534a484efab3.93517110.jpg',
-  //       },
-  //     ],
-  //   });
-  // }),
+    return HttpResponse.json({
+      id: 1, //백엔드에 추가요청(v1)
+      accommodationName: '소피텔 앰배서더 서울',
+      latitude: 37.51379512401881,
+      longitude: 127.10615978152588,
+      addressCode: '서울특별시 송파구 잠실로 209',
+      phoneNumber: '02-2092-6000',
+      accommodationImageList: [
+        {
+          id: 1,
+          url: 'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg', //이미지 url
+        },
+      ],
+      roomInfoList: [
+        {
+          id: 1,
+          type: 'deluxe',
+          price: 240000, //백엔드에 추가요청(v2)
+          capacity: 3,
+          maxCapacity: 4,
+          checkIn: '13:00', //백엔드에 수정요청(v1)
+          checkOut: '18:00', //백엔드에 수정요청(v1)
+          stock: 4, //날짜랑 같이 관리 필요해서 백엔드에 요청(v2)
+          //백엔드에 수정요청(v1)
+          url: 'https://yaimg.yanolja.com/v5/2023/11/14/10/640/65534a484efab3.93517110.jpg', //백엔드에 수정요청
+        },
+        {
+          id: 2,
+          type: 'premium',
+          price: 34000,
+          capacity: 2,
+          maxCapacity: 4,
+          checkIn: '13:00',
+          checkOut: '18:00',
+          stock: 0,
+          url: 'https://yaimg.yanolja.com/v5/2023/11/14/10/640/65534a484efab3.93517110.jpg',
+        },
+      ],
+    });
+  }),
   http.get('/api/main/mostsell', () => {
     return HttpResponse.json([
       {
