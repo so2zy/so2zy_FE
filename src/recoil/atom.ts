@@ -26,14 +26,19 @@ export const loginState = atom<boolean>({
 });
 export const tokenAtom = atom({
   key: 'tokenAtom',
-  default: undefined,
+  default: '',
 });
 export const refreshTokenAtom = atom({
   key: 'refreshTokenAtom',
-  default: undefined,
+  default: '',
 });
 
 export const isLogInSelector = selector({
   key: 'isLoginSelector',
   get: ({ get }) => !!get(tokenAtom),
+});
+
+export const userKeyState = atom({
+  key: 'userKeyState',
+  default: '',
 });
