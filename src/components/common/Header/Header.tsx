@@ -128,7 +128,7 @@ const Header = () => {
   );
 
   const createQuery = (searchInput: string) => {
-    return `/api/search?place=${searchInput}`;
+    return `/api/searchList?name=${searchInput}`;
   };
 
   const onInputChange = async (query: string) => {
@@ -136,6 +136,11 @@ const Header = () => {
       const res = await axios.get(query);
       if (res.data) {
         setSearchResult(res.data);
+        if (res.data.length > 0) {
+          const searchQuery = createQuery(searchInput);
+          navigate(`${searchQuery}`);
+          console.log('성공');
+        }
       } else {
         console.error('검색어 입력 오류: ', searchInput);
       }
@@ -144,6 +149,7 @@ const Header = () => {
       setSearchResult([]);
     }
   };
+
   useEffect(() => {
     const searchQuery = createQuery(searchInput);
     onInputChange(searchQuery);
