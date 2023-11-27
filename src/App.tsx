@@ -1,8 +1,7 @@
 import React, { Suspense } from 'react';
 import './App.css';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
-import SearchList from './pages/searchList';
-import SearchListReal from 'pages/searchListReal';
+import SearchList from 'pages/searchList';
 import RegionList from 'pages/regionList';
 import { Header } from '@components/common/Header';
 import SignUp from 'pages/signUp';
@@ -50,16 +49,8 @@ function App() {
                   </Card>
                 }
               />
-              <Route
-                path="/searchList"
-                element={
-                  <>
-                    <Header />
-                    <SearchList />
-                  </>
-                }
-              />
-              <Route path="/searchListReal" element={<SearchListReal />} />
+
+              <Route path="/searchList" element={<SearchList />} />
               <Route
                 path="/searchList"
                 element={
