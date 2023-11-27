@@ -103,7 +103,6 @@ const StyledRegionContainer = styled.div`
 const StyledRegionList = styled.div``;
 
 const StyledLine = styled.div`
-  /* width: 1px; */
   height: 32rem;
   width: 0.01rem;
   background-color: ${theme.colors.gray2};

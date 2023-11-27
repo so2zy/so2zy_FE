@@ -3,7 +3,7 @@ import { VscChromeClose } from 'react-icons/vsc';
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import { theme } from '@styles/theme';
-import { StyledLine } from './PlaceDetail.page';
+import { StyledLine } from '../PlaceDetail.page';
 
 interface MapBoxProps {
   latitude: number;
@@ -45,8 +45,9 @@ const customStyles = {
     left: '50%',
     right: 'auto',
     bottom: 'auto',
-    marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
+    borderRadius: '10px',
+    padding: '2.5rem',
   },
 };
 

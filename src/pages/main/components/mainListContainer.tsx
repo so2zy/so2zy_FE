@@ -20,7 +20,6 @@ export const StyledWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   margin: 1.5rem 1rem 5.5rem 1rem;
-  /* border: 1px solid black; */
 `;
 
 export const StyledTitle = styled.div`
