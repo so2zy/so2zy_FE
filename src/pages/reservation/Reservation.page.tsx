@@ -161,9 +161,8 @@ export const StyledWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid ${theme.colors.gray2};
-  margin-top: 4.375rem;
   padding: 3.5rem;
-  margin: 4.375rem auto 0 auto;
+  margin: 2rem auto 0 auto;
 `;
 
 export const StyledItemDesc = styled.div`
