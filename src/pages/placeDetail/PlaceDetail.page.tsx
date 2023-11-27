@@ -14,6 +14,7 @@ import MapModal from './components/MapModal';
 import { useRecoilState } from 'recoil';
 import { emailState } from 'recoil/atom';
 // import { Reservation } from 'pages/reservation';
+import { Loading } from '@components/common/Loading';
 
 //숙소 조회 인터페이스
 export interface IAccommodations {
@@ -130,9 +131,8 @@ export const PlaceDetail: React.FC = () => {
     }
   };
 
-  if (isLoading) {
-    //로딩 애니메이션 컴포넌트 추가하기
-    return <div>Loading...</div>;
+  if (!isLoading) {
+    return <Loading />;
   } else {
     return (
       <>
