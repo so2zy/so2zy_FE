@@ -6,10 +6,10 @@ import { useNavigate } from 'react-router-dom';
 import jwt from 'jsonwebtoken-promisified';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
-  tokenAtom,
-  refreshTokenAtom,
   emailState,
   pwState,
+  refreshTokenAtom,
+  tokenAtom,
   userKeyState,
   userNameState,
 } from 'recoil/atom';
@@ -40,7 +40,7 @@ export const SignIn: React.FC = () => {
         const accessToken = response.data.accessToken;
         const refreshToken = response.data.refreshToken;
         const decodedToken = jwt.decode(accessToken);
-        const decodedRefreshToken = jwt.decode(refreshToken);
+        // const decodedRefreshToken = jwt.decode(refreshToken);
         const {
           'user-key': userKey,
           'user-name': userName,
@@ -48,15 +48,16 @@ export const SignIn: React.FC = () => {
           exp,
         } = decodedToken;
         console.log(userKey, userName, iat, exp);
-        console.log(decodedToken);
-        console.log(decodedRefreshToken);
-        // console.log(accessToken);
-        // console.log(refreshToken);
+        sessionStorage.setItem('loginState', String(true));
+        sessionStorage.setItem('userKey', userKey);
+        sessionStorage.setItem('accessToken', accessToken);
+        sessionStorage.setItem('refreshToken', refreshToken);
+        sessionStorage.setItem('email', email);
+        sessionStorage.setItem('userName', userName);
         setUserKey(userKey);
         setRefreshToken(refreshToken);
         setAccessToken(accessToken);
         setEmail(email);
-        setPw(pw);
         setUserName(userName);
         setSignInButtonClick(false);
         navigate('/');

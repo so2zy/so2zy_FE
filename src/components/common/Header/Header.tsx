@@ -1,16 +1,24 @@
 import { theme } from '@styles/theme';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import Logo from '@assets/mainLogo.svg';
 import CartIcon from '@assets/shoppingBag.png';
 import HomeIcon from '@assets/home.png';
-// import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BsArrowLeft } from 'react-icons/bs';
-import { useRecoilState, useRecoilValue } from 'recoil';
 import {
+  useRecoilCallback,
+  useRecoilState,
+  useRecoilValue,
+  useSetRecoilState,
+} from 'recoil';
+import {
+  emailState,
   isLogInSelector,
+  pwState,
   refreshTokenAtom,
   tokenAtom,
+  userKeyState,
   userNameState,
 } from 'recoil/atom';
 
@@ -19,21 +27,15 @@ const Header = () => {
   const [refreshToken, setRefreshToken] = useRecoilState(refreshTokenAtom);
   const [token, setToken] = useRecoilState(tokenAtom);
   const [userName] = useRecoilState(userNameState);
+  const setUserKey = useSetRecoilState(userKeyState);
+  const setUserName = useSetRecoilState(userNameState);
+  const setEmail = useSetRecoilState(emailState);
+  const setPw = useSetRecoilState(pwState);
 
-  console.log(refreshToken);
-  console.log(token);
   const navigate = useNavigate();
   const location = useLocation();
-  const isSearchPage =
-    location.pathname === '/' || location.pathname === '/searchList';
-  const isReservedPage = ['/reservation', '/confirm', '/cart'].includes(
-    location.pathname,
-  );
-  const isSignUpOrSignIn = ['/signUp', '/signIn'].includes(location.pathname);
-  if (isSignUpOrSignIn) {
-    return null;
-  }
 
+  console.log(refreshToken, token);
   const handleMainLogoClick = () => {
     navigate('/');
   };
@@ -65,6 +67,52 @@ const Header = () => {
   const handleReservationText = () => {
     window.location.reload();
   };
+  const resetRecoilState = useRecoilCallback(
+    ({ reset }) =>
+      async () => {
+        // Recoil 상태 값을 초기화합니다.
+        reset(userKeyState);
+        reset(refreshTokenAtom);
+        reset(tokenAtom);
+        reset(emailState);
+        reset(pwState);
+        reset(userNameState);
+      },
+    [],
+  );
+
+  const handleLogOut = async () => {
+    sessionStorage.clear();
+
+    await resetRecoilState();
+  };
+  useEffect(() => {
+    const storedLoginState = sessionStorage.getItem('loginState');
+    if (storedLoginState === 'true') {
+      const storedUserKey = sessionStorage.getItem('userKey') || '';
+      const storedAccessToken = sessionStorage.getItem('accessToken') || '';
+      const storedRefreshToken = sessionStorage.getItem('refreshToken') || '';
+      const storedEmail = sessionStorage.getItem('email') || '';
+      const storedUserName = sessionStorage.getItem('userName') || '';
+
+      setUserKey(storedUserKey);
+      setRefreshToken(storedRefreshToken);
+      setToken(storedAccessToken);
+      setEmail(storedEmail);
+      setPw('');
+      setUserName(storedUserName);
+    }
+  }, []);
+
+  const isSearchPage =
+    location.pathname === '/' || location.pathname === '/searchList';
+  const isReservedPage = ['/reservation', '/confirm', '/cart'].includes(
+    location.pathname,
+  );
+  const isSignUpOrSignIn = ['/signUp', '/signIn'].includes(location.pathname);
+  if (isSignUpOrSignIn) {
+    return null;
+  }
   return (
     <>
       {isReservedPage ? (
@@ -109,12 +157,7 @@ const Header = () => {
               )}
 
               {isUserLoggedIn ? (
-                <StyledHeaderLogOut
-                  onClick={() => {
-                    setRefreshToken(undefined);
-                    setToken(undefined);
-                  }}
-                >
+                <StyledHeaderLogOut onClick={handleLogOut}>
                   로그아웃
                 </StyledHeaderLogOut>
               ) : (
