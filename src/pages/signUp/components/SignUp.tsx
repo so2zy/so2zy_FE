@@ -74,7 +74,7 @@ export const SignUp: React.FC = () => {
         try {
           console.log(response);
           setIsSignUp(true);
-
+          setUserName('');
           navigate('/signIn');
           console.log('가입에 성공했습니다.');
         } catch (error) {
