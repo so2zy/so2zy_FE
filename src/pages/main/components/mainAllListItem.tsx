@@ -5,8 +5,11 @@ import styled from 'styled-components';
 import { MainItemProps, MainListProps, getAllProduct } from './getPlaces';
 import UseIntersectionObserver from '@utils/useIntersectionObserver';
 import ScrollTopBtn from '@components/common/ScrollToTop/ScrollToTop';
+import { formatDate } from '@utils/useFormatDate';
+import { useNavigate } from 'react-router-dom';
 
 const MainAllListItem = ({ title }: MainListProps) => {
+  const navigate = useNavigate();
   console.log(title);
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: ['title'],
@@ -33,6 +36,20 @@ const MainAllListItem = ({ title }: MainListProps) => {
     threshold: 0.5,
   });
 
+  const handleDetailPage = (selectedId: number) => {
+    const startDate = new Date();
+    const endDate = new Date();
+    const personnel = 1;
+    endDate.setDate(endDate.getDate() + 1);
+    navigate(`/place/:${selectedId}`, {
+      state: {
+        startDate: formatDate(startDate),
+        endDate: formatDate(endDate),
+        personnel: personnel,
+      },
+    });
+  };
+
   return (
     <StyledContainer>
       <StyledWrapper>
@@ -54,7 +71,9 @@ const MainAllListItem = ({ title }: MainListProps) => {
                         {item.saleprice ? item?.saleprice : item.price}
                       </StyledPriceSale>
                     </StyledAllItemPriceList>
-                    <StyledLookBtn>숙소 보기</StyledLookBtn>
+                    <StyledLookBtn onClick={() => handleDetailPage(item.id)}>
+                      숙소 보기
+                    </StyledLookBtn>
                   </StyledAllItemDesc>
                 </StyledMainAllItem>
               )),

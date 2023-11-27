@@ -128,11 +128,11 @@ const Header = () => {
 
   const onInputChange = async (query: string) => {
     try {
-      const res = await axios.get(`/api/searchList?name=${query}`);
+      const res = await axios.get(`/api/searchlist?name=${query}`);
       if (res.data) {
         setSearchResult(res.data);
         console.log(searchResult);
-        if (res.data.length > 0) {
+        if (searchInput) {
           navigate(`/search?name=${searchInput}`);
           console.log('성공');
         }
@@ -145,9 +145,11 @@ const Header = () => {
     }
   };
 
-  useEffect(() => {
-    onInputChange(searchInput);
-  }, [searchInput]);
+  const handleEnterKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      onInputChange(searchInput);
+    }
+  };
   return (
     <>
       {isReservedPage ? (
@@ -186,6 +188,7 @@ const Header = () => {
               <StyledHeaderSearchBar
                 placeholder="숙소를 검색해보세요"
                 onChange={handleInputChange}
+                onKeyDown={handleEnterKeyPress}
               />
             )}
 
