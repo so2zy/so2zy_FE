@@ -13,8 +13,8 @@ import { useNavigate } from 'react-router-dom';
 import MapModal from './components/MapModal';
 import { useRecoilState } from 'recoil';
 import { emailState } from 'recoil/atom';
-// import { Reservation } from 'pages/reservation';
 import { Loading } from '@components/common/Loading';
+// import { useLocation } from 'react-router-dom';
 
 //숙소 조회 인터페이스
 export interface IAccommodations {
@@ -47,7 +47,6 @@ export interface RoomList {
 
 export const PlaceDetail: React.FC = () => {
   const { id } = useParams();
-  //조회
 
   const [accommodation, setAccommodation] = useState<IAccommodations>({
     id: 0,
@@ -81,6 +80,8 @@ export const PlaceDetail: React.FC = () => {
   const [modalLatitude, setModalLatitude] = useState<number>(0);
   const [modalLongitude, setModalLongitude] = useState<number>(0);
 
+  //인원수, 재고 필터링
+
   const openModal = (latitude: number, longitude: number) => {
     console.log(latitude, longitude);
     setModalLatitude(latitude);
@@ -92,15 +93,24 @@ export const PlaceDetail: React.FC = () => {
     setModalIsOpen(false);
   };
 
+  //필터링 데이터 받기 -> 종수님꺼 받아서 테스트하기
+  // const location = useLocation();
+  // const { startDate, endDate, personnel } = location.state || {
+  //   startDate: '23-11-28',
+  //   endDate: '23-11-29',
+  //   personnel: 1,
+  // };
+
   //숙소 정보 get하는 로직
   // `${process.env.REACT_APP_SERVER}/v1/accommodations/${id}`
+  // /v2/accommodations/${id}/${startDate}/${endDate}/${personnel}
   const getData = async (id: any) => {
     try {
       const res = await axios.get(`/accommodations/${id}`);
 
       console.log(`get test ${id}`);
       setAccommodation(res.data);
-      console.log(res.data);
+      console.log('정보 가져오기 성공', res.data);
       setIsLoading(false);
     } catch (error) {
       console.error('숙소 정보 가져오기 실패', error);
@@ -121,17 +131,16 @@ export const PlaceDetail: React.FC = () => {
   //장바구니로 post하는 로직
   // `${process.env.REACT_APP_SERVER}/v1/carts/{member_id}/{room_id}
   const [email] = useRecoilState(emailState); //이메일정보
-  const roomId = 1; //클릭한 그 룸 아이디를 넘겨야함
-  const addCart = async () => {
+  const addCart = async (roomId: number) => {
     try {
       const res = await axios.post(`/v1/carts/${email}/${roomId}`);
-      console.log(res.data);
+      console.log('장바구니 성공', res.data);
     } catch (error) {
       console.error('장바구니 실패', error);
     }
   };
 
-  if (!isLoading) {
+  if (isLoading) {
     return <Loading />;
   } else {
     return (
@@ -145,12 +154,11 @@ export const PlaceDetail: React.FC = () => {
           />
           <StyledTitle>{accommodation.accommodationName}</StyledTitle>
           <StyledSpan>
-            <StyledButton>11.19~11.20 1박</StyledButton>
-            <StyledButton>인원수 3명</StyledButton>
+            <StyledButton>23-11-28~23-11-29</StyledButton>
+            <StyledButton>3명</StyledButton>
           </StyledSpan>
         </StyledBar>
 
-        {/*숙소 이미지  */}
         <StyledImg src={accommodation.accommodationImageList[0].url} />
 
         <StyledMainTitle>
@@ -208,16 +216,18 @@ export const PlaceDetail: React.FC = () => {
                     <StyledReservationButton>
                       <RiShoppingBagLine
                         onClick={() => {
-                          addCart();
-                          navigate('/cart'); //장바구니로 이동
+                          addCart(room.id);
+                          //  navigate('/cart'); //장바구니로 이동
                         }}
                       />
                     </StyledReservationButton>
                     <StyledReservationButton
                       onClick={() => {
+                        console.log('Before', accommodation, room);
                         navigate(`/reservation`, {
-                          state: { roomId: room.id }, //   예약으로 post말고 props로 내려주기
+                          state: { accommodation: accommodation, room: room },
                         });
+                        console.log('After', accommodation, room);
                       }}
                     >
                       예약하기

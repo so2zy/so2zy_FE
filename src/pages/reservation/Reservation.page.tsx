@@ -1,32 +1,50 @@
 import { Checkbox } from '@mui/material';
 import { theme } from '@styles/theme';
 import styled from 'styled-components';
-// import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { RoomList, IAccommodations } from 'pages/placeDetail/PlaceDetail.page';
+import { useState, useEffect } from 'react';
 
 export const Reservation: React.FC = () => {
-  // const location = useLocation();
-  // const roomId = location.state?.roomId;
+  const location = useLocation();
+  console.log('Location 값 확인', location.state);
+
+  const [accommodationInfo, setAccommodationInfo] =
+    useState<IAccommodations | null>(null);
+  const [roomInfo, setRoomInfo] = useState<RoomList | null>(null);
+
+  useEffect(() => {
+    if (location.state) {
+      setAccommodationInfo(location.state.accommodation);
+      setRoomInfo(location.state.room);
+    }
+  }, [location.state]);
+
+  console.log('Accommodation info', accommodationInfo);
+  console.log('Room info', roomInfo);
 
   return (
     <>
       <StyledWrapper>
         <StyledItemDesc>
           <StyledItemTitle>
-            <span>남해 글리드810 풀빌라</span>
+            <span>{accommodationInfo?.accommodationName}</span>
           </StyledItemTitle>
           <StyledItemSubTitle>
-            <span>P1</span>
+            <span>{roomInfo?.type}</span>
           </StyledItemSubTitle>
           <StyledAcceptPerson>
-            <span>기준 2인/최대 2인</span>
+            <span>
+              기준 {roomInfo?.capacity}인/최대 {roomInfo?.maxCapacity}인
+            </span>
           </StyledAcceptPerson>
           <StyledCheckIn>
             <p>체크인</p>
-            <span>23.11.10(금) 15:00</span>
+            <span>23.11.10(금) {roomInfo?.checkIn}</span>
           </StyledCheckIn>
           <StyledCheckOut>
-            <p>체크인</p>
-            <span>23.11.10(금) 15:00</span>
+            <p>체크아웃</p>
+            <span>23.11.10(금) {roomInfo?.checkOut}</span>
           </StyledCheckOut>
         </StyledItemDesc>
         <StyledPriceBox>
@@ -35,7 +53,7 @@ export const Reservation: React.FC = () => {
           </StyledPayPrice>
           <StyledItemPrice>
             <span>상품금액</span>
-            <span>숙박/1박 81,000원</span>
+            <span>숙박/1박 {roomInfo?.price}원</span>
           </StyledItemPrice>
           <StyledItemSalePrice>
             <span>할인</span>
@@ -46,7 +64,7 @@ export const Reservation: React.FC = () => {
           </StyledItemSalePrice>
           <StyledFinalPayPrice>
             <span>최종 결제 금액</span>
-            <span>78,500원</span>
+            <span>{roomInfo?.price}원</span>
           </StyledFinalPayPrice>
         </StyledPriceBox>
       </StyledWrapper>
@@ -68,7 +86,7 @@ export const Reservation: React.FC = () => {
       </StyledRuleWrapper>
 
       <StyledButtonWrapper>
-        <StyledBtnText>78,500원 결제하기</StyledBtnText>
+        <StyledBtnText>{roomInfo?.price}원 결제하기</StyledBtnText>
       </StyledButtonWrapper>
     </>
   );
