@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
 import { RoomList, IAccommodations } from 'pages/placeDetail/PlaceDetail.page';
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 export const Reservation: React.FC = () => {
   const location = useLocation();
@@ -12,6 +13,7 @@ export const Reservation: React.FC = () => {
   const [accommodationInfo, setAccommodationInfo] =
     useState<IAccommodations | null>(null);
   const [roomInfo, setRoomInfo] = useState<RoomList | null>(null);
+  const [agreement, setAgreement] = useState(false);
 
   useEffect(() => {
     if (location.state) {
@@ -20,8 +22,36 @@ export const Reservation: React.FC = () => {
     }
   }, [location.state]);
 
-  console.log('Accommodation info', accommodationInfo);
-  console.log('Room info', roomInfo);
+  console.log(accommodationInfo, roomInfo);
+
+  const handlePayment = async () => {
+    if (roomInfo && agreement) {
+      const data = {
+        roomList: [
+          {
+            roomId: roomInfo.id,
+            startDate: '2023-12-22', //날짜 받아 수정
+            endDate: '2023-12-23',
+            price: roomInfo.price,
+          },
+        ],
+        personnel: roomInfo.maxCapacity, //인원수 받아 수정
+        agreement,
+        isFromCart: false, //장바구니 아닐땐 false
+        fromCart: true, //스웨거에서 사라져야하는 부분-> 민우님께 여쭤보기
+      };
+
+      try {
+        // ${process.env.REACT_APP_SERVER}
+        const response = await axios.post(`/v1/reservations`, data, {
+          headers: { 'Content-Type': 'application/json' },
+        });
+        console.log(response.data);
+      } catch (error) {
+        console.error('결제 실패', error);
+      }
+    }
+  };
 
   return (
     <>
@@ -41,6 +71,7 @@ export const Reservation: React.FC = () => {
           <StyledCheckIn>
             <p>체크인</p>
             <span>23.11.10(금) {roomInfo?.checkIn}</span>
+            {/* 날짜 수정하기 */}
           </StyledCheckIn>
           <StyledCheckOut>
             <p>체크아웃</p>
@@ -74,20 +105,27 @@ export const Reservation: React.FC = () => {
           <span>필수 약관 동의</span>
           <StyledEssentialCheckList>
             <CheckboxContainer>
-              <Checkbox />
+              <Checkbox
+                onClick={() => {
+                  setAgreement((prev) => !prev);
+                }}
+              />
               <CheckboxText>[필수]개인정보 수집 및 이용</CheckboxText>
             </CheckboxContainer>
             <StyledPayText>
               <span>※ 이용규칙, 취소 및 환불 규칙</span>에 동의하실 경우
-              결제하기를 클릭해주세요
+              결제버튼이 활성화 됩니다.
             </StyledPayText>
           </StyledEssentialCheckList>
         </StyledEssentialTerms>
       </StyledRuleWrapper>
-
-      <StyledButtonWrapper>
-        <StyledBtnText>{roomInfo?.price}원 결제하기</StyledBtnText>
-      </StyledButtonWrapper>
+      {agreement ? (
+        <StyledButtonWrapper onClick={handlePayment}>
+          <StyledBtnText>{roomInfo?.price}원 결제하기</StyledBtnText>
+        </StyledButtonWrapper>
+      ) : (
+        ''
+      )}
     </>
   );
 };

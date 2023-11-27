@@ -14,7 +14,7 @@ import MapModal from './components/MapModal';
 import { useRecoilState } from 'recoil';
 import { emailState } from 'recoil/atom';
 import { Loading } from '@components/common/Loading';
-// import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 //숙소 조회 인터페이스
 export interface IAccommodations {
@@ -94,12 +94,14 @@ export const PlaceDetail: React.FC = () => {
   };
 
   //필터링 데이터 받기 -> 종수님꺼 받아서 테스트하기
-  // const location = useLocation();
-  // const { startDate, endDate, personnel } = location.state || {
-  //   startDate: '23-11-28',
-  //   endDate: '23-11-29',
-  //   personnel: 1,
-  // };
+  const location = useLocation();
+  const { startDate, endDate, personnel } = location.state || {
+    startDate: '23-11-28',
+    endDate: '23-11-29',
+    personnel: 1,
+  };
+
+  console.log(startDate, endDate, personnel);
 
   //숙소 정보 get하는 로직
   // `${process.env.REACT_APP_SERVER}/v1/accommodations/${id}`

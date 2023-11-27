@@ -22,24 +22,34 @@ export const handlers = [
         {
           id: 1,
           type: 'deluxe',
-          price: 240000, //백엔드에 추가요청(v2)
-          capacity: 3,
-          maxCapacity: 4,
-          checkIn: '13:00', //백엔드에 수정요청(v1)
-          checkOut: '18:00', //백엔드에 수정요청(v1)
-          stock: 4, //날짜랑 같이 관리 필요해서 백엔드에 요청(v2)
-          //백엔드에 수정요청(v1)
-          url: 'https://yaimg.yanolja.com/v5/2023/11/14/10/640/65534a484efab3.93517110.jpg', //백엔드에 수정요청
+          price: 240000,
+          capacity: 2,
+          maxCapacity: 3,
+          checkIn: '13:00',
+          checkOut: '18:00',
+          stock: 4,
+          url: 'https://yaimg.yanolja.com/v5/2023/11/14/10/640/65534a484efab3.93517110.jpg',
         },
         {
           id: 2,
           type: 'premium',
-          price: 34000,
+          price: 340000,
           capacity: 2,
           maxCapacity: 4,
           checkIn: '13:00',
           checkOut: '18:00',
           stock: 0,
+          url: 'https://yaimg.yanolja.com/v5/2023/11/14/10/640/65534a484efab3.93517110.jpg',
+        },
+        {
+          id: 3,
+          type: 'twin',
+          price: 240000,
+          capacity: 2,
+          maxCapacity: 2,
+          checkIn: '13:00',
+          checkOut: '18:00',
+          stock: 5,
           url: 'https://yaimg.yanolja.com/v5/2023/11/14/10/640/65534a484efab3.93517110.jpg',
         },
       ],
