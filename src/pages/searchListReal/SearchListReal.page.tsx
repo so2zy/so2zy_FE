@@ -97,28 +97,23 @@ export const SearchListReal: React.FC = () => {
     }
   };
 
-  // useEffect(() => {
-  //   refetch();
-  //   console.log('searchListData', searchListData);
-  // }, [
-  //   sortBy,
-  //   sortOrder,
-  //   searchedName,
-  //   peopleCount,
-  //   isClickedReservation,
-  //   startDate,
-  //   endDate,
-  //   priceA,
-  //   priceB,
-  // ]);
-
   const {
     data: searchListData,
-    refetch,
     fetchNextPage,
     hasNextPage,
   } = useInfiniteQuery({
-    queryKey: ['searchListData'],
+    queryKey: [
+      'searchListData',
+      searchedName,
+      peopleCount,
+      isClickedReservation,
+      startDate,
+      endDate,
+      priceA,
+      priceB,
+      sortOrder,
+      sortBy,
+    ],
     queryFn: ({ pageParam = 0 }) =>
       getSearchListData(
         searchedName,
