@@ -69,7 +69,7 @@ export const SearchListReal: React.FC = () => {
   };
 
   const openModal = (type: string) => {
-    if (type == 'price') {
+    if (type == '가격') {
       setIsClickedPrice(true);
     } else if (type == '인원수') {
       setIsClickedPeople(true);
@@ -84,7 +84,6 @@ export const SearchListReal: React.FC = () => {
     setIsClickedPrice(false);
     setIsClickedPeople(false);
     setIsClickedCalendar(false);
-    fetchData();
   };
 
   const handleSortClick = (field: string) => {
@@ -100,16 +99,25 @@ export const SearchListReal: React.FC = () => {
 
   useEffect(() => {
     refetch();
-  }, [{ sortBy, sortOrder }]); // 둘 중 하나라도 변하고 실행되면 안되고, 둘 다 변하고 실행돼야함
+    console.log('searchListData', searchListData);
+  }, [
+    { sortBy, sortOrder },
+    searchedName,
+    peopleCount,
+    isClickedReservation,
+    { startDate, endDate },
+    { priceA, priceB },
+  ]);
 
   const { data: searchListData, refetch } = useQuery({
     queryKey: ['searchListData'],
     queryFn: () =>
       getSearchListData(
         searchedName,
-        page,
-        size,
+        // page,
+        // size,
         peopleCount,
+        isClickedReservation,
         startDate,
         endDate,
         priceA,
@@ -119,46 +127,6 @@ export const SearchListReal: React.FC = () => {
       ),
     enabled: false,
   });
-  console.log('searchListData', searchListData);
-
-  const fetchData = () => {
-    fetch('/api/searchList')
-      .then((res) => res.json())
-      .then((data: Hotel[]) => {
-        const filteredData = data.filter((hotel) => {
-          // 인원수 필터링
-          const isPeopleInRange = hotel.peopleCount >= peopleCount;
-          // 가격 필터링
-          const isPriceInRange =
-            hotel.discountPrice >= priceA && hotel.discountPrice <= priceB;
-          // 예약가능 여부 필터링
-          const isAvailable = isClickedReservation ? hotel.isAvailable : true;
-
-          return isPeopleInRange && isPriceInRange && isAvailable;
-        });
-
-        const sortedData = filteredData.sort((a, b) => {
-          if (sortBy === 'price') {
-            const priceA =
-              sortOrder === 'asc' ? a.discountPrice : b.discountPrice;
-            const priceB =
-              sortOrder === 'asc' ? b.discountPrice : a.discountPrice;
-            return priceA - priceB;
-          } else if (sortBy === '판매량') {
-            const salesA = sortOrder === 'asc' ? a.salesCount : b.salesCount;
-            const salesB = sortOrder === 'asc' ? b.salesCount : a.salesCount;
-            return salesA - salesB;
-          }
-          return 0;
-        });
-
-        setHotels(sortedData);
-      });
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [sortBy, sortOrder, priceA, priceB, isClickedReservation, peopleCount]);
 
   useEffect(() => {
     // const timeDiff = endDate?.getTime() - startDate?.getTime();
@@ -250,21 +218,23 @@ export const SearchListReal: React.FC = () => {
             </StyledSortWrapper>
           </StyledPriceButton>
           <StyledSalesButton
-            onClick={() => handleSortClick('likeCount')}
-            className={sortBy === 'likeCount' ? 'active' : ''}
+            onClick={() => handleSortClick('salesCount')}
+            className={sortBy === 'salesCount' ? 'active' : ''}
           >
-            <StyledSales>좋아요</StyledSales>
+            <StyledSales>판매량</StyledSales>
             <StyledSortWrapper>
               <StyledSortUp
                 viewBox="0 -250 320 512"
                 className={
-                  sortBy === 'likeCount' && sortOrder === 'asc' ? 'active' : ''
+                  sortBy === 'salesCount' && sortOrder === 'asc' ? 'active' : ''
                 }
               />
               <StyledSortDown
                 viewBox="0 250 320 512"
                 className={
-                  sortBy === 'likeCount' && sortOrder === 'desc' ? 'active' : ''
+                  sortBy === 'salesCount' && sortOrder === 'desc'
+                    ? 'active'
+                    : ''
                 }
               />
             </StyledSortWrapper>
@@ -272,9 +242,9 @@ export const SearchListReal: React.FC = () => {
         </StyledSort>
       </StyledFilterSortWrapper>
 
-      {/* {filterNameData && (
+      {searchListData && (
         <StyledContainer>
-          {hotels.map((hotel) => {
+          {searchListData.map((hotel: any) => {
             return (
               <Item
                 key={hotel.id}
@@ -288,7 +258,7 @@ export const SearchListReal: React.FC = () => {
             );
           })}
         </StyledContainer>
-      )} */}
+      )}
 
       {/* {searchData && (
         <StyledContainer>

@@ -3,9 +3,10 @@ import axios from 'axios';
 // 판매량 정렬 아직 없음, 날짜/인원수/예약가능 필터링 아직 없음
 export const getSearchListData = async (
   name?: string,
-  page?: number,
-  size?: number,
-  people?: number,
+  // page?: number,
+  // size?: number,
+  peopleCount?: number,
+  isAvailable?: boolean,
   startDate?: Date | null,
   endDate?: Date | null,
   lowestPrice?: number,
@@ -16,21 +17,23 @@ export const getSearchListData = async (
   try {
     let url = `/v1/accommodations?`;
     // 페이지 + 사이즈
-    if (page !== undefined) url += `&page=${page}`;
-    if (size !== undefined) url += `&size=${size}`;
+    // if (page !== undefined) url += `&page=${page}`;
+    // if (size !== undefined) url += `&size=${size}`;
     // 필터링
-    if (name !== undefined) url += `&name=${name}`;
-    if (people !== undefined) url += `&people=${people}`;
+    if (name) url += `&name=${name}`;
+    if (peopleCount !== undefined) url += `&peopleCount=${peopleCount}`;
     if (startDate !== null) url += `&startDate=${startDate}`;
     if (endDate !== null) url += `&endDate=${endDate}`;
     if (lowestPrice !== undefined) url += `&lowestPrice=${lowestPrice}`;
     if (highestPrice !== undefined) url += `&highestPrice=${highestPrice}`;
+    if (isAvailable !== undefined) url += `&isAvailable=${isAvailable}`;
     // 정렬
     if (orderBy !== undefined) url += `&orderBy=${orderBy}`;
     if (orderCondition !== undefined)
       url += `&orderCondition=${orderCondition}`;
     const res = await axios.get(url);
     if (res) {
+      console.log('데이터 불러오기 성공!');
       console.log('getSearchListData', res.data);
       return res.data;
     } else {
@@ -48,7 +51,7 @@ export const getRegionListData = async (
   longitude?: number,
   page?: number,
   size?: number,
-  people?: number,
+  peopleCount?: number,
   startDate?: Date | null,
   endDate?: Date | null,
   lowestPrice?: number,
@@ -64,7 +67,7 @@ export const getRegionListData = async (
     // 필터링
     if (latitude !== undefined) url += `&latitude=${latitude}`;
     if (longitude !== undefined) url += `&longitude=${longitude}`;
-    if (people !== undefined) url += `&people=${people}`;
+    if (peopleCount !== undefined) url += `&peopleCount=${peopleCount}`;
     if (startDate !== null) url += `&startDate=${startDate}`;
     if (endDate !== null) url += `&endDate=${endDate}`;
     if (lowestPrice !== undefined) url += `&lowestPrice=${lowestPrice}`;
