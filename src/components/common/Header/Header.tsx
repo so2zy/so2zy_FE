@@ -307,7 +307,8 @@ const StyledHeaderWhiteContent = styled.div`
   justify-content: center;
   align-items: center;
   background-color: auto;
-  width: 1080px;
+  width: 50%;
+  padding: 0 4rem;
   height: 100%;
   font-size: 1.2rem;
   margin: 0 auto;
