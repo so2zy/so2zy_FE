@@ -1,30 +1,47 @@
 import { theme } from '@styles/theme';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Logo from '@assets/mainLogo.svg';
 import CartIcon from '@assets/shoppingBag.png';
 import HomeIcon from '@assets/home.png';
-import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BsArrowLeft } from 'react-icons/bs';
+import {
+  useRecoilCallback,
+  useRecoilState,
+  useRecoilValue,
+  useSetRecoilState,
+} from 'recoil';
+import {
+  emailState,
+  isLogInSelector,
+  pwState,
+  refreshTokenAtom,
+  tokenAtom,
+  userKeyState,
+  userNameState,
+} from 'recoil/atom';
+import { debounce } from 'lodash';
+import axios from 'axios';
 
 const Header = () => {
-  const userName = '채민석';
-  const [login, setLogin] = useState(true);
+  const isUserLoggedIn = useRecoilValue(isLogInSelector);
+  const [refreshToken, setRefreshToken] = useRecoilState(refreshTokenAtom);
+  const [token, setToken] = useRecoilState(tokenAtom);
+  const [userName] = useRecoilState(userNameState);
+  const setUserKey = useSetRecoilState(userKeyState);
+  const setUserName = useSetRecoilState(userNameState);
+  const setEmail = useSetRecoilState(emailState);
+  const setPw = useSetRecoilState(pwState);
+
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isSearchPage =
-    location.pathname === '/' || location.pathname === '/searchList';
-  const isReservedPage = ['/reservation', '/confirm', '/cart'].includes(
-    location.pathname,
-  );
-  const isSignUpOrSignIn = ['/signUp', '/signIn'].includes(location.pathname);
-  if (isSignUpOrSignIn) {
-    return null;
-  }
+  const [searchInput, setSearchInput] = useState('');
+  const [searchResult, setSearchResult] = useState([]);
 
+  console.log(refreshToken, token);
   const handleMainLogoClick = () => {
-    setLogin(true);
     navigate('/');
   };
 
@@ -55,6 +72,82 @@ const Header = () => {
   const handleReservationText = () => {
     window.location.reload();
   };
+  const resetRecoilState = useRecoilCallback(
+    ({ reset }) =>
+      async () => {
+        // Recoil 상태 값을 초기화합니다.
+        reset(userKeyState);
+        reset(refreshTokenAtom);
+        reset(tokenAtom);
+        reset(emailState);
+        reset(pwState);
+        reset(userNameState);
+      },
+    [],
+  );
+
+  const handleLogOut = async () => {
+    sessionStorage.clear();
+
+    await resetRecoilState();
+  };
+  useEffect(() => {
+    const storedLoginState = sessionStorage.getItem('loginState');
+    if (storedLoginState === 'true') {
+      const storedUserKey = sessionStorage.getItem('userKey') || '';
+      const storedAccessToken = sessionStorage.getItem('accessToken') || '';
+      const storedRefreshToken = sessionStorage.getItem('refreshToken') || '';
+      const storedEmail = sessionStorage.getItem('email') || '';
+      const storedUserName = sessionStorage.getItem('userName') || '';
+
+      setUserKey(storedUserKey);
+      setRefreshToken(storedRefreshToken);
+      setToken(storedAccessToken);
+      setEmail(storedEmail);
+      setPw('');
+      setUserName(storedUserName);
+    }
+  }, []);
+
+  const isSearchPage =
+    location.pathname === '/' || location.pathname === '/searchList';
+  const isReservedPage = ['/reservation', '/confirm', '/cart'].includes(
+    location.pathname,
+  );
+  const isSignUpOrSignIn = ['/signUp', '/signIn'].includes(location.pathname);
+  if (isSignUpOrSignIn) {
+    return null;
+  }
+
+  const handleInputChange = debounce(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchInput(e.target.value);
+    },
+    300,
+  );
+
+  const onInputChange = async (query: string) => {
+    try {
+      const res = await axios.get(`/api/searchList?name=${query}`);
+      if (res.data) {
+        setSearchResult(res.data);
+        console.log(searchResult);
+        if (res.data.length > 0) {
+          navigate(`/search?name=${searchInput}`);
+          console.log('성공');
+        }
+      } else {
+        console.error('검색어 입력 오류: ', searchInput);
+      }
+    } catch (error) {
+      console.error('검색 중 오류:', error);
+      setSearchResult([]);
+    }
+  };
+
+  useEffect(() => {
+    onInputChange(searchInput);
+  }, [searchInput]);
   return (
     <>
       {isReservedPage ? (
@@ -68,7 +161,8 @@ const Header = () => {
                 ? '장바구니'
                 : location.pathname === '/reservation'
                   ? '예약'
-                  : '예약확인'}
+                  : ''}
+              {/* 로고 넣기 */}
             </div>
             <StyledHeaderHomeIcon>
               <img src={HomeIcon} alt="Cart Icon" onClick={handleHomeIcon} />
@@ -89,18 +183,19 @@ const Header = () => {
               </StyledHeaderMainLogo>
             )}
             {isSearchPage && (
-              <StyledHeaderSearchBar placeholder="숙소를 검색해보세요" />
+              <StyledHeaderSearchBar
+                placeholder="숙소를 검색해보세요"
+                onChange={handleInputChange}
+              />
             )}
 
             <StyledHeaderRight>
-              {login && (
-                <StyledHeaderGreeting>
-                  {userName}님, 안녕하세요!
-                </StyledHeaderGreeting>
+              {isUserLoggedIn && (
+                <StyledHeaderGreeting>{userName}님</StyledHeaderGreeting>
               )}
 
-              {login ? (
-                <StyledHeaderLogOut onClick={() => setLogin(false)}>
+              {isUserLoggedIn ? (
+                <StyledHeaderLogOut onClick={handleLogOut}>
                   로그아웃
                 </StyledHeaderLogOut>
               ) : (
@@ -250,7 +345,8 @@ const StyledHeaderWhiteContent = styled.div`
   justify-content: center;
   align-items: center;
   background-color: auto;
-  width: 1080px;
+  width: 50%;
+  padding: 0 4rem;
   height: 100%;
   font-size: 1.2rem;
   margin: 0 auto;

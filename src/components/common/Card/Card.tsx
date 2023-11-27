@@ -16,11 +16,11 @@ export default Card;
 
 //컴포넌트 위치 표시를 위해 일단은 box-shadow를 넣어놨습니다~
 const StyledCard = styled.div`
-  border: 0.5px solid ${theme.colors.gray2};
-  border-radius: 8px;
-  box-shadow: 4px 4px 4px ${theme.colors.gray2};
+  // border: 0.1px solid ${theme.colors.gray1};
+  // border-radius: 8px;
+  // box-shadow: 4px 4px 4px ${theme.colors.gray2};
 
-  padding: 1rem 4rem;
+  padding: 1rem 2rem;
   margin: 2rem auto;
   width: 50%;
   flex-direction: column;

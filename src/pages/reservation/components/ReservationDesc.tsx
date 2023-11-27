@@ -48,7 +48,7 @@ const ReservationDesc = () => {
 };
 export default ReservationDesc;
 
-const StyledWrapper = styled.div`
+export const StyledWrapper = styled.div`
   width: 54rem;
   display: flex;
   justify-content: space-between;
@@ -58,13 +58,13 @@ const StyledWrapper = styled.div`
   margin: 4.375rem auto 0 auto;
 `;
 
-const StyledItemDesc = styled.div`
+export const StyledItemDesc = styled.div`
   display: flex;
   flex-direction: column;
   text-align: start;
 `;
 
-const StyledPriceBox = styled.div`
+export const StyledPriceBox = styled.div`
   width: 24rem;
   height: 12rem;
   border: 0.5px solid ${theme.colors.gray2};
@@ -74,7 +74,7 @@ const StyledPriceBox = styled.div`
   padding: 1rem 2rem 0 2rem;
 `;
 
-const StyledItemTitle = styled.div`
+export const StyledItemTitle = styled.div`
   span {
     font-size: 1.5rem;
     font-weight: bold;
@@ -83,7 +83,7 @@ const StyledItemTitle = styled.div`
   padding-bottom: 0.4rem;
 `;
 
-const StyledItemSubTitle = styled.div`
+export const StyledItemSubTitle = styled.div`
   span {
     font-weight: bold;
     font-size: 1.25rem;
@@ -91,7 +91,7 @@ const StyledItemSubTitle = styled.div`
   padding-bottom: 0.4rem;
 `;
 
-const StyledAcceptPerson = styled.div`
+export const StyledAcceptPerson = styled.div`
   span {
     font-weight: bold;
     font-size: 0.875rem;
@@ -99,7 +99,7 @@ const StyledAcceptPerson = styled.div`
   }
 `;
 
-const StyledCheckIn = styled.div`
+export const StyledCheckIn = styled.div`
   margin-top: 1.5rem;
   p {
     color: ${theme.colors.navy};
@@ -107,9 +107,9 @@ const StyledCheckIn = styled.div`
   }
 `;
 
-const StyledCheckOut = styled(StyledCheckIn)``;
+export const StyledCheckOut = styled(StyledCheckIn)``;
 
-const StyledItemPrice = styled.div`
+export const StyledItemPrice = styled.div`
   display: flex;
   justify-content: space-between;
   span {
@@ -117,7 +117,7 @@ const StyledItemPrice = styled.div`
   }
 `;
 
-const StyledPayPrice = styled.div`
+export const StyledPayPrice = styled.div`
   span {
     font-weight: bold;
     color: ${theme.colors.navy};
@@ -126,9 +126,9 @@ const StyledPayPrice = styled.div`
   padding-bottom: 0.75rem;
 `;
 
-const StyledItemSalePrice = styled(StyledItemPrice)``;
+export const StyledItemSalePrice = styled(StyledItemPrice)``;
 
-const StyledItemSaleText = styled.p`
+export const StyledItemSaleText = styled.p`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -138,7 +138,7 @@ const StyledItemSaleText = styled.p`
   }
 `;
 
-const StyledFinalPayPrice = styled(StyledItemPrice)`
+export const StyledFinalPayPrice = styled(StyledItemPrice)`
   margin-top: 1rem;
   span {
     font-weight: bold;

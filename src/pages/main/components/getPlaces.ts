@@ -6,6 +6,7 @@ export interface MainListProps {
 
 export interface MainItemProps {
   page: number;
+  size: number;
   id: number;
   name: string;
   latitude: number;
@@ -13,9 +14,8 @@ export interface MainItemProps {
   addressCode: string;
   likeCount: number;
   phoneNumber: string;
-  // roomList: RoomList[];
-  accommodationImageList: ImageList[];
-  image: string; // 임시
+  accommodationImageUrl: string;
+  // 아래는 백엔드에서 데이터 주면 수정 예정
   price: number;
   saleprice: number;
   like: boolean;

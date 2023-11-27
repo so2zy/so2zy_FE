@@ -21,7 +21,7 @@ const MainListItem = ({ title }: MainListProps) => {
   const settings = {
     infinite: true,
     speed: 500,
-    slidesToShow: 5,
+    slidesToShow: 4,
     slidesToScroll: 1,
     arrows: true,
     autoplay: true,
@@ -31,7 +31,7 @@ const MainListItem = ({ title }: MainListProps) => {
     <StyledWrapper {...settings}>
       {data?.map((item) => (
         <StyledMainPageItem key={item.id}>
-          <StyledItemImage src={item.image} alt="호텔 사진" />
+          <StyledItemImage src={item.accommodationImageUrl} alt="호텔 사진" />
           <StyledItemDesc>
             <StyledItemName>
               {item.id}. {eclipsText(item.name, 8)}
@@ -65,16 +65,16 @@ const StyledWrapper = styled(Slider)`
     background: transparent;
   }
   display: flex;
+  overflow: hidden;
 `;
 
 const StyledMainPageItem = styled.div`
-  width: 11.75rem;
+  width: 9.75rem;
   height: 10.5rem;
   border-radius: 1rem;
-  box-shadow: ${theme.shadows.shadow1.shadow};
+  box-shadow: 4px 4px ${theme.shadows.shadow1.shadow};
   position: relative;
   cursor: pointer;
-  overflow: hidden;
 `;
 
 const StyledItemImage = styled.img`

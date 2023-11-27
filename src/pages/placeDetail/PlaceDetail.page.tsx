@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import MapModal from './MapModal';
+import MapModal from './components/MapModal';
 
 interface IAccommodations {
   id: number;
@@ -20,7 +20,7 @@ interface IAccommodations {
   addressCode: string;
   phoneNumber: string;
   accommodationImageList: ImageList[];
-  roomList: RoomList[];
+  roomInfoList: RoomList[];
 }
 
 interface ImageList {
@@ -31,14 +31,13 @@ interface ImageList {
 interface RoomList {
   id: number;
   type: string;
-  originalPrice: number;
-  salePrice: number;
+  price: number;
   capacity: number;
   maxCapacity: number;
   checkIn: string;
   checkOut: string;
   stock: number;
-  imageUrl: string;
+  url: string;
 }
 
 export const PlaceDetail: React.FC = () => {
@@ -51,18 +50,17 @@ export const PlaceDetail: React.FC = () => {
     addressCode: '',
     phoneNumber: '',
     accommodationImageList: [{ id: 0, url: '' }],
-    roomList: [
+    roomInfoList: [
       {
         id: 0,
         type: '',
-        originalPrice: 0,
-        salePrice: 0,
+        price: 0,
         capacity: 0,
         maxCapacity: 0,
         checkIn: '',
         checkOut: '',
         stock: 0,
-        imageUrl: '',
+        url: '',
       },
     ],
   });
@@ -74,7 +72,7 @@ export const PlaceDetail: React.FC = () => {
   const [modalLongitude, setModalLongitude] = useState<number>(0);
 
   const openModal = (latitude: number, longitude: number) => {
-    //console.log(latitude, longitude);
+    console.log(latitude, longitude);
     setModalLatitude(latitude);
     setModalLongitude(longitude);
     setModalIsOpen(true);
@@ -84,17 +82,20 @@ export const PlaceDetail: React.FC = () => {
     setModalIsOpen(false);
   };
 
-  const getData = async () => {
-    axios.get(`/accommodations/${id}`).then((res) => {
-      console.log(`get test ${id}`);
-      setAccommodation(res.data); //테스트 -> 이제 이거 수정
-      console.log(res.data);
-      setIsLoading(false);
-    });
+  const getData = async (id: any) => {
+    axios
+      .get(`${process.env.REACT_APP_SERVER}/v1/accommodations/${id}`)
+      .then((res) => {
+        console.log(`get test ${id}`);
+        setAccommodation(res.data);
+        console.log(res.data);
+        setIsLoading(false);
+      });
   };
 
   useEffect(() => {
-    getData();
+    console.log(`get test ${id}`);
+    getData(id);
   }, [isLoading]);
 
   useEffect(() => {
@@ -102,6 +103,16 @@ export const PlaceDetail: React.FC = () => {
       console.log(accommodation);
     }
   }, [accommodation]);
+
+  //장바구니로 post하는 로직 추가
+  const addCart = async () => {
+    axios
+      .post(`${process.env.REACT_APP_SERVER}/v1/accommodations/${id}`)
+      .then((res) => {
+        console.log(res.data);
+      });
+  };
+  //예약으로 post하는 로직 추가
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -155,9 +166,9 @@ export const PlaceDetail: React.FC = () => {
         <StyledLine />
 
         <StyledSubCategory>객실 선택</StyledSubCategory>
-        {accommodation.roomList.map((room) => (
+        {accommodation.roomInfoList.map((room) => (
           <StyledSubContainer key={room.id}>
-            <StyledDetailImg src={room.imageUrl} />
+            <StyledDetailImg src={room.url} />
             <StyledDetail>
               <StyledWrapper>
                 <StyledRoomTitle>{room.type}</StyledRoomTitle>
@@ -170,8 +181,8 @@ export const PlaceDetail: React.FC = () => {
               <StyledCapacity>
                 ({room.capacity}명 기준/최대 {room.maxCapacity}명)
               </StyledCapacity>
-              <StyledRealPrice>{room.originalPrice}원</StyledRealPrice>
-              <StyledSalePrice> {room.salePrice}원</StyledSalePrice>
+              <StyledRealPrice>{room.price}원</StyledRealPrice>
+              <StyledSalePrice> {room.price}원</StyledSalePrice>
               {room.stock === 0 ? (
                 <StyledNoStock>예약불가</StyledNoStock>
               ) : (
@@ -179,7 +190,14 @@ export const PlaceDetail: React.FC = () => {
                   <StyledReservationButton>
                     <RiShoppingBagLine />
                   </StyledReservationButton>
-                  <StyledReservationButton>예약하기</StyledReservationButton>
+                  <StyledReservationButton
+                    onClick={() => {
+                      addCart();
+                      navigate('/');
+                    }}
+                  >
+                    예약하기
+                  </StyledReservationButton>
                 </ReservationWrapper>
               )}
             </StyledDetail>
@@ -204,7 +222,6 @@ const StyledSubContainer = styled.div`
 
 // 이미지 밑 이름
 const StyledMainTitle = styled.div`
-  display: inline-block;
   font-size: ${theme.fonts.subtitle3.fontSize};
   font-weight: ${theme.fonts.subtitle1.fontWeight};
   display: flex;
@@ -285,8 +302,7 @@ const StyledDetailImg = styled.img`
 const StyledDetail = styled.div`
   padding: 1rem 0 0 1rem;
   width: 55%;
-  height: 100%;
-  background-color: ${theme.colors.gray3};
+
   border-radius: 0 8px 8px 0;
   display: flex;
   flex-direction: column;

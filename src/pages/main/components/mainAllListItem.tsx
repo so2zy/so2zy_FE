@@ -42,7 +42,7 @@ const MainAllListItem = ({ title }: MainListProps) => {
             (page) =>
               page?.data?.map((item: MainItemProps) => (
                 <StyledMainAllItem key={item.id}>
-                  <StyledAllItemImage src={item.image} />
+                  <StyledAllItemImage src={item.accommodationImageUrl} />
                   <StyledAllItemTitle>{item.name}</StyledAllItemTitle>
                   <StyledAllItemDesc>
                     <StyledStar />

@@ -1,54 +1,54 @@
 import { http, HttpResponse } from 'msw';
 
 export const handlers = [
-  http.get(`/accommodations/:id`, ({ params }) => {
-    const { id } = params;
-    console.log(`handler test ${id}`);
+  // http.get(`/accommodations/:id`, ({ params }) => {
+  //   const { id } = params;
+  //   console.log(`handler test ${id}`);
 
-    return HttpResponse.json({
-      id: 1, //백엔드에 추가요청(v1)
-      accommodationName: '소피텔 앰배서더 서울',
-      latitude: 37.51379512401881,
-      longitude: 127.10615978152588,
-      addressCode: '서울특별시 송파구 잠실로 209',
-      phoneNumber: '02-2092-6000',
-      accommodationImageList: [
-        {
-          id: 1,
-          url: 'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg', //이미지 url
-        },
-      ],
-      roomList: [
-        {
-          id: 1,
-          type: 'deluxe',
-          originalPrice: 3000000, //백엔드에 수정요청(v2)
-          salePrice: 2400000, //백엔드에 추가요청(v2)
-          capacity: 3,
-          maxCapacity: 4,
-          checkIn: '13:00', //백엔드에 수정요청(v1)
-          checkOut: '18:00', //백엔드에 수정요청(v1)
-          stock: 4, //날짜랑 같이 관리 필요해서 백엔드에 요청(v2)
-          //백엔드에 수정요청(v1)
-          imageUrl:
-            'https://yaimg.yanolja.com/v5/2023/11/14/10/640/65534a484efab3.93517110.jpg', //백엔드에 수정요청
-        },
-        {
-          id: 2,
-          type: 'premium',
-          originalPrice: 58000,
-          salePrice: 34000,
-          capacity: 2,
-          maxCapacity: 4,
-          checkIn: '13:00',
-          checkOut: '18:00',
-          stock: 0,
-          imageUrl:
-            'https://yaimg.yanolja.com/v5/2023/11/14/10/640/65534a484efab3.93517110.jpg',
-        },
-      ],
-    });
-  }),
+  //   return HttpResponse.json({
+  //     id: 1, //백엔드에 추가요청(v1)
+  //     accommodationName: '소피텔 앰배서더 서울',
+  //     latitude: 37.51379512401881,
+  //     longitude: 127.10615978152588,
+  //     addressCode: '서울특별시 송파구 잠실로 209',
+  //     phoneNumber: '02-2092-6000',
+  //     accommodationImageList: [
+  //       {
+  //         id: 1,
+  //         url: 'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg', //이미지 url
+  //       },
+  //     ],
+  //     roomList: [
+  //       {
+  //         id: 1,
+  //         type: 'deluxe',
+  //         originalPrice: 3000000, //백엔드에 수정요청(v2)
+  //         salePrice: 2400000, //백엔드에 추가요청(v2)
+  //         capacity: 3,
+  //         maxCapacity: 4,
+  //         checkIn: '13:00', //백엔드에 수정요청(v1)
+  //         checkOut: '18:00', //백엔드에 수정요청(v1)
+  //         stock: 4, //날짜랑 같이 관리 필요해서 백엔드에 요청(v2)
+  //         //백엔드에 수정요청(v1)
+  //         imageUrl:
+  //           'https://yaimg.yanolja.com/v5/2023/11/14/10/640/65534a484efab3.93517110.jpg', //백엔드에 수정요청
+  //       },
+  //       {
+  //         id: 2,
+  //         type: 'premium',
+  //         originalPrice: 58000,
+  //         salePrice: 34000,
+  //         capacity: 2,
+  //         maxCapacity: 4,
+  //         checkIn: '13:00',
+  //         checkOut: '18:00',
+  //         stock: 0,
+  //         imageUrl:
+  //           'https://yaimg.yanolja.com/v5/2023/11/14/10/640/65534a484efab3.93517110.jpg',
+  //       },
+  //     ],
+  //   });
+  // }),
   http.get('/api/main/mostsell', () => {
     return HttpResponse.json([
       {
@@ -56,7 +56,7 @@ export const handlers = [
         ranking: 1,
         name: '파크 하얏트 서울',
         price: '59,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: false,
       },
@@ -65,7 +65,7 @@ export const handlers = [
         ranking: 2,
         name: '네스트 호텔',
         price: '129,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: false,
       },
@@ -74,7 +74,7 @@ export const handlers = [
         ranking: 3,
         name: '롯데호텔 제주',
         price: '1,129,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: false,
       },
@@ -83,7 +83,7 @@ export const handlers = [
         ranking: 4,
         name: '콘래드 서울',
         price: '149,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: false,
       },
@@ -92,7 +92,7 @@ export const handlers = [
         ranking: 5,
         name: '강릉 씨마크 호텔',
         price: '529,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: false,
       },
@@ -101,7 +101,7 @@ export const handlers = [
         ranking: 11,
         name: '파크 하얏트 서울',
         price: '59,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: true,
       },
@@ -110,7 +110,7 @@ export const handlers = [
         ranking: 12,
         name: '네스트 호텔',
         price: '129,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: false,
       },
@@ -119,7 +119,7 @@ export const handlers = [
         ranking: 13,
         name: '롯데호텔 제주',
         price: '1,129,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: true,
       },
@@ -128,7 +128,7 @@ export const handlers = [
         ranking: 14,
         name: '콘래드 서울',
         price: '149,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: false,
       },
@@ -137,7 +137,7 @@ export const handlers = [
         ranking: 15,
         name: '강릉 씨마크 호텔',
         price: '529,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: true,
       },
@@ -150,7 +150,7 @@ export const handlers = [
         ranking: 1,
         name: '소피텔 앰배서더',
         price: '529,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: true,
       },
@@ -159,7 +159,7 @@ export const handlers = [
         ranking: 2,
         name: '인터컨티넨탈 ...',
         price: '529,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: false,
       },
@@ -168,7 +168,7 @@ export const handlers = [
         ranking: 3,
         name: '노보텔 앰배서더 가나다 라 마바사',
         price: '529,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: true,
       },
@@ -177,7 +177,7 @@ export const handlers = [
         ranking: 4,
         name: '파라다이스 시티',
         price: '529,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: false,
       },
@@ -186,7 +186,7 @@ export const handlers = [
         ranking: 5,
         name: '속초 롯데리조트',
         price: '529,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: true,
       },
@@ -195,7 +195,7 @@ export const handlers = [
         ranking: 11,
         name: '파크 하얏트 서울',
         price: '59,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: true,
       },
@@ -204,7 +204,7 @@ export const handlers = [
         ranking: 12,
         name: '네스트 호텔',
         price: '129,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: false,
       },
@@ -213,7 +213,7 @@ export const handlers = [
         ranking: 13,
         name: '롯데호텔 제주',
         price: '1,129,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: true,
       },
@@ -222,7 +222,7 @@ export const handlers = [
         ranking: 14,
         name: '콘래드 서울',
         price: '149,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: false,
       },
@@ -231,7 +231,7 @@ export const handlers = [
         ranking: 15,
         name: '강릉 씨마크 호텔',
         price: '529,000원',
-        image:
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         like: true,
       },
@@ -248,7 +248,9 @@ export const handlers = [
         ranking: 1,
         name: '소피텔',
         price: '529,000원',
-        image:
+        latitude: 30.0,
+        longitude: 25.0,
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         islast: false,
       },
@@ -258,7 +260,9 @@ export const handlers = [
         name: '터컨티넨탈 ...',
         price: '529,000원',
         saleprice: '329,000원',
-        image:
+        latitude: 30.0,
+        longitude: 25.0,
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         islast: false,
       },
@@ -267,7 +271,9 @@ export const handlers = [
         ranking: 3,
         name: '노보텔...',
         price: '529,000원',
-        image:
+        latitude: 30.0,
+        longitude: 25.0,
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         islast: false,
       },
@@ -276,7 +282,9 @@ export const handlers = [
         ranking: 4,
         name: '시티',
         price: '529,000원',
-        image:
+        latitude: 30.0,
+        longitude: 25.0,
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         islast: false,
       },
@@ -285,7 +293,9 @@ export const handlers = [
         ranking: 5,
         name: '속초',
         price: '529,000원',
-        image:
+        latitude: 30.0,
+        longitude: 25.0,
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         islast: true,
       },
@@ -294,7 +304,9 @@ export const handlers = [
         ranking: 5,
         name: '강릉1',
         price: '529,000원',
-        image:
+        latitude: 30.0,
+        longitude: 25.0,
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         islast: true,
       },
@@ -303,7 +315,9 @@ export const handlers = [
         ranking: 5,
         name: '강릉2',
         price: '529,000원',
-        image:
+        latitude: 30.0,
+        longitude: 25.0,
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         islast: true,
       },
@@ -312,7 +326,9 @@ export const handlers = [
         ranking: 5,
         name: '강릉3',
         price: '529,000원',
-        image:
+        latitude: 30.0,
+        longitude: 25.0,
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         islast: true,
       },
@@ -321,7 +337,9 @@ export const handlers = [
         ranking: 5,
         name: '강릉4',
         price: '529,000원',
-        image:
+        latitude: 30.0,
+        longitude: 25.0,
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         islast: true,
       },
@@ -330,7 +348,9 @@ export const handlers = [
         ranking: 5,
         name: '강릉5',
         price: '529,000원',
-        image:
+        latitude: 30.0,
+        longitude: 25.0,
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         islast: true,
       },
@@ -339,7 +359,9 @@ export const handlers = [
         ranking: 5,
         name: '강릉6',
         price: '529,000원',
-        image:
+        latitude: 30.0,
+        longitude: 25.0,
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         islast: true,
       },
@@ -348,7 +370,9 @@ export const handlers = [
         ranking: 5,
         name: '강릉7',
         price: '529,000원',
-        image:
+        latitude: 30.0,
+        longitude: 25.0,
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         islast: true,
       },
@@ -357,7 +381,9 @@ export const handlers = [
         ranking: 5,
         name: '강릉8',
         price: '529,000원',
-        image:
+        latitude: 30.0,
+        longitude: 25.0,
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         islast: true,
       },
@@ -366,7 +392,9 @@ export const handlers = [
         ranking: 5,
         name: '강릉9',
         price: '529,000원',
-        image:
+        latitude: 30.0,
+        longitude: 25.0,
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         islast: true,
       },
@@ -375,7 +403,9 @@ export const handlers = [
         ranking: 5,
         name: '강릉10',
         price: '529,000원',
-        image:
+        latitude: 30.0,
+        longitude: 25.0,
+        accommodationImageUrl:
           'https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg',
         islast: true,
       },
