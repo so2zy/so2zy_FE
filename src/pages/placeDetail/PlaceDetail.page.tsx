@@ -10,9 +10,14 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import MapModal from './MapModal';
+import MapModal from './components/MapModal';
+import { useRecoilState } from 'recoil';
+import { emailState } from 'recoil/atom';
+import { Loading } from '@components/common/Loading';
+// import { useLocation } from 'react-router-dom';
 
-interface IAccommodations {
+//숙소 조회 인터페이스
+export interface IAccommodations {
   id: number;
   accommodationName: string;
   latitude: number;
@@ -20,29 +25,29 @@ interface IAccommodations {
   addressCode: string;
   phoneNumber: string;
   accommodationImageList: ImageList[];
-  roomList: RoomList[];
+  roomInfoList: RoomList[];
 }
 
-interface ImageList {
+export interface ImageList {
   id: number;
   url: string;
 }
 
-interface RoomList {
+export interface RoomList {
   id: number;
   type: string;
-  originalPrice: number;
-  salePrice: number;
+  price: number;
   capacity: number;
   maxCapacity: number;
   checkIn: string;
   checkOut: string;
   stock: number;
-  imageUrl: string;
+  url: string;
 }
 
 export const PlaceDetail: React.FC = () => {
   const { id } = useParams();
+
   const [accommodation, setAccommodation] = useState<IAccommodations>({
     id: 0,
     accommodationName: '',
@@ -51,30 +56,34 @@ export const PlaceDetail: React.FC = () => {
     addressCode: '',
     phoneNumber: '',
     accommodationImageList: [{ id: 0, url: '' }],
-    roomList: [
+    roomInfoList: [
       {
         id: 0,
         type: '',
-        originalPrice: 0,
-        salePrice: 0,
+        price: 0,
         capacity: 0,
         maxCapacity: 0,
         checkIn: '',
         checkOut: '',
         stock: 0,
-        imageUrl: '',
+        url: '',
       },
     ],
   });
+
   const [isLoading, setIsLoading] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
+
+  //지도 모달
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalLatitude, setModalLatitude] = useState<number>(0);
   const [modalLongitude, setModalLongitude] = useState<number>(0);
 
+  //인원수, 재고 필터링
+
   const openModal = (latitude: number, longitude: number) => {
-    //console.log(latitude, longitude);
+    console.log(latitude, longitude);
     setModalLatitude(latitude);
     setModalLongitude(longitude);
     setModalIsOpen(true);
@@ -84,17 +93,33 @@ export const PlaceDetail: React.FC = () => {
     setModalIsOpen(false);
   };
 
-  const getData = async () => {
-    axios.get(`/accommodations/${id}`).then((res) => {
+  //필터링 데이터 받기 -> 종수님꺼 받아서 테스트하기
+  // const location = useLocation();
+  // const { startDate, endDate, personnel } = location.state || {
+  //   startDate: '23-11-28',
+  //   endDate: '23-11-29',
+  //   personnel: 1,
+  // };
+
+  //숙소 정보 get하는 로직
+  // `${process.env.REACT_APP_SERVER}/v1/accommodations/${id}`
+  // /v2/accommodations/${id}/${startDate}/${endDate}/${personnel}
+  const getData = async (id: any) => {
+    try {
+      const res = await axios.get(`/accommodations/${id}`);
+
       console.log(`get test ${id}`);
-      setAccommodation(res.data); //테스트 -> 이제 이거 수정
-      console.log(res.data);
+      setAccommodation(res.data);
+      console.log('정보 가져오기 성공', res.data);
       setIsLoading(false);
-    });
+    } catch (error) {
+      console.error('숙소 정보 가져오기 실패', error);
+    }
   };
 
   useEffect(() => {
-    getData();
+    console.log(`get test ${id}`);
+    getData(id);
   }, [isLoading]);
 
   useEffect(() => {
@@ -103,8 +128,20 @@ export const PlaceDetail: React.FC = () => {
     }
   }, [accommodation]);
 
+  //장바구니로 post하는 로직
+  // `${process.env.REACT_APP_SERVER}/v1/carts/{member_id}/{room_id}
+  const [email] = useRecoilState(emailState); //이메일정보
+  const addCart = async (roomId: number) => {
+    try {
+      const res = await axios.post(`/v1/carts/${email}/${roomId}`);
+      console.log('장바구니 성공', res.data);
+    } catch (error) {
+      console.error('장바구니 실패', error);
+    }
+  };
+
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   } else {
     return (
       <>
@@ -117,12 +154,11 @@ export const PlaceDetail: React.FC = () => {
           />
           <StyledTitle>{accommodation.accommodationName}</StyledTitle>
           <StyledSpan>
-            <StyledButton>11.19~11.20 1박</StyledButton>
-            <StyledButton>인원수 3명</StyledButton>
+            <StyledButton>23-11-28~23-11-29</StyledButton>
+            <StyledButton>3명</StyledButton>
           </StyledSpan>
         </StyledBar>
 
-        {/*숙소 이미지  */}
         <StyledImg src={accommodation.accommodationImageList[0].url} />
 
         <StyledMainTitle>
@@ -155,36 +191,52 @@ export const PlaceDetail: React.FC = () => {
         <StyledLine />
 
         <StyledSubCategory>객실 선택</StyledSubCategory>
-        {accommodation.roomList.map((room) => (
-          <StyledSubContainer key={room.id}>
-            <StyledDetailImg src={room.imageUrl} />
-            <StyledDetail>
-              <StyledWrapper>
-                <StyledRoomTitle>{room.type}</StyledRoomTitle>
-              </StyledWrapper>
-              <StyledRoomType>숙박</StyledRoomType>
-              <StyledCapacity>
-                체크인 {room.checkIn}, 체크아웃
-                {room.checkOut}
-              </StyledCapacity>
-              <StyledCapacity>
-                ({room.capacity}명 기준/최대 {room.maxCapacity}명)
-              </StyledCapacity>
-              <StyledRealPrice>{room.originalPrice}원</StyledRealPrice>
-              <StyledSalePrice> {room.salePrice}원</StyledSalePrice>
-              {room.stock === 0 ? (
-                <StyledNoStock>예약불가</StyledNoStock>
-              ) : (
-                <ReservationWrapper>
-                  <StyledReservationButton>
-                    <RiShoppingBagLine />
-                  </StyledReservationButton>
-                  <StyledReservationButton>예약하기</StyledReservationButton>
-                </ReservationWrapper>
-              )}
-            </StyledDetail>
-          </StyledSubContainer>
-        ))}
+        {accommodation.roomInfoList &&
+          accommodation.roomInfoList.map((room) => (
+            <StyledSubContainer key={room.id}>
+              <StyledDetailImg src={room.url} />
+              <StyledDetail>
+                <StyledWrapper>
+                  <StyledRoomTitle>{room.type}</StyledRoomTitle>
+                </StyledWrapper>
+                <StyledRoomType>숙박</StyledRoomType>
+                <StyledCapacity>
+                  체크인 {room.checkIn}, 체크아웃
+                  {room.checkOut}
+                </StyledCapacity>
+                <StyledCapacity>
+                  ({room.capacity}명 기준/최대 {room.maxCapacity}명)
+                </StyledCapacity>
+                <StyledRealPrice>{room.price}원</StyledRealPrice>
+                <StyledSalePrice> {room.price}원</StyledSalePrice>
+                {room.stock === 0 ? (
+                  <StyledNoStock>예약불가</StyledNoStock>
+                ) : (
+                  <ReservationWrapper>
+                    <StyledReservationButton>
+                      <RiShoppingBagLine
+                        onClick={() => {
+                          addCart(room.id);
+                          //  navigate('/cart'); //장바구니로 이동
+                        }}
+                      />
+                    </StyledReservationButton>
+                    <StyledReservationButton
+                      onClick={() => {
+                        console.log('Before', accommodation, room);
+                        navigate(`/reservation`, {
+                          state: { accommodation: accommodation, room: room },
+                        });
+                        console.log('After', accommodation, room);
+                      }}
+                    >
+                      예약하기
+                    </StyledReservationButton>
+                  </ReservationWrapper>
+                )}
+              </StyledDetail>
+            </StyledSubContainer>
+          ))}
       </>
     );
   }
@@ -196,6 +248,7 @@ export const StyledLine = styled.hr`
 `;
 
 const StyledSubContainer = styled.div`
+  width: 100%;
   margin: 1rem 0;
   height: 13.5rem;
   border-radius: 8px;
@@ -204,7 +257,6 @@ const StyledSubContainer = styled.div`
 
 // 이미지 밑 이름
 const StyledMainTitle = styled.div`
-  display: inline-block;
   font-size: ${theme.fonts.subtitle3.fontSize};
   font-weight: ${theme.fonts.subtitle1.fontWeight};
   display: flex;
@@ -264,11 +316,11 @@ const StyledDescription = styled.div`
 
 //호텔 이미지
 const StyledImg = styled.img`
-  width: 45rem;
   height: 25rem;
   background-color: ${theme.colors.gray2};
-  margin: 1rem auto;
   border-radius: 8px;
+  width: 100%;
+  margin: 1rem 0;
 `;
 
 //객실 이미지
@@ -285,8 +337,7 @@ const StyledDetailImg = styled.img`
 const StyledDetail = styled.div`
   padding: 1rem 0 0 1rem;
   width: 55%;
-  height: 100%;
-  background-color: ${theme.colors.gray3};
+
   border-radius: 0 8px 8px 0;
   display: flex;
   flex-direction: column;

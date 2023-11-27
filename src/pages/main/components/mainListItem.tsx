@@ -11,11 +11,12 @@ import {
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { eclipsText } from '@utils/textLength';
 const MainListItem = ({ title }: MainListProps) => {
   const { data } = useQuery<MainItemProps[]>({
     queryKey: [title],
     queryFn: title === '많이 판매된 숙소' ? getMostSell : getFavorite,
-    refetchInterval: 1000,
+    // refetchInterval: 1000,
   });
   const settings = {
     infinite: true,
@@ -33,11 +34,11 @@ const MainListItem = ({ title }: MainListProps) => {
           <StyledItemImage src={item.image} alt="호텔 사진" />
           <StyledItemDesc>
             <StyledItemName>
-              {item.id}. {item.name}
+              {item.id}. {eclipsText(item.name, 8)}
             </StyledItemName>
-            <StyledStar />
             <StyledItemPrice>{item.price}~</StyledItemPrice>
           </StyledItemDesc>
+          {item.like ? <StyledStar /> : <StyledNoStar />}
         </StyledMainPageItem>
       ))}
     </StyledWrapper>
@@ -49,7 +50,10 @@ export default MainListItem;
 const StyledWrapper = styled(Slider)`
   .slick-prev,
   .slick-next {
-    background-color: ${theme.colors.navy};
+    color: ${theme.colors.navy};
+    width: 4rem;
+    height: 4rem;
+    z-index: 999;
   }
   border: none;
   .slick-list {
@@ -82,24 +86,27 @@ const StyledItemImage = styled.img`
 
 const StyledItemDesc = styled.div`
   position: absolute;
+  text-align: start;
+  margin: 0.8rem 0.5rem;
 `;
 
 const StyledItemName = styled.p`
   font-weight: bold;
   font-size: 0.8rem;
-  margin: 0.9rem 1.3rem 0 0.7rem;
-  padding: 0;
+  padding-bottom: 0.2rem;
 `;
 
 const StyledItemPrice = styled.p`
   font-size: 0.8rem;
-  margin: 0;
-  padding: 0;
 `;
 
 export const StyledStar = styled(FaStar)`
   color: ${theme.colors.yellow};
   position: absolute;
-  top: 0.6rem;
-  right: 0;
+  top: 7.5rem;
+  right: 0.2rem;
+`;
+
+const StyledNoStar = styled(StyledStar)`
+  color: ${theme.colors.gray2};
 `;
