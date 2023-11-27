@@ -2,6 +2,9 @@ import axios from 'axios';
 
 export interface MainListProps {
   title: string;
+  // startDate: Date;
+  // endDate: Date;
+  // personnel: number;
 }
 
 export interface MainItemProps {
@@ -111,3 +114,19 @@ export const getAllProduct = async (page: any) => {
 export const noProduct = () => {
   return [];
 };
+
+// 클릭하면 상세 페이지로 props로 전달해주면서 이동하는 함수
+// export const handleDetailPage = () => {
+//   const startDate = new Date();
+//   const endDate = new Date();
+//   const personnel = 1;
+//   endDate.setDate(endDate.getDate() + 1);
+//   const navigate = useNavigate();
+//   navigate(`/place/:id`, {
+//     state: {
+//       startDate: formatDate(startDate),
+//       endDate: formatDate(endDate),
+//       personnel: personnel,
+//     },
+//   });
+// };
