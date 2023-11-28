@@ -73,78 +73,85 @@ export const SignIn: React.FC = () => {
   };
 
   return (
-    <StyledNoHeaderWrap>
-      <StyledSignInContent>
-        <StyledSignInLeft>
-          <StyledMainLogoTwo
-            onClick={() => {
-              setEmail('');
-              setPw('');
-              navigate('/');
-            }}
-          >
-            <img src={MainTwoIcon} />
-          </StyledMainLogoTwo>
-        </StyledSignInLeft>
-        <StyledSignInRight>
-          <StyledSignInGreeting>
-            <div>안녕하세요! </div>
-            <div>AROOM에 오신 것을 환영합니다!</div>
-          </StyledSignInGreeting>
-          <StyledInputWrap>
-            <div>Email</div>
-            <input
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
-              placeholder="이메일을 입력해주세요"
-            />
-          </StyledInputWrap>
-          <StyledInputWrap>
-            <div>비밀번호</div>
-            <input
-              value={pw}
-              onChange={(e) => {
-                setPw(e.target.value);
-              }}
-              placeholder="비밀번호를 입력해주세요"
-              type="password"
-            />
-          </StyledInputWrap>
-          <StyledSignInError>
-            {signInButtonClick && '로그인 정보가 일치하지 않습니다.'}
-          </StyledSignInError>
-          <StyledSignInButton
-            onClick={() => handleSignIn(email, pw)}
-            disabled={!email || !pw}
-          >
-            로그인
-          </StyledSignInButton>
-          <StyledSignInGoSignUp>
-            <span>계정이 없으신가요?</span>
-            <span
+    <Styled>
+      <StyledNoHeaderWrap>
+        <StyledSignInContent>
+          <StyledSignInLeft>
+            <StyledMainLogoTwo
               onClick={() => {
                 setEmail('');
                 setPw('');
-                navigate('/signUp');
+                navigate('/');
               }}
             >
-              회원가입
-            </span>
-          </StyledSignInGoSignUp>
-        </StyledSignInRight>
-      </StyledSignInContent>
-    </StyledNoHeaderWrap>
+              <img src={MainTwoIcon} />
+            </StyledMainLogoTwo>
+          </StyledSignInLeft>
+          <StyledSignInRight>
+            <StyledSignInGreeting>
+              <div>안녕하세요! </div>
+              <div>AROOM에 오신 것을 환영합니다!</div>
+            </StyledSignInGreeting>
+            <StyledInputWrap>
+              <div>Email</div>
+              <input
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+                placeholder="이메일을 입력해주세요"
+              />
+            </StyledInputWrap>
+            <StyledInputWrap>
+              <div>비밀번호</div>
+              <input
+                value={pw}
+                onChange={(e) => {
+                  setPw(e.target.value);
+                }}
+                placeholder="비밀번호를 입력해주세요"
+                type="password"
+              />
+            </StyledInputWrap>
+            <StyledSignInError>
+              {signInButtonClick && '로그인 정보가 일치하지 않습니다.'}
+            </StyledSignInError>
+            <StyledSignInButton
+              onClick={() => handleSignIn(email, pw)}
+              disabled={!email || !pw}
+            >
+              로그인
+            </StyledSignInButton>
+            <StyledSignInGoSignUp>
+              <span>계정이 없으신가요?</span>
+              <span
+                onClick={() => {
+                  setEmail('');
+                  setPw('');
+                  navigate('/signUp');
+                }}
+              >
+                회원가입
+              </span>
+            </StyledSignInGoSignUp>
+          </StyledSignInRight>
+        </StyledSignInContent>
+      </StyledNoHeaderWrap>
+    </Styled>
   );
 };
+export const Styled = styled.div`
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+`;
 export const StyledNoHeaderWrap = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   box-shadow: 4px 4px 4px ${theme.colors.gray2};
   width: 1080px;
-  height: 800px;
+  height: 100%;
   margin: 0 auto;
   background-color: ${theme.colors.gray1};
   @media (max-width: 1080px) {
