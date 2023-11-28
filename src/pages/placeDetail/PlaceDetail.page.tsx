@@ -11,10 +11,9 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import MapModal from './components/MapModal';
-import { useRecoilState } from 'recoil';
-import { emailState } from 'recoil/atom';
 import { Loading } from '@components/common/Loading';
 import { useLocation } from 'react-router-dom';
+import { end } from '@popperjs/core';
 
 //숙소 조회 인터페이스
 export interface IAccommodations {
@@ -80,8 +79,6 @@ export const PlaceDetail: React.FC = () => {
   const [modalLatitude, setModalLatitude] = useState<number>(0);
   const [modalLongitude, setModalLongitude] = useState<number>(0);
 
-  //인원수, 재고 필터링
-
   const openModal = (latitude: number, longitude: number) => {
     console.log(latitude, longitude);
     setModalLatitude(latitude);
@@ -93,19 +90,18 @@ export const PlaceDetail: React.FC = () => {
     setModalIsOpen(false);
   };
 
-  //필터링 데이터 받기 -> 종수님꺼 받아서 테스트하기
+  //필터링 데이터 받기
   const location = useLocation();
   const { startDate, endDate, personnel } = location.state || {
-    startDate: '23-11-28',
-    endDate: '23-11-29',
-    personnel: 1,
+    startDate: '',
+    endDate: '',
+    personnel: 0,
   };
 
   console.log(startDate, endDate, personnel);
 
   //숙소 정보 get하는 로직
-  // `${process.env.REACT_APP_SERVER}/v1/accommodations/${id}`
-  // /v2/accommodations/${id}/${startDate}/${endDate}/${personnel}
+  // `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}/${startDate}/${endDate}/${personnel}`
   const getData = async (id: any) => {
     try {
       const res = await axios.get(`/accommodations/${id}`);
@@ -132,13 +128,20 @@ export const PlaceDetail: React.FC = () => {
 
   //장바구니로 post하는 로직
   // `${process.env.REACT_APP_SERVER}/v1/carts/{member_id}/{room_id}
-  const [email] = useRecoilState(emailState); //이메일정보
+  const userKey = sessionStorage.getItem('userKey');
   const addCart = async (roomId: number) => {
-    try {
-      const res = await axios.post(`/v1/carts/${email}/${roomId}`);
-      console.log('장바구니 성공', res.data);
-    } catch (error) {
-      console.error('장바구니 실패', error);
+    const confirm = window.confirm('장바구니에 추가하시겠습니까?');
+    console.log(userKey);
+    if (confirm) {
+      try {
+        const res = await axios.post(
+          `${process.env.REACT_APP_SERVER}/v1/carts/${userKey}/${roomId}`,
+        );
+        navigate('/cart');
+        console.log('장바구니 성공', res.data);
+      } catch (error) {
+        console.error('장바구니 실패', error);
+      }
     }
   };
 
@@ -156,8 +159,11 @@ export const PlaceDetail: React.FC = () => {
           />
           <StyledTitle>{accommodation.accommodationName}</StyledTitle>
           <StyledSpan>
-            <StyledButton>23-11-28~23-11-29</StyledButton>
-            <StyledButton>3명</StyledButton>
+            <StyledButton>
+              {startDate}~{endDate}
+            </StyledButton>
+            {/* 데이터 받아와 수정 */}
+            <StyledButton>{personnel}명</StyledButton>
           </StyledSpan>
         </StyledBar>
 
@@ -219,7 +225,6 @@ export const PlaceDetail: React.FC = () => {
                       <RiShoppingBagLine
                         onClick={() => {
                           addCart(room.id);
-                          //  navigate('/cart'); //장바구니로 이동
                         }}
                       />
                     </StyledReservationButton>
@@ -277,7 +282,7 @@ const StyledStar = styled(FaStar)`
     color: ${theme.colors.yellow};
   }
   &.unchecked {
-    color: ${theme.colors.gray1};
+    color: ${theme.colors.gray2};
   }
 `;
 

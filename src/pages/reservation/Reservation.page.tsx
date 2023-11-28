@@ -43,9 +43,13 @@ export const Reservation: React.FC = () => {
 
       try {
         // ${process.env.REACT_APP_SERVER}
-        const response = await axios.post(`/v1/reservations`, data, {
-          headers: { 'Content-Type': 'application/json' },
-        });
+        const response = await axios.post(
+          ` ${process.env.REACT_APP_SERVER}/v1/reservations`,
+          data,
+          {
+            headers: { 'Content-Type': 'application/json' },
+          },
+        );
         console.log(response.data);
       } catch (error) {
         console.error('결제 실패', error);
