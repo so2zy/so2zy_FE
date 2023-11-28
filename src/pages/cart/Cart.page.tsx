@@ -1,13 +1,13 @@
-import {
-  StyledWrapper,
-  StyledBtnText,
-} from 'pages/reservation/components/ReservationBtn';
-import { StyledItemDesc } from 'pages/reservation/components/ReservationDesc';
 import { theme } from '@styles/theme';
-import { StyledItemTitle } from './../reservation/components/ReservationDesc';
 import styled from 'styled-components';
 import { Checkbox } from '@mui/material';
 import { FaTrashCan } from 'react-icons/fa6';
+import {
+  StyledItemDesc,
+  StyledItemTitle,
+  StyledWrapper,
+  StyledBtnText,
+} from 'pages/reservation/Reservation.page';
 
 export const Cart: React.FC = () => {
   //전체 선택
@@ -139,7 +139,7 @@ const StyleDetail = styled.div`
   font-weight: ${theme.fonts.subtitle3.fontWeight};
 `;
 
-const StyleRoomName = styled.div`
+export const StyleRoomName = styled.div`
   font-weight: ${theme.fonts.subtitle1.fontWeight};
   font-size: ${theme.fonts.subtitle5.fontSize};
   color: ${theme.colors.navy};
@@ -147,7 +147,7 @@ const StyleRoomName = styled.div`
   display: block;
 `;
 
-const StyledDetailDes = styled.div`
+export const StyledDetailDes = styled.div`
   font-weight: ${theme.fonts.subtitle5.fontWeight};
   font-size: ${theme.fonts.body.fontSize};
 
@@ -163,11 +163,11 @@ const StyledList = styled.ul`
   vertical-align: top;
 `;
 
-const StyledListItem = styled.li`
+export const StyledListItem = styled.li`
   display: inline-block;
 `;
 
-const StyledMiniImage = styled.img`
+export const StyledMiniImage = styled.img`
   width: 8rem;
   height: 6rem;
   border-radius: 8px;

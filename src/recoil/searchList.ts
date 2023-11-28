@@ -42,6 +42,10 @@ export const isClickedCalendarState = atom({
   key: 'isClickedCalendarState',
   default: false,
 });
+export const isClickedMapState = atom({
+  key: 'isClickedMapState',
+  default: false,
+});
 
 export const peopleCountState = atom({
   key: 'peopleCountState',

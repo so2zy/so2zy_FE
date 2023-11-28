@@ -1,10 +1,11 @@
 import { theme } from '@styles/theme';
-import { useState } from 'react';
 import styled from 'styled-components';
+import { useRecoilState } from 'recoil';
+import { regionModalOpen } from '@recoil/regionModal';
 import RegionModal from './regionModal';
 
 const regionSelectBtn = () => {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useRecoilState<boolean>(regionModalOpen);
   const onHandleClick = () => {
     setModalOpen(!modalOpen);
   };
@@ -27,6 +28,7 @@ const StyledWrapper = styled.button`
   border-radius: 0.75rem;
   margin: 1.4rem auto 1rem;
   background-color: ${theme.colors.blue};
+  line-height: 1.1rem;
   cursor: pointer;
 `;
 
