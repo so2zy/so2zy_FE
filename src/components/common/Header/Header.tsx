@@ -1,11 +1,12 @@
 import { theme } from '@styles/theme';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Logo from '@assets/mainLogo.svg';
 import CartIcon from '@assets/shoppingBag.png';
 import HomeIcon from '@assets/home.png';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BsArrowLeft } from 'react-icons/bs';
+import { searchInputState } from '@recoil/searchList';
 import {
   useRecoilCallback,
   useRecoilState,
@@ -21,6 +22,8 @@ import {
   userKeyState,
   userNameState,
 } from 'recoil/atom';
+import { debounce } from 'lodash';
+import axios from 'axios';
 
 const Header = () => {
   const isUserLoggedIn = useRecoilValue(isLogInSelector);
@@ -34,7 +37,36 @@ const Header = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const [localSearchInput, setLocalSearchInput] = useState('');
+  const setSearchInput = useSetRecoilState(searchInputState);
 
+  const onInputChange = (query: string) => {
+      if (query) {
+        navigate(`/searchList?name=${query}`);
+      }
+  };
+
+  const handleInputChange = debounce((event: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalSearchInput(event.target.value);
+  }, 300)
+
+  const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      setSearchInput(localSearchInput);
+      onInputChange(localSearchInput)
+      setLocalSearchInput('');
+    }
+  };
+
+  const isSearchPage =
+    location.pathname === '/' || location.pathname === '/searchList';
+  const isReservedPage = ['/reservation', '/confirm', '/cart'].includes(
+    location.pathname,
+  );
+  const isSignUpOrSignIn = ['/signUp', '/signIn'].includes(location.pathname);
+  if (isSignUpOrSignIn) {
+    return null;
+  }
   console.log(refreshToken, token);
   const handleMainLogoClick = () => {
     navigate('/');
@@ -104,15 +136,8 @@ const Header = () => {
     }
   }, []);
 
-  const isSearchPage =
-    location.pathname === '/' || location.pathname === '/searchList';
-  const isReservedPage = ['/reservation', '/confirm', '/cart'].includes(
-    location.pathname,
-  );
-  const isSignUpOrSignIn = ['/signUp', '/signIn'].includes(location.pathname);
-  if (isSignUpOrSignIn) {
-    return null;
-  }
+
+
   return (
     <>
       {isReservedPage ? (
@@ -148,7 +173,12 @@ const Header = () => {
               </StyledHeaderMainLogo>
             )}
             {isSearchPage && (
-              <StyledHeaderSearchBar placeholder="숙소를 검색해보세요" />
+              <StyledHeaderSearchBar
+                placeholder="숙소를 검색해보세요"
+                value={localSearchInput}
+                onChange={handleInputChange}
+                onKeyPress={handleEnterPress}
+              />
             )}
 
             <StyledHeaderRight>
@@ -229,6 +259,7 @@ const StyledHeaderRegion = styled.div`
   margin-left: 4rem;
   font-size: 2rem;
   font-weight: 800;
+  padding: 0.375rem 0 0;
 `;
 
 const StyledHeaderSearchBar = styled.input`
