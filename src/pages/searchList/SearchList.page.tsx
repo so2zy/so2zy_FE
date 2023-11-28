@@ -39,7 +39,7 @@ interface Hotel {
 }
 
 export const SearchList: React.FC = () => {
-  const [hotels, setHotels] = useState<Hotel[]>([]);
+  const searchedHotel = sessionStorage.getItem('searchedHotel');
   const [sortBy, setSortBy] = useState('price');
   const [sortOrder, setSortOrder] = useState('asc');
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -56,7 +56,6 @@ export const SearchList: React.FC = () => {
   const startDate = useRecoilValue(startDateState);
   const endDate = useRecoilValue(endDateState);
   const [date, setDate] = useState('');
-  const searchedName = useRecoilValue(searchInputState); // 검색한 이름
   const size = 6;
   const navigate = useNavigate();
 
@@ -106,7 +105,7 @@ export const SearchList: React.FC = () => {
   } = useInfiniteQuery({
     queryKey: [
       'searchListData',
-      searchedName,
+      searchedHotel,
       peopleCount,
       isClickedReservation,
       startDate,
@@ -118,7 +117,7 @@ export const SearchList: React.FC = () => {
     ],
     queryFn: ({ pageParam = 0 }) =>
       getSearchListData(
-        searchedName,
+        searchedHotel,
         peopleCount,
         isClickedReservation,
         startDate,

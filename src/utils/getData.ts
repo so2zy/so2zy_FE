@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // 판매량 정렬 아직 없음, 날짜/인원수/예약가능 필터링 아직 없음
 export const getSearchListData = async (
-  name?: string,
+  name?: string | null,
   peopleCount?: number,
   isAvailable?: boolean,
   startDate?: Date | null,
