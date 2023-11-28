@@ -113,6 +113,7 @@ const StyledRegionItem = styled.button`
   margin-bottom: 1rem;
   color: ${theme.colors.navy};
   font-weight: bold;
+  cursor: pointer;
   &:hover {
     background-color: #f1fff9;
     box-shadow: 1px 1px 35px rgba(198, 211, 255, 0.28);
