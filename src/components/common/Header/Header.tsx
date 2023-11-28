@@ -1,5 +1,5 @@
 import { theme } from '@styles/theme';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Logo from '@assets/mainLogo.svg';
 import CartIcon from '@assets/shoppingBag.png';
@@ -21,6 +21,8 @@ import {
   userKeyState,
   userNameState,
 } from 'recoil/atom';
+import { debounce } from 'lodash';
+import axios from 'axios';
 
 const Header = () => {
   const isUserLoggedIn = useRecoilValue(isLogInSelector);
@@ -34,6 +36,9 @@ const Header = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [searchInput, setSearchInput] = useState('');
+  const [searchResult, setSearchResult] = useState([]);
 
   console.log(refreshToken, token);
   const handleMainLogoClick = () => {
@@ -113,6 +118,38 @@ const Header = () => {
   if (isSignUpOrSignIn) {
     return null;
   }
+
+  const handleInputChange = debounce(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchInput(e.target.value);
+    },
+    300,
+  );
+
+  const onInputChange = async (query: string) => {
+    try {
+      const res = await axios.get(`/api/searchlist?name=${query}`);
+      if (res.data) {
+        setSearchResult(res.data);
+        console.log(searchResult);
+        if (searchInput) {
+          navigate(`/search?name=${searchInput}`);
+          console.log('성공');
+        }
+      } else {
+        console.error('검색어 입력 오류: ', searchInput);
+      }
+    } catch (error) {
+      console.error('검색 중 오류:', error);
+      setSearchResult([]);
+    }
+  };
+
+  const handleEnterKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      onInputChange(searchInput);
+    }
+  };
   return (
     <>
       {isReservedPage ? (
@@ -148,7 +185,11 @@ const Header = () => {
               </StyledHeaderMainLogo>
             )}
             {isSearchPage && (
-              <StyledHeaderSearchBar placeholder="숙소를 검색해보세요" />
+              <StyledHeaderSearchBar
+                placeholder="숙소를 검색해보세요"
+                onChange={handleInputChange}
+                onKeyDown={handleEnterKeyPress}
+              />
             )}
 
             <StyledHeaderRight>
