@@ -7,6 +7,8 @@ import HomeIcon from '@assets/home.png';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BsArrowLeft } from 'react-icons/bs';
 import { ReactComponent as ChevronDown } from '@assets/images/chevron-down.svg';
+import { isClickedRegionState } from '@recoil/regionList';
+import { Modal } from '@components/Modal';
 
 import {
   useRecoilCallback,
@@ -23,8 +25,6 @@ import {
   userKeyState,
   userNameState,
 } from 'recoil/atom';
-import { debounce } from 'lodash';
-import axios from 'axios';
 
 const Header = () => {
   const isUserLoggedIn = useRecoilValue(isLogInSelector);
@@ -35,6 +35,10 @@ const Header = () => {
   const setUserName = useSetRecoilState(userNameState);
   const setEmail = useSetRecoilState(emailState);
   const setPw = useSetRecoilState(pwState);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const setIsClickedRegion = useSetRecoilState(isClickedRegionState); // 필터링 지역버튼 클릭 여부
+  const [selectedRegion, setSelectedRegion] = useState('');
+  const selectedSigungu = sessionStorage.getItem('selectedSigungu');
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -136,6 +140,23 @@ const Header = () => {
     }
   }, []);
 
+  const openModal = (type: string) => {
+    if (type == '지역') {
+      setIsClickedRegion(true);
+    }
+    setModalIsOpen(true);
+  };
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setIsClickedRegion(false);
+  };
+
+  useEffect(() => {
+    if (selectedSigungu !== null) {
+      setSelectedRegion(selectedSigungu);
+    }
+  }, [selectedSigungu]);
+
   return (
     <>
       {isReservedPage ? (
@@ -163,8 +184,12 @@ const Header = () => {
             {location.pathname === '/regionList' ? (
               <StyledHeaderRegionCover>
                 <BsArrowLeft size="40" onClick={handleArrowLeft} />
-                <StyledHeaderRegion>강남/역삼/삼성</StyledHeaderRegion>
-                <StyledChevronDown />
+                <StyledHeaderRegion>{selectedRegion}</StyledHeaderRegion>
+                <StyledChevronDown
+                  onClick={() => {
+                    openModal('지역');
+                  }}
+                />
               </StyledHeaderRegionCover>
             ) : (
               <StyledHeaderMainLogo>
@@ -199,6 +224,7 @@ const Header = () => {
               </StyledHeaderCartIcon>
             </StyledHeaderRight>
           </StyledHeaderContent>
+          <Modal isOpen={modalIsOpen} closeModal={closeModal} />
         </StyledHeaderBox>
       )}
     </>

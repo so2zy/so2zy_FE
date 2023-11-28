@@ -41,7 +41,6 @@ interface Hotel {
 
 export const RegionList: React.FC = () => {
   const areaName = '서울시';
-  sessionStorage.setItem('selectedSigungu', '송파구');
   const selectedSigungu = sessionStorage.getItem('selectedSigungu');
   const [hotels, setHotels] = useState<Hotel[]>([]);
   const [sortBy, setSortBy] = useState('price');
