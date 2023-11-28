@@ -14,6 +14,7 @@ import {
 } from 'recoil';
 import {
   emailState,
+  iatDatePlus9HoursState,
   isLogInSelector,
   pwState,
   refreshTokenAtom,
@@ -21,6 +22,8 @@ import {
   userKeyState,
   userNameState,
 } from 'recoil/atom';
+import jwt from 'jsonwebtoken-promisified';
+import axios from 'axios';
 
 const Header = () => {
   const isUserLoggedIn = useRecoilValue(isLogInSelector);
@@ -31,11 +34,50 @@ const Header = () => {
   const setUserName = useSetRecoilState(userNameState);
   const setEmail = useSetRecoilState(emailState);
   const setPw = useSetRecoilState(pwState);
-
+  const [iatDatePlus9Hours, setIatDatePlus9Hours] = useRecoilState(
+    iatDatePlus9HoursState,
+  );
+  console.log('iatDatePlus9Hours', iatDatePlus9Hours);
   const navigate = useNavigate();
   const location = useLocation();
+  const checkTokenExpiration = async () => {
+    if (iatDatePlus9Hours && iatDatePlus9Hours < Date.now()) {
+      try {
+        const response = await axios.post(
+          'http://43.202.50.38:8080/v1/refresh',
+          {
+            accessToken: token,
+            refreshToken: refreshToken,
+          },
+          {
+            headers: {
+              accept: '*/*',
+              'Content-Type': 'application/json',
+            },
+          },
+        );
 
-  console.log(refreshToken, token);
+        if (response.status === 201) {
+          const newAccessToken = response.data.data.accessToken;
+          const decodedToken = jwt.decode(newAccessToken);
+          const { iat } = decodedToken;
+          const iatPlus = iat * 1000 + 9 * 60 * 60 * 1000;
+          setIatDatePlus9Hours(iatPlus);
+          sessionStorage.setItem('iatDatePlus9Hours', newAccessToken);
+          sessionStorage.setItem('accessToken', String(iatPlus));
+
+          setToken(newAccessToken);
+          console.log('재발급성공');
+        } else {
+          console.error('AccessToken 재발급 실패');
+          handleLogOut();
+        }
+      } catch (error) {
+        console.error('AccessToken 재발급 요청 에러:', error);
+        handleLogOut();
+      }
+    }
+  };
   const handleMainLogoClick = () => {
     navigate('/');
   };
@@ -77,6 +119,7 @@ const Header = () => {
         reset(emailState);
         reset(pwState);
         reset(userNameState);
+        reset(iatDatePlus9HoursState);
       },
     [],
   );
@@ -86,6 +129,15 @@ const Header = () => {
 
     await resetRecoilState();
   };
+
+  useEffect(() => {
+    if (token) {
+      const tokenCheckInterval = setInterval(() => {
+        checkTokenExpiration();
+      }, 1800000);
+      return () => clearInterval(tokenCheckInterval);
+    }
+  }, []);
   useEffect(() => {
     const storedLoginState = sessionStorage.getItem('loginState');
     if (storedLoginState === 'true') {
@@ -94,7 +146,6 @@ const Header = () => {
       const storedRefreshToken = sessionStorage.getItem('refreshToken') || '';
       const storedEmail = sessionStorage.getItem('email') || '';
       const storedUserName = sessionStorage.getItem('userName') || '';
-
       setUserKey(storedUserKey);
       setRefreshToken(storedRefreshToken);
       setToken(storedAccessToken);
@@ -109,10 +160,7 @@ const Header = () => {
   const isReservedPage = ['/reservation', '/confirm', '/cart'].includes(
     location.pathname,
   );
-  const isSignUpOrSignIn = ['/signUp', '/signIn'].includes(location.pathname);
-  if (isSignUpOrSignIn) {
-    return null;
-  }
+
   return (
     <>
       {isReservedPage ? (
@@ -200,7 +248,7 @@ const StyledHeaderContent = styled.div`
   justify-content: space-between;
   align-items: center;
   background-color: auto;
-  width: 1080px;
+  width: 50%;
   height: 100%;
   margin: 0 auto;
   @media (max-width: 1080px) {

@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken-promisified';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
   emailState,
+  iatDatePlus9HoursState,
   pwState,
   refreshTokenAtom,
   tokenAtom,
@@ -23,6 +24,7 @@ export const SignIn: React.FC = () => {
   const setAccessToken = useSetRecoilState(tokenAtom);
   const setUserName = useSetRecoilState(userNameState);
   const setRefreshToken = useSetRecoilState(refreshTokenAtom);
+  const setIatDatePlus9Hours = useSetRecoilState(iatDatePlus9HoursState);
   const navigate = useNavigate();
   const handleSignIn = async (email: string, pw: string) => {
     const params = new URLSearchParams({
@@ -35,19 +37,18 @@ export const SignIn: React.FC = () => {
           accept: '*/*',
         },
       });
-      console.log(response);
       if (response.status === 200) {
         const accessToken = response.data.accessToken;
         const refreshToken = response.data.refreshToken;
         const decodedToken = jwt.decode(accessToken);
-        // const decodedRefreshToken = jwt.decode(refreshToken);
         const {
           'user-key': userKey,
           'user-name': userName,
           iat,
-          exp,
         } = decodedToken;
-        console.log(userKey, userName, iat, exp);
+        const iatPlus = iat * 1000 + 9 * 60 * 60 * 1000;
+        setIatDatePlus9Hours(iatPlus);
+        sessionStorage.setItem('iatDatePlus9Hours', String(iatPlus));
         sessionStorage.setItem('loginState', String(true));
         sessionStorage.setItem('userKey', userKey);
         sessionStorage.setItem('accessToken', accessToken);
