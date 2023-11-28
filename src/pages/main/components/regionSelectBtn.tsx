@@ -28,6 +28,7 @@ const StyledWrapper = styled.button`
   border-radius: 0.75rem;
   margin: 1.4rem auto 1rem;
   background-color: ${theme.colors.blue};
+  line-height: 1.1rem;
   cursor: pointer;
 `;
 

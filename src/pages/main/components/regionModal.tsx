@@ -76,7 +76,7 @@ const StyledContainer = styled.div`
   transform: translate(-50%, -50%);
   align-items: center;
   background-color: ${theme.colors.gray1};
-  box-shadow: 4px 4px 4px ${theme.shadows.shadow3};
+  box-shadow: ${theme.shadows.shadow1.shadow};
   border-radius: 1rem;
   display: flex;
   flex-direction: column;
