@@ -22,13 +22,9 @@ export interface IAccommodations {
   longitude: number;
   addressCode: string;
   phoneNumber: string;
-  accommodationImageList: ImageList[];
+  accommodationUrl: string;
+  favorite: boolean;
   roomInfoList: RoomList[];
-}
-
-export interface ImageList {
-  id: number;
-  url: string;
 }
 
 export interface RoomList {
@@ -39,13 +35,12 @@ export interface RoomList {
   maxCapacity: number;
   checkIn: string;
   checkOut: string;
-  stock: number;
   url: string;
+  stock: number;
 }
 
 export const PlaceDetail: React.FC = () => {
   const { id } = useParams();
-
   const [accommodation, setAccommodation] = useState<IAccommodations>({
     id: 0,
     accommodationName: '',
@@ -53,7 +48,8 @@ export const PlaceDetail: React.FC = () => {
     longitude: 0,
     addressCode: '',
     phoneNumber: '',
-    accommodationImageList: [{ id: 0, url: '' }],
+    accommodationUrl: '',
+    favorite: false,
     roomInfoList: [
       {
         id: 0,
@@ -98,12 +94,16 @@ export const PlaceDetail: React.FC = () => {
   };
 
   //숙소 정보 get
-  // `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}/${startDate}/${endDate}/${personnel}`
+  // `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}?startDate=${startDate}?endDate=${endDate}?personnel=${personnel}`
+  const accessToken = sessionStorage.getItem('accessToken');
   const getData = async (id: any) => {
     try {
-      const res = await axios.get(`/accommodations/${id}`);
-
-      console.log(`get test ${id}`);
+      const res = await axios.get(`/accommodations/${id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      //console.log(`get test ${id}`);
       setAccommodation(res.data);
       console.log('정보 가져오기 성공', res.data);
       setIsLoading(false);
@@ -124,16 +124,18 @@ export const PlaceDetail: React.FC = () => {
   }, [accommodation]);
 
   //장바구니로 post하는 로직
-  // `${process.env.REACT_APP_SERVER}/v2/carts/{room_id}
-  const userKey = sessionStorage.getItem('userKey');
-
   const addCart = async (roomId: number) => {
     const confirm = window.confirm('장바구니에 추가하시겠습니까?');
-    console.log(userKey);
+
     if (confirm) {
       try {
         const res = await axios.post(
-          `${process.env.REACT_APP_SERVER}/v1/carts/${userKey}/${roomId}`,
+          `${process.env.REACT_APP_SERVER}/v2/carts/${roomId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
         );
         navigate('/cart');
         console.log('장바구니 성공', res.data);
@@ -164,7 +166,7 @@ export const PlaceDetail: React.FC = () => {
           </StyledSpan>
         </StyledBar>
 
-        <StyledImg src={accommodation.accommodationImageList[0].url} />
+        <StyledImg src={accommodation.accommodationUrl} />
 
         <StyledMainTitle>
           {accommodation.accommodationName}
@@ -227,14 +229,6 @@ export const PlaceDetail: React.FC = () => {
                     </StyledReservationButton>
                     <StyledReservationButton
                       onClick={() => {
-                        // console.log(
-                        //   'Before',
-                        //   accommodation,
-                        //   room,
-                        //   startDate,
-                        //   endDate,
-                        //   personnel,
-                        // );
                         navigate(`/reservation`, {
                           state: {
                             accommodation,
@@ -244,14 +238,14 @@ export const PlaceDetail: React.FC = () => {
                             personnel,
                           },
                         });
-                        console.log(
-                          'After',
-                          accommodation,
-                          room,
-                          startDate,
-                          endDate,
-                          personnel,
-                        );
+                        // console.log(
+                        //   'After',
+                        //   accommodation,
+                        //   room,
+                        //   startDate,
+                        //   endDate,
+                        //   personnel,
+                        // );
                       }}
                     >
                       예약하기

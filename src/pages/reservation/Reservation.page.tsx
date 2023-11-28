@@ -17,6 +17,7 @@ export const Reservation: React.FC = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [personnel, setPersonnel] = useState('');
+  const accessToken = sessionStorage.getItem('accessToken');
 
   useEffect(() => {
     if (location.state) {
@@ -50,7 +51,10 @@ export const Reservation: React.FC = () => {
           ` ${process.env.REACT_APP_SERVER}/v1/reservations`,
           data,
           {
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${accessToken}`,
+            },
           },
         );
         console.log(response.data);
