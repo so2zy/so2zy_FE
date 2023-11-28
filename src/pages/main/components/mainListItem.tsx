@@ -35,13 +35,17 @@ const MainListItem = ({ title }: MainListProps) => {
     const endDate = new Date();
     const personnel = 1;
     endDate.setDate(endDate.getDate() + 1);
-    navigate(`/place/:${selectedId}`, {
+    console.log('navigate 전', startDate, endDate, personnel);
+
+    navigate(`/place/${selectedId}`, {
       state: {
         startDate: formatDate(startDate),
         endDate: formatDate(endDate),
         personnel: personnel,
       },
     });
+
+    console.log('navigate 후', startDate, endDate, personnel);
   };
 
   return (

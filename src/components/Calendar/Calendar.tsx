@@ -43,16 +43,18 @@ export default function CalendarComponent({
   return (
     <StyledContainer>
       <StyledTitle>캘린더</StyledTitle>
-      <DatePicker
-        locale={ko} // 한국 날짜
-        selectsRange={true}
-        startDate={startDate}
-        endDate={endDate}
-        minDate={subDays(new Date(), 0)} // 지난 날짜 선택 x
-        onChange={onChange}
-        isClearable={true}
-        inline // 달력 표시
-      />
+      <StyledDatePickerWrapper>
+        <DatePicker
+          locale={ko} // 한국 날짜
+          selectsRange={true}
+          startDate={startDate}
+          endDate={endDate}
+          minDate={subDays(new Date(), 0)} // 지난 날짜 선택 x
+          onChange={onChange}
+          isClearable={true}
+          inline // 달력 표시
+        />
+      </StyledDatePickerWrapper>
       <StyledButtonDiv onClick={handleFilter}>필터 적용하기</StyledButtonDiv>
     </StyledContainer>
   );
@@ -82,4 +84,8 @@ const StyledButtonDiv = styled.div`
   color: white;
   font-weight: bold;
   font-size: 1.1rem;
+`;
+
+const StyledDatePickerWrapper = styled.div`
+  margin: 1rem 0;
 `;

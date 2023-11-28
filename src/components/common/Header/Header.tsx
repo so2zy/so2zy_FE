@@ -6,6 +6,7 @@ import CartIcon from '@assets/shoppingBag.png';
 import HomeIcon from '@assets/home.png';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BsArrowLeft } from 'react-icons/bs';
+import { searchInputState } from '@recoil/searchList';
 import {
   useRecoilCallback,
   useRecoilState,
@@ -36,10 +37,39 @@ const Header = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const [localSearchInput, setLocalSearchInput] = useState('');
+  const setSearchInput = useSetRecoilState(searchInputState);
 
-  const [searchInput, setSearchInput] = useState('');
-  const [searchResult, setSearchResult] = useState([]);
+  const onInputChange = (query: string) => {
+    if (query) {
+      navigate(`/searchList?name=${query}`);
+    }
+  };
 
+  const handleInputChange = debounce(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setLocalSearchInput(event.target.value);
+    },
+    300,
+  );
+
+  const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      setSearchInput(localSearchInput);
+      onInputChange(localSearchInput);
+      setLocalSearchInput('');
+    }
+  };
+
+  const isSearchPage =
+    location.pathname === '/' || location.pathname === '/searchList';
+  const isReservedPage = ['/reservation', '/confirm', '/cart'].includes(
+    location.pathname,
+  );
+  const isSignUpOrSignIn = ['/signUp', '/signIn'].includes(location.pathname);
+  if (isSignUpOrSignIn) {
+    return null;
+  }
   console.log(refreshToken, token);
   const handleMainLogoClick = () => {
     navigate('/');
@@ -109,47 +139,6 @@ const Header = () => {
     }
   }, []);
 
-  const isSearchPage =
-    location.pathname === '/' || location.pathname === '/searchList';
-  const isReservedPage = ['/reservation', '/confirm', '/cart'].includes(
-    location.pathname,
-  );
-  const isSignUpOrSignIn = ['/signUp', '/signIn'].includes(location.pathname);
-  if (isSignUpOrSignIn) {
-    return null;
-  }
-
-  const handleInputChange = debounce(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchInput(e.target.value);
-    },
-    300,
-  );
-
-  const onInputChange = async (query: string) => {
-    try {
-      const res = await axios.get(`/api/searchlist?name=${query}`);
-      if (res.data) {
-        setSearchResult(res.data);
-        console.log(searchResult);
-        if (searchInput) {
-          navigate(`/search?name=${searchInput}`);
-          console.log('성공');
-        }
-      } else {
-        console.error('검색어 입력 오류: ', searchInput);
-      }
-    } catch (error) {
-      console.error('검색 중 오류:', error);
-      setSearchResult([]);
-    }
-  };
-
-  const handleEnterKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      onInputChange(searchInput);
-    }
-  };
   return (
     <>
       {isReservedPage ? (
@@ -187,8 +176,9 @@ const Header = () => {
             {isSearchPage && (
               <StyledHeaderSearchBar
                 placeholder="숙소를 검색해보세요"
+                value={localSearchInput}
                 onChange={handleInputChange}
-                onKeyDown={handleEnterKeyPress}
+                onKeyPress={handleEnterPress}
               />
             )}
 
@@ -270,6 +260,7 @@ const StyledHeaderRegion = styled.div`
   margin-left: 4rem;
   font-size: 2rem;
   font-weight: 800;
+  padding: 0.375rem 0 0;
 `;
 
 const StyledHeaderSearchBar = styled.input`

@@ -9,7 +9,7 @@ const Loading: React.FC = () => {
         autoplay
         loop
         style={{ height: '300px', width: '300px' }}
-        src="https://lottie.host/f45c56b0-e780-44d1-b5dc-1fd06a1cfe8f/fRTKW1iUlB.json"
+        src="https://lottie.host/24b41b2b-c48c-46a8-a56a-a3abb900b852/byDgdEX64z.json"
       />
     </StyledContainer>
   );
@@ -18,7 +18,7 @@ const Loading: React.FC = () => {
 export default Loading;
 
 const StyledContainer = styled.div`
-  height: 100vh;
+  height: 90vh;
   display: flex;
   flex-direction: column;
   justify-content: center;

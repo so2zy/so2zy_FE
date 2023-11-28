@@ -9,7 +9,7 @@ const NotFound: React.FC = () => {
         autoplay
         loop
         style={{ height: '300px', width: '300px' }}
-        src="https://lottie.host/2397a663-2e03-4002-a2bb-f1ef43dadb8d/fS8MX94IHw.json"
+        src="https://lottie.host/13fb509a-6f6a-4b4d-82ae-249fdb3bd378/NGquuXZ1AN.json"
       />
     </StyledContainer>
   );
@@ -18,7 +18,7 @@ const NotFound: React.FC = () => {
 export default NotFound;
 
 const StyledContainer = styled.div`
-  height: 100vh;
+  height: 90vh;
   display: flex;
   flex-direction: column;
   justify-content: center;

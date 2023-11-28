@@ -1,32 +1,91 @@
 import { Checkbox } from '@mui/material';
 import { theme } from '@styles/theme';
 import styled from 'styled-components';
-// import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { RoomList, IAccommodations } from 'pages/placeDetail/PlaceDetail.page';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 export const Reservation: React.FC = () => {
-  // const location = useLocation();
-  // const roomId = location.state?.roomId;
+  const location = useLocation();
+  // console.log('Location 값 확인', location.state);
+
+  const [accommodationInfo, setAccommodationInfo] =
+    useState<IAccommodations | null>(null);
+  const [roomInfo, setRoomInfo] = useState<RoomList | null>(null);
+  const [agreement, setAgreement] = useState(false);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [personnel, setPersonnel] = useState('');
+
+  useEffect(() => {
+    if (location.state) {
+      setAccommodationInfo(location.state.accommodation);
+      setRoomInfo(location.state.room);
+      setPersonnel(location.state.personnel);
+      setStartDate(location.state.startDate);
+      setEndDate(location.state.endDate);
+    }
+  }, [location.state]);
+
+  const handlePayment = async () => {
+    if (roomInfo && agreement) {
+      const data = {
+        roomList: [
+          {
+            roomId: roomInfo.id,
+            startDate: startDate,
+            endDate: endDate,
+            price: roomInfo.price,
+          },
+        ],
+        personnel,
+        agreement,
+        isFromCart: false, //장바구니 아닐땐 false
+      };
+
+      try {
+        // ${process.env.REACT_APP_SERVER}
+        const response = await axios.post(
+          ` ${process.env.REACT_APP_SERVER}/v1/reservations`,
+          data,
+          {
+            headers: { 'Content-Type': 'application/json' },
+          },
+        );
+        console.log(response.data);
+      } catch (error) {
+        console.error('결제 실패', error);
+      }
+    }
+  };
 
   return (
     <>
       <StyledWrapper>
         <StyledItemDesc>
           <StyledItemTitle>
-            <span>남해 글리드810 풀빌라</span>
+            <span>{accommodationInfo?.accommodationName}</span>
           </StyledItemTitle>
           <StyledItemSubTitle>
-            <span>P1</span>
+            <span>{roomInfo?.type}</span>
           </StyledItemSubTitle>
           <StyledAcceptPerson>
-            <span>기준 2인/최대 2인</span>
+            <span>
+              기준 {roomInfo?.capacity}인/최대 {roomInfo?.maxCapacity}인
+            </span>
           </StyledAcceptPerson>
           <StyledCheckIn>
             <p>체크인</p>
-            <span>23.11.10(금) 15:00</span>
+            <span>
+              {startDate} {roomInfo?.checkIn}
+            </span>
           </StyledCheckIn>
           <StyledCheckOut>
-            <p>체크인</p>
-            <span>23.11.10(금) 15:00</span>
+            <p>체크아웃</p>
+            <span>
+              {endDate} {roomInfo?.checkOut}
+            </span>
           </StyledCheckOut>
         </StyledItemDesc>
         <StyledPriceBox>
@@ -35,7 +94,7 @@ export const Reservation: React.FC = () => {
           </StyledPayPrice>
           <StyledItemPrice>
             <span>상품금액</span>
-            <span>숙박/1박 81,000원</span>
+            <span>숙박/1박 {roomInfo?.price}원</span>
           </StyledItemPrice>
           <StyledItemSalePrice>
             <span>할인</span>
@@ -46,7 +105,7 @@ export const Reservation: React.FC = () => {
           </StyledItemSalePrice>
           <StyledFinalPayPrice>
             <span>최종 결제 금액</span>
-            <span>78,500원</span>
+            <span>{roomInfo?.price}원</span>
           </StyledFinalPayPrice>
         </StyledPriceBox>
       </StyledWrapper>
@@ -56,20 +115,27 @@ export const Reservation: React.FC = () => {
           <span>필수 약관 동의</span>
           <StyledEssentialCheckList>
             <CheckboxContainer>
-              <Checkbox />
+              <Checkbox
+                onClick={() => {
+                  setAgreement((prev) => !prev);
+                }}
+              />
               <CheckboxText>[필수]개인정보 수집 및 이용</CheckboxText>
             </CheckboxContainer>
             <StyledPayText>
               <span>※ 이용규칙, 취소 및 환불 규칙</span>에 동의하실 경우
-              결제하기를 클릭해주세요
+              결제버튼이 활성화 됩니다.
             </StyledPayText>
           </StyledEssentialCheckList>
         </StyledEssentialTerms>
       </StyledRuleWrapper>
-
-      <StyledButtonWrapper>
-        <StyledBtnText>78,500원 결제하기</StyledBtnText>
-      </StyledButtonWrapper>
+      {agreement ? (
+        <StyledButtonWrapper onClick={handlePayment}>
+          <StyledBtnText>{roomInfo?.price}원 결제하기</StyledBtnText>
+        </StyledButtonWrapper>
+      ) : (
+        ''
+      )}
     </>
   );
 };
@@ -143,9 +209,8 @@ export const StyledWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid ${theme.colors.gray2};
-  margin-top: 4.375rem;
   padding: 3.5rem;
-  margin: 4.375rem auto 0 auto;
+  margin: 2rem auto 0 auto;
 `;
 
 export const StyledItemDesc = styled.div`

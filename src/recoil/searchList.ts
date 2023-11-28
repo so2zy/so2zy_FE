@@ -42,6 +42,10 @@ export const isClickedCalendarState = atom({
   key: 'isClickedCalendarState',
   default: false,
 });
+export const isClickedMapState = atom({
+  key: 'isClickedMapState',
+  default: false,
+});
 
 export const peopleCountState = atom({
   key: 'peopleCountState',
@@ -56,4 +60,9 @@ export const startDateState = atom<Date | null>({
 export const endDateState = atom<Date | null>({
   key: 'endDateState',
   default: null,
+});
+
+export const searchInputState = atom({
+  key: 'searchInputState',
+  default: '',
 });

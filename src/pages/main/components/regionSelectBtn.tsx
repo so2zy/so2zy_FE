@@ -1,10 +1,11 @@
 import { theme } from '@styles/theme';
-import { useState } from 'react';
 import styled from 'styled-components';
+import { useRecoilState } from 'recoil';
+import { regionModalOpen } from '@recoil/regionModal';
 import RegionModal from './regionModal';
 
 const regionSelectBtn = () => {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useRecoilState<boolean>(regionModalOpen);
   const onHandleClick = () => {
     setModalOpen(!modalOpen);
   };
