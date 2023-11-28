@@ -8,14 +8,15 @@ interface ItemProps {
   regularPrice: number;
   discountPrice: number;
   // salesCount: number;
+  onClick?: () => void;
 }
 
 const Item: React.FC<ItemProps> = (props: ItemProps) => {
   // const { name, image, favorites, regularPrice, discountPrice, salesCount } = props;
-  const { name, favorites, regularPrice, discountPrice } = props;
+  const { name, favorites, regularPrice, discountPrice, onClick } = props;
 
   return (
-    <StyledItem>
+    <StyledItem onClick={onClick}>
       <StyledImgWrapper>
         <img
           src="https://yaimg.yanolja.com/v5/2022/10/26/14/1280/6359424d363cb1.59078840.jpg"

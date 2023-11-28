@@ -24,6 +24,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { getSearchListData } from '@utils/getData';
 import InfiniteScroll from 'react-infinite-scroller';
+import { useNavigate } from 'react-router-dom';
 
 interface Hotel {
   id: number;
@@ -57,6 +58,7 @@ export const SearchList: React.FC = () => {
   const [date, setDate] = useState('');
   const searchedName = useRecoilValue(searchInputState); // 검색한 이름
   const size = 6;
+  const navigate = useNavigate();
 
   const shortenPrice = (price: number) => {
     if (price === 0) {
@@ -165,6 +167,16 @@ export const SearchList: React.FC = () => {
     }
   }, [startDate, endDate]);
 
+  const handleItemClick = (id: number) => {
+    navigate(`/place/${id}`, {
+      state: {
+        startDate,
+        endDate,
+        personnel: peopleCount,
+      },
+    });
+  };
+
   return (
     <div>
       <StyledFilterSortWrapper>
@@ -254,6 +266,7 @@ export const SearchList: React.FC = () => {
           <StyledContainer key={pageIndex}>
             {page.data.map((hotel: any) => (
               <Item
+                onClick={() => handleItemClick(hotel.id)}
                 key={hotel.id}
                 name={hotel.name}
                 // image={hotel.image}
