@@ -6,7 +6,8 @@ import CartIcon from '@assets/shoppingBag.png';
 import HomeIcon from '@assets/home.png';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BsArrowLeft } from 'react-icons/bs';
-import { searchInputState } from '@recoil/searchList';
+import { ReactComponent as ChevronDown } from '@assets/images/chevron-down.svg';
+
 import {
   useRecoilCallback,
   useRecoilState,
@@ -38,7 +39,6 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [localSearchInput, setLocalSearchInput] = useState('');
-  const setSearchInput = useSetRecoilState(searchInputState);
 
   const onInputChange = (query: string) => {
     if (query) {
@@ -46,23 +46,20 @@ const Header = () => {
     }
   };
 
-  const handleInputChange = debounce(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setLocalSearchInput(event.target.value);
-    },
-    300,
-  );
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalSearchInput(event.target.value);
+  };
 
   const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      setSearchInput(localSearchInput);
+      sessionStorage.setItem('searchedHotel', localSearchInput);
       onInputChange(localSearchInput);
       setLocalSearchInput('');
     }
   };
 
   const isSearchPage =
-    location.pathname === '/' || location.pathname === '/searchList';
+    location.pathname === '/' || location.pathname.startsWith('/searchList');
   const isReservedPage = ['/reservation', '/confirm', '/cart'].includes(
     location.pathname,
   );
@@ -167,6 +164,7 @@ const Header = () => {
               <StyledHeaderRegionCover>
                 <BsArrowLeft size="40" onClick={handleArrowLeft} />
                 <StyledHeaderRegion>강남/역삼/삼성</StyledHeaderRegion>
+                <StyledChevronDown />
               </StyledHeaderRegionCover>
             ) : (
               <StyledHeaderMainLogo>
@@ -369,5 +367,10 @@ const StyledHeaderHomeIcon = styled.div`
     width: 2rem;
   }
 `;
-
+const StyledChevronDown = styled(ChevronDown)`
+  height: 1.5rem;
+  fill: ${theme.colors.blue};
+  margin-left: 0.5rem;
+  cursor: pointer;
+`;
 export default Header;
