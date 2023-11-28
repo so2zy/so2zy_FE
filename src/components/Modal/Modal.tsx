@@ -4,6 +4,7 @@ import { PriceSlider } from '@components/PriceSlider';
 import { SelectPeople } from '@components/SelectPeople';
 import { Calendar } from '@components/Calendar';
 import { Map } from 'pages/regionList/components';
+import { SelectRegion } from '@components/SelectRegion';
 
 import styled from 'styled-components';
 import {
@@ -12,6 +13,7 @@ import {
   isClickedCalendarState,
   isClickedMapState,
 } from 'recoil/searchList';
+import { isClickedRegionState } from 'recoil/regionList';
 import { useRecoilValue } from 'recoil';
 
 interface ModalProps {
@@ -24,6 +26,7 @@ const ModalComponent: React.FC<ModalProps> = ({ isOpen, closeModal }) => {
   const isClickedPrice = useRecoilValue(isClickedPriceState);
   const isClickedCalendar = useRecoilValue(isClickedCalendarState);
   const isClickedMap = useRecoilValue(isClickedMapState);
+  const isClickedRegion = useRecoilValue(isClickedRegionState);
 
   const customStyles = {
     content: {
@@ -48,8 +51,14 @@ const ModalComponent: React.FC<ModalProps> = ({ isOpen, closeModal }) => {
   const dynamicStyles = {
     content: {
       ...customStyles.content,
-      height: isClickedCalendar ? '57.5%' : isClickedMap ? '67.5% ' : '35%',
-      width: isClickedMap ? '45%' : '25%',
+      height: isClickedCalendar
+        ? '57.5%'
+        : isClickedMap
+          ? '67.5%'
+          : isClickedRegion
+            ? '65%'
+            : '35%',
+      width: isClickedMap ? '45%' : isClickedRegion ? '30%' : '25%',
     },
     overlay: {
       ...customStyles.overlay,
@@ -68,6 +77,7 @@ const ModalComponent: React.FC<ModalProps> = ({ isOpen, closeModal }) => {
         {isClickedPeople && <SelectPeople closeModal={closeModal} />}
         {isClickedCalendar && <Calendar closeModal={closeModal} />}
         {isClickedMap && <Map closeModal={closeModal} />}
+        {isClickedRegion && <SelectRegion closeModal={closeModal} />}
       </StyledContentWrapper>
     </Modal>
   );
