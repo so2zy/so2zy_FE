@@ -13,7 +13,11 @@
     }
   },
   "rules": {
+<<<<<<< HEAD
     "react/jsx-uses-vars": 0, //사용안하면 나는 에러
+=======
+    "react/jsx-uses-vars": "off", //사용안하면 나는 에러
+>>>>>>> c2c5c5e702294d4c0c3bffb082da6e9b5dc130ca
     "react/prop-types": 0,
     "react/react-in-jsx-scope": 0,
     "no-unused-vars": "off", // 선언하고 호출하지 않은 변수나 함수 에러

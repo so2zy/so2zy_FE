@@ -1,7 +1,236 @@
+import { Checkbox } from '@mui/material';
+import { theme } from '@styles/theme';
+import styled from 'styled-components';
+// import { useLocation } from 'react-router-dom';
+
 export const Reservation: React.FC = () => {
+  // const location = useLocation();
+  // const roomId = location.state?.roomId;
+
   return (
     <>
-      <div>Reservation</div>
+      <StyledWrapper>
+        <StyledItemDesc>
+          <StyledItemTitle>
+            <span>남해 글리드810 풀빌라</span>
+          </StyledItemTitle>
+          <StyledItemSubTitle>
+            <span>P1</span>
+          </StyledItemSubTitle>
+          <StyledAcceptPerson>
+            <span>기준 2인/최대 2인</span>
+          </StyledAcceptPerson>
+          <StyledCheckIn>
+            <p>체크인</p>
+            <span>23.11.10(금) 15:00</span>
+          </StyledCheckIn>
+          <StyledCheckOut>
+            <p>체크인</p>
+            <span>23.11.10(금) 15:00</span>
+          </StyledCheckOut>
+        </StyledItemDesc>
+        <StyledPriceBox>
+          <StyledPayPrice>
+            <span>결제 금액</span>
+          </StyledPayPrice>
+          <StyledItemPrice>
+            <span>상품금액</span>
+            <span>숙박/1박 81,000원</span>
+          </StyledItemPrice>
+          <StyledItemSalePrice>
+            <span>할인</span>
+            <StyledItemSaleText>
+              <span>-0원</span>
+              <span id="no-refund">※ 환불 불가 </span>
+            </StyledItemSaleText>
+          </StyledItemSalePrice>
+          <StyledFinalPayPrice>
+            <span>최종 결제 금액</span>
+            <span>78,500원</span>
+          </StyledFinalPayPrice>
+        </StyledPriceBox>
+      </StyledWrapper>
+
+      <StyledRuleWrapper>
+        <StyledEssentialTerms>
+          <span>필수 약관 동의</span>
+          <StyledEssentialCheckList>
+            <CheckboxContainer>
+              <Checkbox />
+              <CheckboxText>[필수]개인정보 수집 및 이용</CheckboxText>
+            </CheckboxContainer>
+            <StyledPayText>
+              <span>※ 이용규칙, 취소 및 환불 규칙</span>에 동의하실 경우
+              결제하기를 클릭해주세요
+            </StyledPayText>
+          </StyledEssentialCheckList>
+        </StyledEssentialTerms>
+      </StyledRuleWrapper>
+
+      <StyledButtonWrapper>
+        <StyledBtnText>78,500원 결제하기</StyledBtnText>
+      </StyledButtonWrapper>
     </>
   );
 };
+
+export const StyledButtonWrapper = styled.div`
+  width: 48rem;
+  margin: 2rem auto 1rem auto;
+  border: 1px solid black;
+  margin-right: 0.4rem;
+  padding: 0.8rem;
+  text-align: center;
+  background-color: ${theme.colors.navy};
+  border-radius: 0.825rem;
+  border: none;
+  cursor: pointer;
+  &:hover {
+    box-shadow: ${theme.shadows.shadow3};
+    opacity: 80%;
+  }
+`;
+
+export const StyledBtnText = styled.p`
+  color: #fff;
+  font-weight: bold;
+`;
+
+export const StyledRuleWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 0.4rem;
+  margin-top: 2rem;
+  /* border: 1px solid black; */
+`;
+
+export const StyledEssentialTerms = styled.div`
+  /* border: 1px solid black; */
+  margin: 2rem;
+  text-align: start;
+  span {
+    padding-left: 0.75rem;
+    font-weight: bold;
+    color: ${theme.colors.navy};
+  }
+`;
+
+export const StyledEssentialCheckList = styled.div``;
+
+export const StyledPayText = styled.p`
+  text-align: start;
+  margin-left: 0.75rem;
+  span {
+    color: red;
+    font-weight: bold;
+  }
+`;
+
+export const CheckboxContainer = styled.div`
+  display: flex;
+  margin: 1rem 0;
+`;
+
+export const CheckboxText = styled.p`
+  line-height: 2.65rem;
+  font-weight: bold;
+  font-size: 0.95rem;
+`;
+
+export const StyledWrapper = styled.div`
+  width: 54rem;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid ${theme.colors.gray2};
+  margin-top: 4.375rem;
+  padding: 3.5rem;
+  margin: 4.375rem auto 0 auto;
+`;
+
+export const StyledItemDesc = styled.div`
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+`;
+
+export const StyledPriceBox = styled.div`
+  width: 24rem;
+  height: 12rem;
+  border: 0.5px solid ${theme.colors.gray2};
+  border-radius: 8px;
+  box-shadow: 4px 4px 4px ${theme.colors.gray2};
+  text-align: start;
+  padding: 1rem 2rem 0 2rem;
+`;
+
+export const StyledItemTitle = styled.div`
+  span {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: ${theme.colors.navy};
+  }
+  padding-bottom: 0.4rem;
+`;
+
+export const StyledItemSubTitle = styled.div`
+  span {
+    font-weight: bold;
+    font-size: 1.25rem;
+  }
+  padding-bottom: 0.4rem;
+`;
+
+export const StyledAcceptPerson = styled.div`
+  span {
+    font-weight: bold;
+    font-size: 0.875rem;
+    color: ${theme.colors.gray2};
+  }
+`;
+
+export const StyledCheckIn = styled.div`
+  margin-top: 1.5rem;
+  p {
+    color: ${theme.colors.navy};
+    font-weight: bold;
+  }
+`;
+
+export const StyledCheckOut = styled(StyledCheckIn)``;
+
+export const StyledItemPrice = styled.div`
+  display: flex;
+  justify-content: space-between;
+  span {
+    padding-bottom: 0.4rem;
+  }
+`;
+
+export const StyledPayPrice = styled.div`
+  span {
+    font-weight: bold;
+    color: ${theme.colors.navy};
+  }
+  margin-top: 1rem;
+  padding-bottom: 0.75rem;
+`;
+
+export const StyledItemSalePrice = styled(StyledItemPrice)``;
+
+export const StyledItemSaleText = styled.p`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  #no-refund {
+    font-weight: bold;
+    color: red;
+  }
+`;
+
+export const StyledFinalPayPrice = styled(StyledItemPrice)`
+  margin-top: 1rem;
+  span {
+    font-weight: bold;
+  }
+`;

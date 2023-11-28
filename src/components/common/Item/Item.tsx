@@ -55,7 +55,7 @@ const StyledItem = styled.div`
   margin: 0.5rem auto;
   display: grid;
   grid-template-columns: 0.42fr 0.58fr;
-  background-color: ${theme.colors.gray3};
+  // background-color: ${theme.colors.gray3};
   cursor: pointer;
   position: relative;
   :hover {
