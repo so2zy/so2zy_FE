@@ -1,13 +1,13 @@
-import {
-  StyledWrapper,
-  StyledBtnText,
-} from 'pages/reservation/components/ReservationBtn';
-import { StyledItemDesc } from 'pages/reservation/components/ReservationDesc';
 import { theme } from '@styles/theme';
-import { StyledItemTitle } from './../reservation/components/ReservationDesc';
 import styled from 'styled-components';
 import { Checkbox } from '@mui/material';
 import { FaTrashCan } from 'react-icons/fa6';
+import {
+  StyledItemDesc,
+  StyledItemTitle,
+  StyledWrapper,
+  StyledBtnText,
+} from 'pages/reservation/Reservation.page';
 
 export const Cart: React.FC = () => {
   //전체 선택

@@ -16,6 +16,8 @@
     "react/jsx-uses-vars": "off", //사용안하면 나는 에러
     "react/prop-types": 0,
     "react/react-in-jsx-scope": 0,
+    "no-unused-vars": "off", // 선언하고 호출하지 않은 변수나 함수 에러
+    "@typescript-eslint/no-unused-vars": "warn", // 선언하고 호출하지 않은 변수나 함수 에러
     "@typescript-eslint/explicit-module-boundary-types": 0,
     "@typescript-eslint/no-explicit-any": "off", //any
     "prettier/prettier": [

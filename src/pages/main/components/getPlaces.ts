@@ -2,10 +2,14 @@ import axios from 'axios';
 
 export interface MainListProps {
   title: string;
+  // startDate: Date;
+  // endDate: Date;
+  // personnel: number;
 }
 
 export interface MainItemProps {
   page: number;
+  size: number;
   id: number;
   name: string;
   latitude: number;
@@ -13,9 +17,8 @@ export interface MainItemProps {
   addressCode: string;
   likeCount: number;
   phoneNumber: string;
-  // roomList: RoomList[];
-  accommodationImageList: ImageList[];
-  image: string; // 임시
+  accommodationImageUrl: string;
+  // 아래는 백엔드에서 데이터 주면 수정 예정
   price: number;
   saleprice: number;
   like: boolean;
@@ -39,7 +42,7 @@ export interface RoomList {
 
 export interface RegionSelectProps {
   id: string;
-  name: string;
+  sigungu: string;
   regions: string[];
 }
 
@@ -111,3 +114,19 @@ export const getAllProduct = async (page: any) => {
 export const noProduct = () => {
   return [];
 };
+
+// 클릭하면 상세 페이지로 props로 전달해주면서 이동하는 함수
+// export const handleDetailPage = () => {
+//   const startDate = new Date();
+//   const endDate = new Date();
+//   const personnel = 1;
+//   endDate.setDate(endDate.getDate() + 1);
+//   const navigate = useNavigate();
+//   navigate(`/place/:id`, {
+//     state: {
+//       startDate: formatDate(startDate),
+//       endDate: formatDate(endDate),
+//       personnel: personnel,
+//     },
+//   });
+// };

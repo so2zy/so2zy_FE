@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
-import SearchList from './pages/searchList';
+import SearchList from 'pages/searchList';
+import RegionList from 'pages/regionList';
 import { Header } from '@components/common/Header';
 import SignUp from 'pages/signUp';
 import SignIn from 'pages/signIn';
@@ -13,6 +14,8 @@ import Modal from 'react-modal';
 import Reservation from 'pages/reservation';
 import Cart from 'pages/cart';
 import Confirm from 'pages/confirm';
+import { Loading } from '@components/common/Loading';
+import { NotFound } from '@components/common/NotFound';
 
 const Main = React.lazy(() => import('./pages/main'));
 // const SearchList = React.lazy(() => import('./pages/searchList'));
@@ -25,33 +28,32 @@ function App() {
     <ThemeProvider theme={theme}>
       <GlobalStyle />
       <BrowserRouter>
-        <Header />
         <div className="App">
-          <Suspense fallback={<div>로딩중...</div>}>
+          <Suspense fallback={<Loading />}>
             <Routes>
               <Route
                 path="/"
                 element={
-                  <Card>
-                    <Main />
-                  </Card>
-                }
-              />
-              <Route
-                path="/searchList"
-                element={
                   <>
                     <Header />
-                    <SearchList />
+                    <Card>
+                      <Main />
+                    </Card>
                   </>
                 }
               />
+
+              <Route path="/searchList" element={<SearchList />} />
+              <Route path="/regionList" element={<RegionList />} />
               <Route
                 path="/place/:id"
                 element={
-                  <Card>
-                    <PlaceDetail />
-                  </Card>
+                  <>
+                    <Header />
+                    <Card>
+                      <PlaceDetail />
+                    </Card>
+                  </>
                 }
               />
               <Route path="/signUp" element={<SignUp />} />
@@ -59,27 +61,37 @@ function App() {
               <Route
                 path="/reservation"
                 element={
-                  <Card>
-                    <Reservation />
-                  </Card>
+                  <>
+                    <Header />
+                    <Card>
+                      <Reservation />
+                    </Card>
+                  </>
                 }
               />
               <Route
                 path="/cart" //:id도 받아줘야함
                 element={
-                  <Card>
-                    <Cart />
-                  </Card>
+                  <>
+                    <Header />
+                    <Card>
+                      <Cart />
+                    </Card>
+                  </>
                 }
               />
               <Route
                 path="/confirm" //:id도 받아줘야함
                 element={
-                  <Card>
-                    <Confirm />
-                  </Card>
+                  <>
+                    <Header />
+                    <Card>
+                      <Confirm />
+                    </Card>
+                  </>
                 }
               />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
         </div>
