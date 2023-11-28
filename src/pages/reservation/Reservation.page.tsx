@@ -14,15 +14,19 @@ export const Reservation: React.FC = () => {
     useState<IAccommodations | null>(null);
   const [roomInfo, setRoomInfo] = useState<RoomList | null>(null);
   const [agreement, setAgreement] = useState(false);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [personnel, setPersonnel] = useState('');
 
   useEffect(() => {
     if (location.state) {
       setAccommodationInfo(location.state.accommodation);
       setRoomInfo(location.state.room);
+      setPersonnel(location.state.personnel);
+      setStartDate(location.state.startDate);
+      setEndDate(location.state.endDate);
     }
   }, [location.state]);
-
-  console.log(accommodationInfo, roomInfo);
 
   const handlePayment = async () => {
     if (roomInfo && agreement) {
@@ -30,15 +34,14 @@ export const Reservation: React.FC = () => {
         roomList: [
           {
             roomId: roomInfo.id,
-            startDate: '2023-12-22', //날짜 받아 수정
-            endDate: '2023-12-23',
+            startDate: startDate,
+            endDate: endDate,
             price: roomInfo.price,
           },
         ],
-        personnel: roomInfo.maxCapacity, //인원수 받아 수정
+        personnel,
         agreement,
         isFromCart: false, //장바구니 아닐땐 false
-        fromCart: true, //스웨거에서 사라져야하는 부분-> 민우님께 여쭤보기
       };
 
       try {
@@ -74,12 +77,16 @@ export const Reservation: React.FC = () => {
           </StyledAcceptPerson>
           <StyledCheckIn>
             <p>체크인</p>
-            <span>23.11.10(금) {roomInfo?.checkIn}</span>
+            <span>
+              {startDate} {roomInfo?.checkIn}
+            </span>
             {/* 날짜 수정하기 */}
           </StyledCheckIn>
           <StyledCheckOut>
             <p>체크아웃</p>
-            <span>23.11.10(금) {roomInfo?.checkOut}</span>
+            <span>
+              {endDate} {roomInfo?.checkOut}
+            </span>
           </StyledCheckOut>
         </StyledItemDesc>
         <StyledPriceBox>

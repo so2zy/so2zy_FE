@@ -92,10 +92,11 @@ export const PlaceDetail: React.FC = () => {
 
   //필터링 데이터 받기
   const location = useLocation();
+
   const { startDate, endDate, personnel } = location.state || {
-    startDate: '',
-    endDate: '',
-    personnel: 0,
+    startDate: new Date(),
+    endDate: new Date(new Date().getDate() + 1),
+    personnel: 1,
   };
 
   console.log(startDate, endDate, personnel);
@@ -232,9 +233,22 @@ export const PlaceDetail: React.FC = () => {
                       onClick={() => {
                         console.log('Before', accommodation, room);
                         navigate(`/reservation`, {
-                          state: { accommodation: accommodation, room: room },
+                          state: {
+                            accommodation,
+                            room,
+                            startDate,
+                            endDate,
+                            personnel,
+                          },
                         });
-                        console.log('After', accommodation, room);
+                        console.log(
+                          'After',
+                          accommodation,
+                          room,
+                          startDate,
+                          endDate,
+                          personnel,
+                        );
                       }}
                     >
                       예약하기
