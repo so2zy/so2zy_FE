@@ -22,8 +22,10 @@ import {
   isClickedMapState,
 } from 'recoil/searchList';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { getRegionListData } from '@utils/getData';
+import InfiniteScroll from 'react-infinite-scroller';
+import { useNavigate } from 'react-router-dom';
 
 interface Hotel {
   id: number;
@@ -38,8 +40,10 @@ interface Hotel {
 }
 
 export const RegionList: React.FC = () => {
+  const areaName = '서울시';
+  const selectedSigungu = sessionStorage.getItem('selectedSigungu');
   const [hotels, setHotels] = useState<Hotel[]>([]);
-  const [sortBy, setSortBy] = useState('가격순');
+  const [sortBy, setSortBy] = useState('price');
   const [sortOrder, setSortOrder] = useState('asc');
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isClickedReservation, setIsClickedReservation] = useState(false); // 필터링 예약버튼 클릭 여부
@@ -58,6 +62,7 @@ export const RegionList: React.FC = () => {
   const [date, setDate] = useState('');
   const page = 0;
   const size = 10;
+  const navigate = useNavigate();
   const latitude = 33.450701;
   const longitude = 126.570667;
 
@@ -90,8 +95,6 @@ export const RegionList: React.FC = () => {
     setIsClickedPeople(false);
     setIsClickedCalendar(false);
     setIsClickedMapState(false);
-
-    fetchData();
   };
 
   const handleSortClick = (field: string) => {
@@ -104,68 +107,51 @@ export const RegionList: React.FC = () => {
       setSortOrder('asc');
     }
   };
-  useEffect(() => {
-    refetch();
-  }, [{ sortBy, sortOrder }]); // 둘 중 하나라도 변하고 실행되면 안되고, 둘 다 변하고 실행돼야함
 
-  const { data: regionListData, refetch } = useQuery({
-    queryKey: ['regionListData'],
-    queryFn: () =>
+  const {
+    data: regionListData,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey: [
+      'regionListData',
+      areaName,
+      selectedSigungu,
+      peopleCount,
+      isClickedReservation,
+      startDate,
+      endDate,
+      priceA,
+      priceB,
+      sortOrder,
+      sortBy,
+      latitude,
+      longitude,
+    ],
+    queryFn: ({ pageParam = 0 }) =>
       getRegionListData(
-        latitude,
-        longitude,
-        page,
-        size,
+        areaName,
+        selectedSigungu,
         peopleCount,
+        isClickedReservation,
         startDate,
         endDate,
         priceA,
         priceB,
         sortOrder,
         sortBy,
+        pageParam,
+        size,
+        latitude,
+        longitude,
       ),
-    enabled: false,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPosts) => {
+      return lastPage.currentPage !== allPosts[0].totalPages
+        ? lastPage.currentPage + 1
+        : undefined;
+    },
   });
-  console.log('regionListData', regionListData);
-
-  const fetchData = () => {
-    fetch('/api/searchList')
-      .then((res) => res.json())
-      .then((data: Hotel[]) => {
-        const filteredData = data.filter((hotel) => {
-          // 인원수 필터링
-          const isPeopleInRange = hotel.peopleCount >= peopleCount;
-          // 가격 필터링
-          const isPriceInRange =
-            hotel.discountPrice >= priceA && hotel.discountPrice <= priceB;
-          // 예약가능 여부 필터링
-          const isAvailable = isClickedReservation ? hotel.isAvailable : true;
-
-          return isPeopleInRange && isPriceInRange && isAvailable;
-        });
-
-        const sortedData = filteredData.sort((a, b) => {
-          if (sortBy === '가격') {
-            const priceA =
-              sortOrder === 'asc' ? a.discountPrice : b.discountPrice;
-            const priceB =
-              sortOrder === 'asc' ? b.discountPrice : a.discountPrice;
-            return priceA - priceB;
-          } else if (sortBy === '판매량') {
-            const salesA = sortOrder === 'asc' ? a.salesCount : b.salesCount;
-            const salesB = sortOrder === 'asc' ? b.salesCount : a.salesCount;
-            return salesA - salesB;
-          }
-          return 0;
-        });
-
-        setHotels(sortedData);
-      });
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [sortBy, sortOrder, priceA, priceB, isClickedReservation, peopleCount]);
 
   useEffect(() => {
     // const timeDiff = endDate?.getTime() - startDate?.getTime();
@@ -195,6 +181,16 @@ export const RegionList: React.FC = () => {
       );
     }
   }, [startDate, endDate]);
+
+  const handleItemClick = (id: number) => {
+    navigate(`/place/${id}`, {
+      state: {
+        startDate,
+        endDate,
+        personnel: peopleCount,
+      },
+    });
+  };
 
   return (
     <div>
@@ -237,41 +233,43 @@ export const RegionList: React.FC = () => {
         </StyledFilter>
         <StyledSort>
           <StyledPriceButton
-            onClick={() => handleSortClick('가격')}
-            className={sortBy === '가격' ? 'active' : ''}
+            onClick={() => handleSortClick('price')}
+            className={sortBy === 'price' ? 'active' : ''}
           >
             <StyledPrice>가격</StyledPrice>
             <StyledSortWrapper>
               <StyledSortUp
                 viewBox="0 -250 320 512"
                 className={
-                  sortBy === '가격' && sortOrder === 'asc' ? 'active' : ''
+                  sortBy === 'price' && sortOrder === 'asc' ? 'active' : ''
                 }
               />
               <StyledSortDown
                 viewBox="0 250 320 512"
                 className={
-                  sortBy === '가격' && sortOrder === 'desc' ? 'active' : ''
+                  sortBy === 'price' && sortOrder === 'desc' ? 'active' : ''
                 }
               />
             </StyledSortWrapper>
           </StyledPriceButton>
           <StyledSalesButton
-            onClick={() => handleSortClick('판매량')}
-            className={sortBy === '판매량' ? 'active' : ''}
+            onClick={() => handleSortClick('salesCount')}
+            className={sortBy === 'salesCount' ? 'active' : ''}
           >
             <StyledSales>판매량</StyledSales>
             <StyledSortWrapper>
               <StyledSortUp
                 viewBox="0 -250 320 512"
                 className={
-                  sortBy === '판매량' && sortOrder === 'asc' ? 'active' : ''
+                  sortBy === 'salesCount' && sortOrder === 'asc' ? 'active' : ''
                 }
               />
               <StyledSortDown
                 viewBox="0 250 320 512"
                 className={
-                  sortBy === '판매량' && sortOrder === 'desc' ? 'active' : ''
+                  sortBy === 'salesCount' && sortOrder === 'desc'
+                    ? 'active'
+                    : ''
                 }
               />
             </StyledSortWrapper>
@@ -285,21 +283,25 @@ export const RegionList: React.FC = () => {
           </StyledMapButton>
         </StyledSort>
       </StyledFilterSortWrapper>
-      <StyledContainer>
-        {hotels.map((hotel) => {
-          return (
-            <Item
-              key={hotel.id}
-              name={hotel.name}
-              // image={hotel.image}
-              favorites={hotel.favorites}
-              regularPrice={hotel.regularPrice}
-              discountPrice={hotel.discountPrice}
-              // salesCount={hotel.salesCount}
-            />
-          );
-        })}
-      </StyledContainer>
+      <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
+        {regionListData?.pages.map((page, pageIndex) => (
+          <StyledContainer key={pageIndex}>
+            {page.data.map((hotel: any) => (
+              <Item
+                onClick={() => handleItemClick(hotel.id)}
+                key={hotel.id}
+                name={hotel.name}
+                // image={hotel.image}
+                favorites={hotel.favorites}
+                regularPrice={hotel.regularPrice}
+                discountPrice={hotel.discountPrice}
+                // salesCount={hotel.salesCount}
+              />
+            ))}
+          </StyledContainer>
+        ))}
+      </InfiniteScroll>
+
       <Modal isOpen={modalIsOpen} closeModal={closeModal} />
     </div>
   );
@@ -308,7 +310,7 @@ export const RegionList: React.FC = () => {
 const StyledContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  margin: 2rem auto;
+  margin: 1rem auto;
   width: 50%;
   align-items: center;
   justify-items: center;

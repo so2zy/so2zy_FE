@@ -18,7 +18,6 @@ import {
   priceBState,
   startDateState,
   endDateState,
-  searchInputState,
 } from 'recoil/searchList';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
@@ -287,7 +286,7 @@ export const SearchList: React.FC = () => {
 const StyledContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  margin: 2rem auto;
+  margin: 1rem auto;
   width: 50%;
   align-items: center;
   justify-items: center;
