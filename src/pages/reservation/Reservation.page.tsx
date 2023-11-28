@@ -8,7 +8,7 @@ import axios from 'axios';
 
 export const Reservation: React.FC = () => {
   const location = useLocation();
-  console.log('Location 값 확인', location.state);
+  // console.log('Location 값 확인', location.state);
 
   const [accommodationInfo, setAccommodationInfo] =
     useState<IAccommodations | null>(null);
@@ -80,7 +80,6 @@ export const Reservation: React.FC = () => {
             <span>
               {startDate} {roomInfo?.checkIn}
             </span>
-            {/* 날짜 수정하기 */}
           </StyledCheckIn>
           <StyledCheckOut>
             <p>체크아웃</p>

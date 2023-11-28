@@ -13,9 +13,8 @@ import { useNavigate } from 'react-router-dom';
 import MapModal from './components/MapModal';
 import { Loading } from '@components/common/Loading';
 import { useLocation } from 'react-router-dom';
-import { end } from '@popperjs/core';
+import { formatDate } from '@utils/useFormatDate';
 
-//숙소 조회 인터페이스
 export interface IAccommodations {
   id: number;
   accommodationName: string;
@@ -92,16 +91,13 @@ export const PlaceDetail: React.FC = () => {
 
   //필터링 데이터 받기
   const location = useLocation();
-
   const { startDate, endDate, personnel } = location.state || {
-    startDate: new Date(),
-    endDate: new Date(new Date().getDate() + 1),
+    startDate: formatDate(new Date()),
+    endDate: formatDate(new Date(new Date().getTime() + 24 * 60 * 60 * 1000)),
     personnel: 1,
   };
 
-  console.log(startDate, endDate, personnel);
-
-  //숙소 정보 get하는 로직
+  //숙소 정보 get
   // `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}/${startDate}/${endDate}/${personnel}`
   const getData = async (id: any) => {
     try {
@@ -128,8 +124,9 @@ export const PlaceDetail: React.FC = () => {
   }, [accommodation]);
 
   //장바구니로 post하는 로직
-  // `${process.env.REACT_APP_SERVER}/v1/carts/{member_id}/{room_id}
+  // `${process.env.REACT_APP_SERVER}/v2/carts/{room_id}
   const userKey = sessionStorage.getItem('userKey');
+
   const addCart = async (roomId: number) => {
     const confirm = window.confirm('장바구니에 추가하시겠습니까?');
     console.log(userKey);
@@ -163,7 +160,6 @@ export const PlaceDetail: React.FC = () => {
             <StyledButton>
               {startDate}~{endDate}
             </StyledButton>
-            {/* 데이터 받아와 수정 */}
             <StyledButton>{personnel}명</StyledButton>
           </StyledSpan>
         </StyledBar>
@@ -231,7 +227,14 @@ export const PlaceDetail: React.FC = () => {
                     </StyledReservationButton>
                     <StyledReservationButton
                       onClick={() => {
-                        console.log('Before', accommodation, room);
+                        // console.log(
+                        //   'Before',
+                        //   accommodation,
+                        //   room,
+                        //   startDate,
+                        //   endDate,
+                        //   personnel,
+                        // );
                         navigate(`/reservation`, {
                           state: {
                             accommodation,
