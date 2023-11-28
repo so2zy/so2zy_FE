@@ -3,10 +3,15 @@ import Modal from 'react-modal';
 import { PriceSlider } from '@components/PriceSlider';
 import { SelectPeople } from '@components/SelectPeople';
 import { Calendar } from '@components/Calendar';
+import { Map } from 'pages/regionList/components';
+
 import styled from 'styled-components';
-import { isClickedPeopleState } from 'recoil/searchList';
-import { isClickedPriceState } from 'recoil/searchList';
-import { isClickedCalendarState } from 'recoil/searchList';
+import {
+  isClickedPeopleState,
+  isClickedPriceState,
+  isClickedCalendarState,
+  isClickedMapState,
+} from 'recoil/searchList';
 import { useRecoilValue } from 'recoil';
 
 interface ModalProps {
@@ -18,6 +23,7 @@ const ModalComponent: React.FC<ModalProps> = ({ isOpen, closeModal }) => {
   const isClickedPeople = useRecoilValue(isClickedPeopleState);
   const isClickedPrice = useRecoilValue(isClickedPriceState);
   const isClickedCalendar = useRecoilValue(isClickedCalendarState);
+  const isClickedMap = useRecoilValue(isClickedMapState);
 
   const customStyles = {
     content: {
@@ -28,7 +34,7 @@ const ModalComponent: React.FC<ModalProps> = ({ isOpen, closeModal }) => {
       marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
       width: '25%',
-      height: '30%',
+      height: '35%',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -42,7 +48,8 @@ const ModalComponent: React.FC<ModalProps> = ({ isOpen, closeModal }) => {
   const dynamicStyles = {
     content: {
       ...customStyles.content,
-      height: isClickedCalendar ? '50%' : '30%',
+      height: isClickedCalendar ? '57.5%' : isClickedMap ? '67.5% ' : '35%',
+      width: isClickedMap ? '45%' : '25%',
     },
     overlay: {
       ...customStyles.overlay,
@@ -60,6 +67,7 @@ const ModalComponent: React.FC<ModalProps> = ({ isOpen, closeModal }) => {
         {isClickedPrice && <PriceSlider closeModal={closeModal} />}
         {isClickedPeople && <SelectPeople closeModal={closeModal} />}
         {isClickedCalendar && <Calendar closeModal={closeModal} />}
+        {isClickedMap && <Map closeModal={closeModal} />}
       </StyledContentWrapper>
     </Modal>
   );
