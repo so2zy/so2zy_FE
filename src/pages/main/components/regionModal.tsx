@@ -47,7 +47,7 @@ const RegionModal = ({ isOpen }: RegionModalProps) => {
             ))}
           </StyledRegionList>
         </StyledRegionContainer>
-        <CloseBtn onClick={handleCloseModal} />
+        <StyledCloseBtn onClick={handleCloseModal} />
       </StyledContainer>
     </StyledWrapper>
   );
@@ -70,12 +70,18 @@ const StyledWrapper = styled.div`
 const StyledContainer = styled.div`
   width: 40rem;
   height: 40rem;
-  position: fixed;
-  top: 20%;
-  left: 33%;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  align-items: center;
   background-color: ${theme.colors.gray1};
-  box-shadow: ${theme.shadows.shadow3};
-  border-radius: 0.625rem;
+  box-shadow: 4px 4px 4px ${theme.shadows.shadow3};
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 const StyledTitle = styled.div`
@@ -93,7 +99,7 @@ const StyledRegionContainer = styled.div`
 `;
 
 const StyledRegionList = styled.div`
-  width: 90%;
+  /* width: 90%; */
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(5, 1fr);
@@ -103,14 +109,15 @@ const StyledRegionList = styled.div`
 `;
 
 const StyledRegionItem = styled.button`
+  min-width: 6rem;
   font-size: 1.2rem;
   display: block;
   height: 5rem;
-  line-height: 5rem;
+  /* line-height: 5rem; */
   background-color: transparent;
   border-radius: 0.625rem;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
+  margin: 0.5rem 0.5rem 1rem 0.5rem;
+  padding: 0 0.5rem 0 0.5rem;
   color: ${theme.colors.navy};
   font-weight: bold;
   cursor: pointer;
@@ -125,10 +132,10 @@ const StyledRegionItem = styled.button`
   }
 `;
 
-const CloseBtn = styled(VscChromeClose)`
+const StyledCloseBtn = styled(VscChromeClose)`
   font-size: 1.5rem;
   color: ${theme.colors.navy};
-  position: fixed;
-  top: 23%;
-  right: 36%;
+  position: absolute;
+  top: 2.5rem;
+  right: 1.6rem;
 `;
