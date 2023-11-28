@@ -41,7 +41,7 @@ const MainAllListItem = ({ title }: MainListProps) => {
     const endDate = new Date();
     const personnel = 1;
     endDate.setDate(endDate.getDate() + 1);
-    navigate(`/place/:${selectedId}`, {
+    navigate(`/place/${selectedId}`, {
       state: {
         startDate: formatDate(startDate),
         endDate: formatDate(endDate),

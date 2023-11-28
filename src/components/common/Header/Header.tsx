@@ -41,19 +41,22 @@ const Header = () => {
   const setSearchInput = useSetRecoilState(searchInputState);
 
   const onInputChange = (query: string) => {
-      if (query) {
-        navigate(`/searchList?name=${query}`);
-      }
+    if (query) {
+      navigate(`/searchList?name=${query}`);
+    }
   };
 
-  const handleInputChange = debounce((event: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalSearchInput(event.target.value);
-  }, 300)
+  const handleInputChange = debounce(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setLocalSearchInput(event.target.value);
+    },
+    300,
+  );
 
   const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       setSearchInput(localSearchInput);
-      onInputChange(localSearchInput)
+      onInputChange(localSearchInput);
       setLocalSearchInput('');
     }
   };
@@ -135,8 +138,6 @@ const Header = () => {
       setUserName(storedUserName);
     }
   }, []);
-
-
 
   return (
     <>
