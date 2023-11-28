@@ -1,57 +1,464 @@
 import styled from 'styled-components';
-import { Header } from '@components/common/Header';
-import { Footer } from '@components/common/Footer';
+import { theme } from '@styles/theme';
+import { Item } from '@components/common/Item';
 import { useEffect, useState } from 'react';
+import { ReactComponent as SortUp } from '@assets/images/sort-up.svg';
+import { ReactComponent as SortDown } from '@assets/images/sort-down.svg';
+import { ReactComponent as Check } from '@assets/images/check.svg';
+import { ReactComponent as Map } from '@assets/images/map.svg';
+import { Modal } from '@components/Modal';
+import {
+  isCheckedPriceState,
+  isCheckedPeopleState,
+  isCheckedCalendarState,
+  isClickedPriceState,
+  isClickedPeopleState,
+  isClickedCalendarState,
+  peopleCountState,
+  priceAState,
+  priceBState,
+  startDateState,
+  endDateState,
+  isClickedMapState,
+} from 'recoil/searchList';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
+import { getRegionListData } from '@utils/getData';
+import InfiniteScroll from 'react-infinite-scroller';
+import { useNavigate } from 'react-router-dom';
 
-interface User {
+interface Hotel {
   id: number;
   name: string;
+  // image: string;
+  favorites: boolean;
+  regularPrice: number;
+  discountPrice: number;
+  salesCount: number;
+  isAvailable: boolean;
+  peopleCount: number;
 }
 
 export const RegionList: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [content, setContent] = useState('');
+  const areaName = '서울시';
+  const selectedSigungu = sessionStorage.getItem('selectedSigungu');
+  const [hotels, setHotels] = useState<Hotel[]>([]);
+  const [sortBy, setSortBy] = useState('price');
+  const [sortOrder, setSortOrder] = useState('asc');
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isClickedReservation, setIsClickedReservation] = useState(false); // 필터링 예약버튼 클릭 여부
+  const setIsClickedPrice = useSetRecoilState(isClickedPriceState); // 필터링 가격버튼 클릭 여부
+  const setIsClickedPeople = useSetRecoilState(isClickedPeopleState); // 필터링 인원수버튼 클릭 여부
+  const setIsClickedCalendar = useSetRecoilState(isClickedCalendarState); // 필터링 날짜 클릭 여부
+  const setIsClickedMapState = useSetRecoilState(isClickedMapState);
+  const isCheckedPrice = useRecoilValue(isCheckedPriceState); // 가격 필터링 여부
+  const isCheckedPeople = useRecoilValue(isCheckedPeopleState); // 인원수 필터링 클릭여부
+  const isCheckedCalendar = useRecoilValue(isCheckedCalendarState); // 날짜 필터링 클릭여부
+  const priceA = useRecoilValue(priceAState); // 최소 가격
+  const priceB = useRecoilValue(priceBState); // 최대 가격
+  const peopleCount = useRecoilValue(peopleCountState); // 인원수
+  const startDate = useRecoilValue(startDateState);
+  const endDate = useRecoilValue(endDateState);
+  const [date, setDate] = useState('');
+  const size = 10;
+  const navigate = useNavigate();
+  const latitude = 33.450701;
+  const longitude = 126.570667;
+
+  const shortenPrice = (price: number) => {
+    if (price === 0) {
+      return '0';
+    }
+    return price
+      .toLocaleString()
+      .replace(/,|\.\d+/g, '')
+      .slice(0, -4);
+  };
+
+  const openModal = (type: string) => {
+    if (type == '가격') {
+      setIsClickedPrice(true);
+    } else if (type == '인원수') {
+      setIsClickedPeople(true);
+    } else if (type == '날짜') {
+      setIsClickedCalendar(true);
+    } else if (type == '지도') {
+      setIsClickedMapState(true);
+    }
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setIsClickedPrice(false);
+    setIsClickedPeople(false);
+    setIsClickedCalendar(false);
+    setIsClickedMapState(false);
+  };
+
+  const handleSortClick = (field: string) => {
+    if (field === sortBy) {
+      // 현재 정렬 필드를 클릭하면 정렬 순서를 변경
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      // 다른 정렬 필드를 클릭하면 정렬 필드와 정렬 순서를 변경
+      setSortBy(field);
+      setSortOrder('asc');
+    }
+  };
+
+  const {
+    data: regionListData,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey: [
+      'regionListData',
+      areaName,
+      selectedSigungu,
+      peopleCount,
+      isClickedReservation,
+      startDate,
+      endDate,
+      priceA,
+      priceB,
+      sortOrder,
+      sortBy,
+      latitude,
+      longitude,
+    ],
+    queryFn: ({ pageParam = 0 }) =>
+      getRegionListData(
+        areaName,
+        selectedSigungu,
+        peopleCount,
+        isClickedReservation,
+        startDate,
+        endDate,
+        priceA,
+        priceB,
+        sortOrder,
+        sortBy,
+        pageParam,
+        size,
+        latitude,
+        longitude,
+      ),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPosts) => {
+      return lastPage.currentPage !== allPosts[0].totalPages
+        ? lastPage.currentPage + 1
+        : undefined;
+    },
+  });
 
   useEffect(() => {
-    fetch('/api/users')
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setUsers(data);
-      });
-  }, []);
+    // const timeDiff = endDate?.getTime() - startDate?.getTime();
+    if (!startDate && !endDate) {
+      const today = new Date();
+      const todayMonth = (today?.getMonth() + 1).toString();
+      const todayDate = today?.getDate();
+      setDate(`${todayMonth}.${todayDate}`);
+      return;
+    }
+    if (startDate && !endDate) {
+      const startMonth = (startDate?.getMonth() + 1).toString();
+      const startDay = startDate?.getDate();
+      setDate(`${startMonth}.${startDay}`);
+      return;
+    }
+    if (startDate && endDate) {
+      const differDate = Math.floor(
+        (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
+      );
+      const startMonth = (startDate?.getMonth() + 1).toString();
+      const startDay = startDate?.getDate();
+      const endMonth = (endDate?.getMonth() + 1).toString();
+      const endDay = endDate?.getDate();
+      setDate(
+        `${startMonth}.${startDay} ~ ${endMonth}.${endDay}, ${differDate}박`,
+      );
+    }
+  }, [startDate, endDate]);
 
-  const onSendClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    fetch('/api/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'token123',
+  const handleItemClick = (id: number) => {
+    navigate(`/place/${id}`, {
+      state: {
+        startDate,
+        endDate,
+        personnel: peopleCount,
       },
-      body: JSON.stringify({ content }),
     });
   };
 
   return (
-    <StyledContainer>
-      <Header />
-      {users.map((user) => (
-        <div key={user.id}>{user.name}</div>
-      ))}
+    <div>
+      <StyledFilterSortWrapper>
+        <StyledFilter>
+          <StyledDateRangeButton
+            onClick={() => {
+              openModal('날짜');
+            }}
+            $isChecked={isCheckedCalendar}
+          >
+            {date}
+          </StyledDateRangeButton>
+          <StyledPeopleRangeButton
+            onClick={() => {
+              openModal('인원수');
+            }}
+            $isChecked={isCheckedPeople}
+          >
+            인원수 {peopleCount}명
+          </StyledPeopleRangeButton>
+          <StyledPriceRangeButton
+            onClick={() => {
+              openModal('가격');
+            }}
+            $isChecked={isCheckedPrice}
+          >
+            {shortenPrice(priceA)}만원 ~ {shortenPrice(priceB)}만원
+          </StyledPriceRangeButton>
+          <StyledReservationButton
+            onClick={() => {
+              setIsClickedReservation(!isClickedReservation);
+            }}
+          >
+            <StyledCheck $isChecked={isClickedReservation} />
+            <StyledReservation $isChecked={isClickedReservation}>
+              예약가능
+            </StyledReservation>
+          </StyledReservationButton>
+        </StyledFilter>
+        <StyledSort>
+          <StyledPriceButton
+            onClick={() => handleSortClick('price')}
+            className={sortBy === 'price' ? 'active' : ''}
+          >
+            <StyledPrice>가격</StyledPrice>
+            <StyledSortWrapper>
+              <StyledSortUp
+                viewBox="0 -250 320 512"
+                className={
+                  sortBy === 'price' && sortOrder === 'asc' ? 'active' : ''
+                }
+              />
+              <StyledSortDown
+                viewBox="0 250 320 512"
+                className={
+                  sortBy === 'price' && sortOrder === 'desc' ? 'active' : ''
+                }
+              />
+            </StyledSortWrapper>
+          </StyledPriceButton>
+          <StyledSalesButton
+            onClick={() => handleSortClick('salesCount')}
+            className={sortBy === 'salesCount' ? 'active' : ''}
+          >
+            <StyledSales>판매량</StyledSales>
+            <StyledSortWrapper>
+              <StyledSortUp
+                viewBox="0 -250 320 512"
+                className={
+                  sortBy === 'salesCount' && sortOrder === 'asc' ? 'active' : ''
+                }
+              />
+              <StyledSortDown
+                viewBox="0 250 320 512"
+                className={
+                  sortBy === 'salesCount' && sortOrder === 'desc'
+                    ? 'active'
+                    : ''
+                }
+              />
+            </StyledSortWrapper>
+          </StyledSalesButton>
+          <StyledMapButton>
+            <StyledMap
+              onClick={() => {
+                openModal('지도');
+              }}
+            />
+          </StyledMapButton>
+        </StyledSort>
+      </StyledFilterSortWrapper>
+      <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
+        {regionListData?.pages.map((page, pageIndex) => (
+          <StyledContainer key={pageIndex}>
+            {page.data.map((hotel: any) => (
+              <Item
+                onClick={() => handleItemClick(hotel.id)}
+                key={hotel.id}
+                name={hotel.name}
+                // image={hotel.image}
+                favorites={hotel.favorites}
+                regularPrice={hotel.regularPrice}
+                discountPrice={hotel.discountPrice}
+                // salesCount={hotel.salesCount}
+              />
+            ))}
+          </StyledContainer>
+        ))}
+      </InfiniteScroll>
 
-      <div>
-        <input
-          value={content}
-          onChange={(e) => {
-            setContent(e.target.value);
-          }}
-        />
-        <button onClick={onSendClick}>Send</button>
-      </div>
-      <Footer />
-    </StyledContainer>
+      <Modal isOpen={modalIsOpen} closeModal={closeModal} />
+    </div>
   );
 };
 
-const StyledContainer = styled.div``;
+const StyledContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin: 1rem auto;
+  width: 50%;
+  align-items: center;
+  justify-items: center;
+`;
+
+const StyledFilterSortWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 5rem auto 0;
+  width: 47%;
+  align-items: center;
+  justify-items: center;
+
+  /* position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1; */
+`;
+
+const StyledFilter = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;
+const StyledSort = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const StyledDateRangeButton = styled.button<{ $isChecked: boolean }>`
+  border: 0.5px solid ${theme.colors.gray2};
+  border-radius: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem 0.5rem 0.25rem;
+  background-color: ${theme.colors.blue};
+  color: white;
+  font-weight: ${(props) => (props.$isChecked ? 'bold' : 'normal')};
+`;
+const StyledPeopleRangeButton = styled.button<{ $isChecked: boolean }>`
+  border: 0.5px solid ${theme.colors.gray2};
+  border-radius: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem 0.5rem 0.25rem;
+  background-color: ${theme.colors.blue};
+  color: white;
+  font-weight: ${(props) => (props.$isChecked ? 'bold' : 'normal')};
+`;
+
+const StyledPriceRangeButton = styled.button<{ $isChecked: boolean }>`
+  border: 0.5px solid ${theme.colors.gray2};
+  border-radius: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem 0.5rem 0.25rem;
+  background-color: ${theme.colors.blue};
+  color: white;
+  font-weight: ${(props) => (props.$isChecked ? 'bold' : 'normal')};
+`;
+const StyledReservationButton = styled.button`
+  border: 0.5px solid ${theme.colors.gray2};
+  border-radius: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem 0.5rem 0.25rem;
+
+  background-color: ${theme.colors.blue};
+  color: white;
+`;
+const StyledReservation = styled.div<{ $isChecked: boolean }>`
+  font-weight: ${(props) => (props.$isChecked ? 'bold' : 'normal')};
+`;
+
+const StyledCheck = styled(Check)<{ $isChecked: boolean }>`
+  display: ${(props) => (props.$isChecked ? 'block' : 'none')};
+  fill: ${(props) =>
+    props.$isChecked ? props.theme.colors.navy : 'transparent'};
+  margin-right: 0.2rem;
+  width: 1rem;
+  height: 1rem;
+`;
+
+const StyledPriceButton = styled.button`
+  display: flex;
+  align-items: center;
+  padding: 0.2rem 0.5rem 0;
+  border: 0.5px solid ${theme.colors.gray2};
+  border-radius: 0.5rem;
+  cursor: pointer;
+  background-color: ${theme.colors.blue};
+  color: white;
+  &.active {
+    font-weight: bold;
+  }
+`;
+const StyledPrice = styled.div`
+  margin-right: 0.1rem;
+`;
+
+const StyledSalesButton = styled.button`
+  display: flex;
+  align-items: center;
+  padding: 0.2rem 0.5rem 0;
+  border: 0.5px solid ${theme.colors.gray2};
+  border-radius: 0.5rem;
+  cursor: pointer;
+  background-color: ${theme.colors.blue};
+  color: white;
+  &.active {
+    font-weight: bold;
+  }
+`;
+
+const StyledSales = styled.div`
+  margin-right: 0.1rem;
+`;
+
+const StyledSortWrapper = styled.span`
+  display: flex;
+  flex-direction: column;
+`;
+
+const StyledSortDown = styled(SortDown)`
+  width: 0.8125rem;
+  height: 0.8125rem;
+  fill: white;
+  &.active {
+    fill: ${theme.colors.navy};
+  }
+`;
+
+const StyledSortUp = styled(SortUp)`
+  width: 0.8125rem;
+  height: 0.8125rem;
+  fill: white;
+  &.active {
+    fill: ${theme.colors.navy};
+  }
+`;
+
+const StyledMapButton = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const StyledMap = styled(Map)`
+  height: 1.5rem;
+  fill: ${theme.colors.navy};
+  cursor: pointer;
+`;

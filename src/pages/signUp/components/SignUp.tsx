@@ -13,7 +13,7 @@ import {
 } from '@utils/registerFunction';
 import axios, { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Styled } from 'pages/signIn/components/SignIn';
+import { StyledSignWrap } from 'pages/signIn/components/SignIn';
 
 export const SignUp: React.FC = () => {
   const [email, setEmail] = useRecoilState(emailState);
@@ -120,7 +120,7 @@ export const SignUp: React.FC = () => {
 
   return isSignUp ? null : (
     <>
-      <Styled>
+      <StyledSignWrap>
         <StyledNoHeaderWrap>
           <StyledMainLogoTwo
             onClick={() => {
@@ -224,7 +224,7 @@ export const SignUp: React.FC = () => {
             </StyledSignUpButton>
           </StyledSignUpWrap>
         </StyledNoHeaderWrap>
-      </Styled>
+      </StyledSignWrap>
     </>
   );
 };

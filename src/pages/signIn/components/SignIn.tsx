@@ -71,9 +71,8 @@ export const SignIn: React.FC = () => {
       setSignInButtonClick(true);
     }
   };
-
   return (
-    <Styled>
+    <StyledSignWrap>
       <StyledNoHeaderWrap>
         <StyledSignInContent>
           <StyledSignInLeft>
@@ -137,10 +136,10 @@ export const SignIn: React.FC = () => {
           </StyledSignInRight>
         </StyledSignInContent>
       </StyledNoHeaderWrap>
-    </Styled>
+    </StyledSignWrap>
   );
 };
-export const Styled = styled.div`
+export const StyledSignWrap = styled.div`
   width: 100%;
   height: 100vh;
   overflow: hidden;

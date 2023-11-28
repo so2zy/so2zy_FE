@@ -20,6 +20,10 @@ import {
   endDateState,
 } from 'recoil/searchList';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
+import { getSearchListData } from '@utils/getData';
+import InfiniteScroll from 'react-infinite-scroller';
+import { useNavigate } from 'react-router-dom';
 
 interface Hotel {
   id: number;
@@ -34,8 +38,8 @@ interface Hotel {
 }
 
 export const SearchList: React.FC = () => {
-  const [hotels, setHotels] = useState<Hotel[]>([]);
-  const [sortBy, setSortBy] = useState('가격순');
+  const searchedHotel = sessionStorage.getItem('searchedHotel');
+  const [sortBy, setSortBy] = useState('price');
   const [sortOrder, setSortOrder] = useState('asc');
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isClickedReservation, setIsClickedReservation] = useState(false); // 필터링 예약버튼 클릭 여부
@@ -51,6 +55,8 @@ export const SearchList: React.FC = () => {
   const startDate = useRecoilValue(startDateState);
   const endDate = useRecoilValue(endDateState);
   const [date, setDate] = useState('');
+  const size = 6;
+  const navigate = useNavigate();
 
   const shortenPrice = (price: number) => {
     if (price === 0) {
@@ -78,7 +84,6 @@ export const SearchList: React.FC = () => {
     setIsClickedPrice(false);
     setIsClickedPeople(false);
     setIsClickedCalendar(false);
-    fetchData();
   };
 
   const handleSortClick = (field: string) => {
@@ -92,44 +97,44 @@ export const SearchList: React.FC = () => {
     }
   };
 
-  const fetchData = () => {
-    fetch('/api/searchList')
-      .then((res) => res.json())
-      .then((data: Hotel[]) => {
-        const filteredData = data.filter((hotel) => {
-          // 인원수 필터링
-          const isPeopleInRange = hotel.peopleCount >= peopleCount;
-          // 가격 필터링
-          const isPriceInRange =
-            hotel.discountPrice >= priceA && hotel.discountPrice <= priceB;
-          // 예약가능 여부 필터링
-          const isAvailable = isClickedReservation ? hotel.isAvailable : true;
-
-          return isPeopleInRange && isPriceInRange && isAvailable;
-        });
-
-        const sortedData = filteredData.sort((a, b) => {
-          if (sortBy === '가격') {
-            const priceA =
-              sortOrder === 'asc' ? a.discountPrice : b.discountPrice;
-            const priceB =
-              sortOrder === 'asc' ? b.discountPrice : a.discountPrice;
-            return priceA - priceB;
-          } else if (sortBy === '판매량') {
-            const salesA = sortOrder === 'asc' ? a.salesCount : b.salesCount;
-            const salesB = sortOrder === 'asc' ? b.salesCount : a.salesCount;
-            return salesA - salesB;
-          }
-          return 0;
-        });
-
-        setHotels(sortedData);
-      });
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [sortBy, sortOrder, priceA, priceB, isClickedReservation, peopleCount]);
+  const {
+    data: searchListData,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey: [
+      'searchListData',
+      searchedHotel,
+      peopleCount,
+      isClickedReservation,
+      startDate,
+      endDate,
+      priceA,
+      priceB,
+      sortOrder,
+      sortBy,
+    ],
+    queryFn: ({ pageParam = 0 }) =>
+      getSearchListData(
+        searchedHotel,
+        peopleCount,
+        isClickedReservation,
+        startDate,
+        endDate,
+        priceA,
+        priceB,
+        sortOrder,
+        sortBy,
+        pageParam,
+        size,
+      ),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPosts) => {
+      return lastPage.currentPage !== allPosts[0].totalPages
+        ? lastPage.currentPage + 1
+        : undefined;
+    },
+  });
 
   useEffect(() => {
     // const timeDiff = endDate?.getTime() - startDate?.getTime();
@@ -159,6 +164,16 @@ export const SearchList: React.FC = () => {
       );
     }
   }, [startDate, endDate]);
+
+  const handleItemClick = (id: number) => {
+    navigate(`/place/${id}`, {
+      state: {
+        startDate,
+        endDate,
+        personnel: peopleCount,
+      },
+    });
+  };
 
   return (
     <div>
@@ -201,62 +216,68 @@ export const SearchList: React.FC = () => {
         </StyledFilter>
         <StyledSort>
           <StyledPriceButton
-            onClick={() => handleSortClick('가격')}
-            className={sortBy === '가격' ? 'active' : ''}
+            onClick={() => handleSortClick('price')}
+            className={sortBy === 'price' ? 'active' : ''}
           >
             <StyledPrice>가격</StyledPrice>
             <StyledSortWrapper>
               <StyledSortUp
                 viewBox="0 -250 320 512"
                 className={
-                  sortBy === '가격' && sortOrder === 'asc' ? 'active' : ''
+                  sortBy === 'price' && sortOrder === 'asc' ? 'active' : ''
                 }
               />
               <StyledSortDown
                 viewBox="0 250 320 512"
                 className={
-                  sortBy === '가격' && sortOrder === 'desc' ? 'active' : ''
+                  sortBy === 'price' && sortOrder === 'desc' ? 'active' : ''
                 }
               />
             </StyledSortWrapper>
           </StyledPriceButton>
           <StyledSalesButton
-            onClick={() => handleSortClick('판매량')}
-            className={sortBy === '판매량' ? 'active' : ''}
+            onClick={() => handleSortClick('salesCount')}
+            className={sortBy === 'salesCount' ? 'active' : ''}
           >
             <StyledSales>판매량</StyledSales>
             <StyledSortWrapper>
               <StyledSortUp
                 viewBox="0 -250 320 512"
                 className={
-                  sortBy === '판매량' && sortOrder === 'asc' ? 'active' : ''
+                  sortBy === 'salesCount' && sortOrder === 'asc' ? 'active' : ''
                 }
               />
               <StyledSortDown
                 viewBox="0 250 320 512"
                 className={
-                  sortBy === '판매량' && sortOrder === 'desc' ? 'active' : ''
+                  sortBy === 'salesCount' && sortOrder === 'desc'
+                    ? 'active'
+                    : ''
                 }
               />
             </StyledSortWrapper>
           </StyledSalesButton>
         </StyledSort>
       </StyledFilterSortWrapper>
-      <StyledContainer>
-        {hotels.map((hotel) => {
-          return (
-            <Item
-              key={hotel.id}
-              name={hotel.name}
-              // image={hotel.image}
-              favorites={hotel.favorites}
-              regularPrice={hotel.regularPrice}
-              discountPrice={hotel.discountPrice}
-              // salesCount={hotel.salesCount}
-            />
-          );
-        })}
-      </StyledContainer>
+      <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
+        {searchListData?.pages.map((page, pageIndex) => (
+          <StyledContainer key={pageIndex}>
+            {page.data.map((hotel: any) => (
+              <Item
+                onClick={() => handleItemClick(hotel.id)}
+                key={hotel.id}
+                name={hotel.name}
+                // image={hotel.image}
+                favorites={hotel.favorites}
+                regularPrice={hotel.regularPrice}
+                discountPrice={hotel.discountPrice}
+                // salesCount={hotel.salesCount}
+              />
+            ))}
+          </StyledContainer>
+        ))}
+      </InfiniteScroll>
+
       <Modal isOpen={modalIsOpen} closeModal={closeModal} />
     </div>
   );
@@ -265,7 +286,7 @@ export const SearchList: React.FC = () => {
 const StyledContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  margin: 2rem auto;
+  margin: 1rem auto;
   width: 50%;
   align-items: center;
   justify-items: center;
@@ -297,7 +318,7 @@ const StyledSort = styled.div`
   gap: 0.5rem;
 `;
 
-const StyledDateRangeButton = styled.div<{ $isChecked: boolean }>`
+const StyledDateRangeButton = styled.button<{ $isChecked: boolean }>`
   border: 0.5px solid ${theme.colors.gray2};
   border-radius: 0.5rem;
   cursor: pointer;
@@ -306,7 +327,7 @@ const StyledDateRangeButton = styled.div<{ $isChecked: boolean }>`
   color: white;
   font-weight: ${(props) => (props.$isChecked ? 'bold' : 'normal')};
 `;
-const StyledPeopleRangeButton = styled.div<{ $isChecked: boolean }>`
+const StyledPeopleRangeButton = styled.button<{ $isChecked: boolean }>`
   border: 0.5px solid ${theme.colors.gray2};
   border-radius: 0.5rem;
   cursor: pointer;
@@ -316,7 +337,7 @@ const StyledPeopleRangeButton = styled.div<{ $isChecked: boolean }>`
   font-weight: ${(props) => (props.$isChecked ? 'bold' : 'normal')};
 `;
 
-const StyledPriceRangeButton = styled.div<{ $isChecked: boolean }>`
+const StyledPriceRangeButton = styled.button<{ $isChecked: boolean }>`
   border: 0.5px solid ${theme.colors.gray2};
   border-radius: 0.5rem;
   cursor: pointer;
@@ -325,7 +346,7 @@ const StyledPriceRangeButton = styled.div<{ $isChecked: boolean }>`
   color: white;
   font-weight: ${(props) => (props.$isChecked ? 'bold' : 'normal')};
 `;
-const StyledReservationButton = styled.div`
+const StyledReservationButton = styled.button`
   border: 0.5px solid ${theme.colors.gray2};
   border-radius: 0.5rem;
   cursor: pointer;
@@ -350,7 +371,7 @@ const StyledCheck = styled(Check)<{ $isChecked: boolean }>`
   height: 1rem;
 `;
 
-const StyledPriceButton = styled.div`
+const StyledPriceButton = styled.button`
   display: flex;
   align-items: center;
   padding: 0.2rem 0.5rem 0;
@@ -367,7 +388,7 @@ const StyledPrice = styled.div`
   margin-right: 0.1rem;
 `;
 
-const StyledSalesButton = styled.div`
+const StyledSalesButton = styled.button`
   display: flex;
   align-items: center;
   padding: 0.2rem 0.5rem 0;
