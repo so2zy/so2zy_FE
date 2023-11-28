@@ -36,7 +36,7 @@ export const getSearchListData = async (
       console.log('getSearchListData', res.data);
       return res.data;
     } else {
-      console.log('데이터 불러오기 실패');
+      console.log('데이터 불러오기 실패!');
       return [];
     }
   } catch (error) {
