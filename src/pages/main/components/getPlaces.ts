@@ -42,7 +42,7 @@ export interface RoomList {
 
 export interface RegionSelectProps {
   id: string;
-  name: string;
+  sigungu: string;
   regions: string[];
 }
 
