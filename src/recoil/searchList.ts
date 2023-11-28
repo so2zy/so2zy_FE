@@ -61,8 +61,3 @@ export const endDateState = atom<Date | null>({
   key: 'endDateState',
   default: null,
 });
-
-export const searchInputState = atom({
-  key: 'searchInputState',
-  default: '',
-});
