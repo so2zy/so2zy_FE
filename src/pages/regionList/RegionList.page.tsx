@@ -41,6 +41,7 @@ interface Hotel {
 
 export const RegionList: React.FC = () => {
   const areaName = '서울시';
+  sessionStorage.setItem('selectedSigungu', '송파구');
   const selectedSigungu = sessionStorage.getItem('selectedSigungu');
   const [hotels, setHotels] = useState<Hotel[]>([]);
   const [sortBy, setSortBy] = useState('price');
@@ -60,7 +61,6 @@ export const RegionList: React.FC = () => {
   const startDate = useRecoilValue(startDateState);
   const endDate = useRecoilValue(endDateState);
   const [date, setDate] = useState('');
-  const page = 0;
   const size = 10;
   const navigate = useNavigate();
   const latitude = 33.450701;
