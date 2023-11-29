@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { regionListState, updateRegionListState } from '@recoil/regionList';
 import { useRecoilState } from 'recoil';
+import { useNavigate } from 'react-router-dom';
 
 declare global {
   interface Window {
@@ -12,9 +13,10 @@ declare global {
 }
 
 const MapBox: React.FC = () => {
-  const latitude = 37.5034;
-  const longitude = 127.03;
+  const latitude = 37.550091;
+  const longitude = 126.99295;
   const [regionList, setRegionList] = useRecoilState(regionListState);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const container = document.getElementById(`map`);
@@ -26,6 +28,7 @@ const MapBox: React.FC = () => {
     const map = new window.kakao.maps.Map(container, options);
 
     const positions = regionList.map((region) => ({
+      id: region.id,
       name: region.name,
       latlng: new window.kakao.maps.LatLng(region.latitude, region.longitude),
       price: region.price,
@@ -39,41 +42,43 @@ const MapBox: React.FC = () => {
       });
 
       const contentString = ReactDOMServer.renderToString(
-        <div
-          style={{
-            backgroundColor: '#253C59',
-            borderRadius: '10px',
-            color: 'white',
-            cursor: 'pointer',
-            fontWeight: 'bold',
-            marginTop: '40px',
-            padding: '.5rem .75rem',
-          }}
-        >
+        <a href={`/place/${positions[i].id}`}>
           <div
             style={{
-              display: 'flex',
-              gap: '.5rem',
-              marginBottom: '.5rem',
+              backgroundColor: '#253C59',
+              borderRadius: '10px',
+              color: 'white',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              marginTop: '40px',
+              padding: '.5rem .75rem',
             }}
           >
-            <div style={{ paddingTop: '.25rem' }}>{positions[i].name}</div>
             <div
               style={{
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'white',
-                padding: '0 .2rem',
-                borderRadius: '.3rem',
-                color: 'black',
+                gap: '.5rem',
+                marginBottom: '.5rem',
               }}
             >
-              x
+              <div style={{ paddingTop: '.25rem' }}>{positions[i].name}</div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: 'white',
+                  padding: '0 .2rem',
+                  borderRadius: '.3rem',
+                  color: 'black',
+                }}
+              >
+                x
+              </div>
             </div>
+            <div>{positions[i].price.toLocaleString('ko-KR')}원</div>
           </div>
-          <div>{positions[i].price.toLocaleString('ko-KR')}원</div>
-        </div>,
+        </a>,
       );
 
       const content = document.createElement('div');

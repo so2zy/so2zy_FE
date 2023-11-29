@@ -35,7 +35,7 @@ const Item: React.FC<ItemProps> = (props: ItemProps) => {
           <StyledRegularPrice>
             {price.toLocaleString('ko-KR')}원
           </StyledRegularPrice>
-          <Styledprice>{price.toLocaleString('ko-KR')}원</Styledprice>
+          <Styledprice>{price.toLocaleString('ko-KR')}원 ~</Styledprice>
         </StyledPriceWrapper>
       </StyledInfo>
     </StyledItem>

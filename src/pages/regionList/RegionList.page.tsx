@@ -19,6 +19,8 @@ import {
   priceBState,
   startDateState,
   endDateState,
+  startStringState,
+  endStringState,
   isClickedMapState,
 } from 'recoil/searchList';
 import { regionListState, updateRegionListState } from '@recoil/regionList';
@@ -35,7 +37,7 @@ interface Hotel {
   favorites: boolean;
   regularPrice: number;
   price: number;
-  salesCount: number;
+  soldCount: number;
   isAvailable: boolean;
   peopleCount: number;
 }
@@ -60,6 +62,8 @@ export const RegionList: React.FC = () => {
   const peopleCount = useRecoilValue(peopleCountState); // 인원수
   const startDate = useRecoilValue(startDateState);
   const endDate = useRecoilValue(endDateState);
+  const startString = useRecoilValue(startStringState);
+  const endString = useRecoilValue(endStringState);
   const [date, setDate] = useState('');
   const navigate = useNavigate();
 
@@ -115,8 +119,8 @@ export const RegionList: React.FC = () => {
       areaName,
       selectedSigungu,
       peopleCount,
-      startDate,
-      endDate,
+      startString,
+      endString,
       priceA,
       priceB,
       sortOrder,
@@ -127,10 +131,10 @@ export const RegionList: React.FC = () => {
         areaName,
         selectedSigungu,
         // peopleCount,
-        startDate,
-        endDate,
-        // priceA,
-        // priceB,
+        startString,
+        endString,
+        priceA,
+        priceB,
         sortOrder,
         sortBy,
         pageParam,
@@ -197,6 +201,9 @@ export const RegionList: React.FC = () => {
     console.log('전역', regionList);
   }, [regionList]);
 
+  useEffect(() => {
+    console.log('startDate', startDate);
+  }, [startDate]);
   return (
     <div>
       <StyledFilterSortWrapper>
@@ -258,23 +265,21 @@ export const RegionList: React.FC = () => {
             </StyledSortWrapper>
           </StyledPriceButton>
           <StyledSalesButton
-            onClick={() => handleSortClick('salesCount')}
-            className={sortBy === 'salesCount' ? 'active' : ''}
+            onClick={() => handleSortClick('soldCount')}
+            className={sortBy === 'soldCount' ? 'active' : ''}
           >
             <StyledSales>판매량</StyledSales>
             <StyledSortWrapper>
               <StyledSortUp
                 viewBox="0 -250 320 512"
                 className={
-                  sortBy === 'salesCount' && sortOrder === 'asc' ? 'active' : ''
+                  sortBy === 'soldCount' && sortOrder === 'asc' ? 'active' : ''
                 }
               />
               <StyledSortDown
                 viewBox="0 250 320 512"
                 className={
-                  sortBy === 'salesCount' && sortOrder === 'desc'
-                    ? 'active'
-                    : ''
+                  sortBy === 'soldCount' && sortOrder === 'desc' ? 'active' : ''
                 }
               />
             </StyledSortWrapper>
