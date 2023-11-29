@@ -335,7 +335,7 @@ const StyledHeaderRegionCover = styled.div`
 `;
 
 const StyledHeaderRegion = styled.div`
-  margin-left: 4rem;
+  margin-left: 1rem;
   font-size: 2rem;
   font-weight: 800;
   padding: 0.375rem 0 0;

@@ -2,7 +2,9 @@ import styled from 'styled-components';
 import { theme } from '@styles/theme';
 import { useEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { useState } from 'react';
+import { regionListState, updateRegionListState } from '@recoil/regionList';
+import { useRecoilState } from 'recoil';
+
 declare global {
   interface Window {
     kakao: any;
@@ -10,35 +12,25 @@ declare global {
 }
 
 const MapBox: React.FC = () => {
-  const latitude = 33.450701;
-  const longitude = 126.570667;
+  const latitude = 37.5034;
+  const longitude = 127.03;
+  const [regionList, setRegionList] = useRecoilState(regionListState);
+
   useEffect(() => {
     const container = document.getElementById(`map`);
     const options = {
       center: new window.kakao.maps.LatLng(latitude, longitude),
-      level: 3,
+      level: 8,
     };
 
     const map = new window.kakao.maps.Map(container, options);
 
-    const positions = [
-      {
-        name: '카카오',
-        latlng: new window.kakao.maps.LatLng(33.450705, 126.570677),
-      },
-      {
-        name: '생태',
-        latlng: new window.kakao.maps.LatLng(33.450936, 126.569477),
-      },
-      {
-        name: '텃밭',
-        latlng: new window.kakao.maps.LatLng(33.450879, 126.56994),
-      },
-      {
-        name: '근린',
-        latlng: new window.kakao.maps.LatLng(33.451393, 126.570738),
-      },
-    ];
+    const positions = regionList.map((region) => ({
+      name: region.name,
+      latlng: new window.kakao.maps.LatLng(region.latitude, region.longitude),
+      price: region.price,
+    }));
+
     for (let i = 0; i < positions.length; i++) {
       // 마커를 생성합니다
       const marker = new window.kakao.maps.Marker({
@@ -55,31 +47,32 @@ const MapBox: React.FC = () => {
             cursor: 'pointer',
             fontWeight: 'bold',
             marginTop: '40px',
-            display: 'flex',
-            padding: '.25rem .5rem',
-            gap: '0.25rem',
+            padding: '.5rem .75rem',
           }}
         >
           <div
             style={{
-              paddingTop: '.25rem',
-            }}
-          >
-            {positions[i].name}
-          </div>
-          <div
-            style={{
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'white',
-              padding: '0 .2rem',
-              borderRadius: '.3rem',
-              color: 'black',
+              gap: '.5rem',
+              marginBottom: '.5rem',
             }}
           >
-            x
+            <div style={{ paddingTop: '.25rem' }}>{positions[i].name}</div>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'white',
+                padding: '0 .2rem',
+                borderRadius: '.3rem',
+                color: 'black',
+              }}
+            >
+              x
+            </div>
           </div>
+          <div>{positions[i].price.toLocaleString('ko-KR')}원</div>
         </div>,
       );
 
