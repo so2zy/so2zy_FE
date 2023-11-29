@@ -113,7 +113,7 @@ const StyledMainAllItem = styled.div`
 `;
 
 const StyledAllItemImage = styled.img`
-  width: 10.5rem;
+  width: 12.5rem;
   border-radius: 0.625rem;
   margin: 1rem;
 `;

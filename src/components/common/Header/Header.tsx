@@ -9,6 +9,7 @@ import { BsArrowLeft } from 'react-icons/bs';
 import { ReactComponent as ChevronDown } from '@assets/images/chevron-down.svg';
 import { isClickedRegionState } from '@recoil/regionList';
 import { Modal } from '@components/Modal';
+import { FaCartShopping } from 'react-icons/fa6';
 
 import {
   useRecoilCallback,
@@ -273,9 +274,8 @@ const Header = () => {
                   로그인
                 </StyledHeaderLogIn>
               )}
-              <StyledHeaderCartIcon>
-                <img src={CartIcon} alt="Cart Icon" onClick={handleCartIcon} />
-              </StyledHeaderCartIcon>
+              <StyledHeaderCartIcon onClick={handleCartIcon} />
+              {/* <StyledHeaderCartCount>0</StyledHeaderCartCount> */}
             </StyledHeaderRight>
           </StyledHeaderContent>
           <Modal isOpen={modalIsOpen} closeModal={closeModal} />
@@ -378,14 +378,22 @@ const StyledHeaderLogOut = styled.span`
   white-space: nowrap;
 `;
 
-const StyledHeaderCartIcon = styled.span`
+const StyledHeaderCartIcon = styled(FaCartShopping)`
   ${sharedHeaderStyles}
   cursor: pointer;
   margin-left: 1rem;
-  img {
-    width: 2rem;
-  }
+  font-size: 1.1rem;
+  margin-bottom: 0.1rem;
+  position: relative;
 `;
+
+// const StyledHeaderCartCount = styled.div`
+//   /* font-size: 0.5rem; */
+//   border-radius: 3rem;
+//   background-color: red;
+//   position: absolute;
+//   z-index: 999;
+// `;
 
 const StyledHeaderGreeting = styled.span`
   font-size: 0.8rem;
@@ -456,5 +464,7 @@ const StyledChevronDown = styled(ChevronDown)`
 
 const StyledLeftBtn = styled(BsArrowLeft)`
   cursor: pointer;
+  color: ${theme.colors.navy};
 `;
+
 export default Header;
