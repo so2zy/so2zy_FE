@@ -1,47 +1,21 @@
 import axios from 'axios';
 
-export interface MainListProps {
-  title: string;
-  data?: {
-    body: MainItemProps[];
-  };
-  // startDate: Date;
-  // endDate: Date;
-  // personnel: number;
-}
+// export interface ImageList {
+//   id: number;
+//   url: string;
+// }
 
-export interface MainItemProps {
-  page: number;
-  size: number;
-  id: number;
-  name: string;
-  latitude: number;
-  longitude: number;
-  addressCode: string;
-  likeCount: number;
-  phoneNumber: string;
-  accommodationImageUrl: string;
-  // 아래는 백엔드에서 데이터 주면 수정 예정
-  price: number;
-  saleprice: number;
-  like: boolean;
-}
-export interface ImageList {
-  id: number;
-  url: string;
-}
-
-export interface RoomList {
-  id: number;
-  type: string;
-  price: number;
-  capacity: number;
-  maxCapacity: number;
-  checkIn: string;
-  checkOut: string;
-  stock: number;
-  url: string;
-}
+// export interface RoomList {
+//   id: number;
+//   type: string;
+//   price: number;
+//   capacity: number;
+//   maxCapacity: number;
+//   checkIn: string;
+//   checkOut: string;
+//   stock: number;
+//   url: string;
+// }
 
 export interface RegionSelectProps {
   id: string;
@@ -52,21 +26,6 @@ export interface RegionSelectProps {
 export interface RegionModalProps {
   isOpen: boolean;
 }
-
-export const getRegionList = async () => {
-  try {
-    const res = await axios.get('/api/main/selectregion');
-    if (res) {
-      return res.data;
-    } else {
-      console.log('지역 불러오기 실패');
-      return [];
-    }
-  } catch (error) {
-    console.log(error);
-    return [];
-  }
-};
 
 export const getMostSell = async () => {
   try {
@@ -135,19 +94,3 @@ export const getAllProduct = async (page: number) => {
 export const noProduct = () => {
   return [];
 };
-
-// 클릭하면 상세 페이지로 props로 전달해주면서 이동하는 함수
-// export const handleDetailPage = () => {
-//   const startDate = new Date();
-//   const endDate = new Date();
-//   const personnel = 1;
-//   endDate.setDate(endDate.getDate() + 1);
-//   const navigate = useNavigate();
-//   navigate(`/place/:id`, {
-//     state: {
-//       startDate: formatDate(startDate),
-//       endDate: formatDate(endDate),
-//       personnel: personnel,
-//     },
-//   });
-// };

@@ -5,11 +5,9 @@ import { FaTrashCan } from 'react-icons/fa6';
 import {
   StyledItemDesc,
   StyledItemTitle,
-  StyledWrapper,
   StyledBtnText,
   StyledButtonWrapper,
 } from 'pages/reservation/Reservation.page';
-import { RoomList } from '@pages/placeDetail/PlaceDetail.page';
 
 export interface cartItemProps {
   accommodationList: accommodationList[];

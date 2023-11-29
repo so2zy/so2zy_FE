@@ -1,7 +1,6 @@
 import { theme } from '@styles/theme';
 import styled from 'styled-components';
-import MainListItem from './mainListItem';
-import { MainListProps } from './getPlaces';
+import MainListItem, { MainListProps } from './mainListItem';
 
 const MainListContainer = ({ title }: MainListProps) => {
   return (
