@@ -141,7 +141,7 @@ export const Reservation: React.FC = () => {
 };
 
 export const StyledButtonWrapper = styled.div`
-  width: 48rem;
+  width: 100%;
   margin: 2rem auto 1rem auto;
   border: 1px solid black;
   margin-right: 0.4rem;

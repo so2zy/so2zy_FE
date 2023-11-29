@@ -217,7 +217,7 @@ const Header = () => {
         <StyledHeaderWhiteBox>
           <StyledHeaderWhiteContent>
             <div>
-              <BsArrowLeft size="40" onClick={handleArrowLeft} />
+              <StyledLeftBtn size="40" onClick={handleArrowLeft} />
             </div>
             <div onClick={handleReservationText}>
               {location.pathname === '/cart'
@@ -237,7 +237,7 @@ const Header = () => {
           <StyledHeaderContent>
             {location.pathname === '/regionList' ? (
               <StyledHeaderRegionCover>
-                <BsArrowLeft size="40" onClick={handleArrowLeft} />
+                <StyledLeftBtn size="40" onClick={handleArrowLeft} />
                 <StyledHeaderRegion>{selectedRegion}</StyledHeaderRegion>
                 <StyledChevronDown
                   onClick={() => {
@@ -451,6 +451,10 @@ const StyledChevronDown = styled(ChevronDown)`
   height: 1.5rem;
   fill: ${theme.colors.blue};
   margin-left: 0.5rem;
+  cursor: pointer;
+`;
+
+const StyledLeftBtn = styled(BsArrowLeft)`
   cursor: pointer;
 `;
 export default Header;
