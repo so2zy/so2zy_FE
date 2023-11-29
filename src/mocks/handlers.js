@@ -436,7 +436,7 @@ export const handlers = [
     const isAvailableFilter = url.searchParams.get('isAvailable');
     const nameFilter = url.searchParams.get('name');
     const page = parseInt(url.searchParams.get('page'));
-    const size = parseInt(url.searchParams.get('size'));
+    const size = 8;
 
     const data = [
       {
@@ -451,6 +451,8 @@ export const handlers = [
         peopleCount: 6,
         startDate: '2023-02-14T12:23:40.456',
         endDate: '2024-05-27T16:15:33.210',
+        latitude: 37.50457,
+        longitude: 127.048933,
       },
       {
         id: 2,
@@ -464,6 +466,8 @@ export const handlers = [
         peopleCount: 1,
         startDate: '2015-07-21T10:05:58.743',
         endDate: '2016-12-03T07:28:10.987',
+        latitude: 37.51457,
+        longitude: 127.058933,
       },
       {
         id: 3,
@@ -477,6 +481,8 @@ export const handlers = [
         peopleCount: 5,
         startDate: '2019-06-08T03:09:18.654',
         endDate: '2020-08-25T09:12:45.567',
+        latitude: 37.52457,
+        longitude: 127.068933,
       },
       {
         id: 4,
@@ -490,6 +496,8 @@ export const handlers = [
         peopleCount: 4,
         startDate: '2017-09-30T18:55:36.789',
         endDate: '2018-04-17T21:30:15.892',
+        latitude: 37.53457,
+        longitude: 127.078933,
       },
       {
         id: 5,
@@ -503,6 +511,8 @@ export const handlers = [
         peopleCount: 3,
         startDate: '2021-10-19T23:40:55.321',
         endDate: '2022-11-05T14:47:22.123',
+        latitude: 37.54457,
+        longitude: 127.088933,
       },
       {
         id: 6,
@@ -516,6 +526,8 @@ export const handlers = [
         peopleCount: 2,
         startDate: '2021-10-19T23:40:55.321',
         endDate: '2022-11-05T14:47:22.123',
+        latitude: 37.55457,
+        longitude: 127.098933,
       },
       {
         id: 7,
@@ -529,6 +541,8 @@ export const handlers = [
         peopleCount: 7,
         startDate: '2021-10-19T23:40:55.321',
         endDate: '2022-11-05T14:47:22.123',
+        latitude: 37.56457,
+        longitude: 127.008933,
       },
       {
         id: 8,
@@ -542,6 +556,8 @@ export const handlers = [
         peopleCount: 3,
         startDate: '2021-10-19T23:40:55.321',
         endDate: '2022-11-05T14:47:22.123',
+        latitude: 37.57457,
+        longitude: 127.018933,
       },
       {
         id: 9,
@@ -555,6 +571,8 @@ export const handlers = [
         peopleCount: 2,
         startDate: '2021-10-19T23:40:55.321',
         endDate: '2022-11-05T14:47:22.123',
+        latitude: 37.58457,
+        longitude: 127.028933,
       },
     ];
 
@@ -581,16 +599,12 @@ export const handlers = [
       }
       return orderBy === 'asc' ? valueA - valueB : valueB - valueA;
     });
-
-    const totalItems = sortedData.length;
-    const totalPages = Math.ceil(totalItems / size);
-    const paginatedData = sortedData.slice((page - 1) * size, page * size);
+    const startIndex = page * size;
+    const endIndex = startIndex + size;
+    const responseData = sortedData.slice(startIndex, endIndex);
 
     return HttpResponse.json({
-      data: paginatedData,
-      totalPages,
-      currentPage: page,
-      size: size,
+      data: responseData,
     });
   }),
   http.get('/api/main/selectregion', () => {

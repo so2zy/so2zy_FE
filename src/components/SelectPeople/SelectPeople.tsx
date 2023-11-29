@@ -24,13 +24,15 @@ export default function SelectPeople({
   };
 
   const handleDecrease = () => {
-    if (count > 0) {
+    if (count > 1) {
       setCount((prevCount) => prevCount - 1);
     }
   };
 
   const handleIncrease = () => {
-    setCount((prevCount) => prevCount + 1);
+    if (count < 6) {
+      setCount((prevCount) => prevCount + 1);
+    }
   };
   return (
     <StyledContainer>
