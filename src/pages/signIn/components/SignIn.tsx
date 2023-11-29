@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { theme } from '@styles/theme';
 import styled from 'styled-components';
-import MainTwoIcon from '@assets/mainLogoTwo.svg';
+import MainTwoIcon from '@assets/images/mainLogoTwo.svg';
 import { useNavigate } from 'react-router-dom';
 import jwt from 'jsonwebtoken-promisified';
 import { useRecoilState, useSetRecoilState } from 'recoil';
@@ -19,7 +19,7 @@ export const SignIn: React.FC = () => {
   const [email, setEmail] = useRecoilState(emailState);
   const [pw, setPw] = useRecoilState(pwState);
   const [signInButtonClick, setSignInButtonClick] = useState(false);
-  const signInUrl = 'http://43.202.50.38:8080/v1/login';
+  const signInUrl = `${process.env.REACT_APP_SERVER}/v1/login`;
   const setUserKey = useSetRecoilState(userKeyState);
   const setAccessToken = useSetRecoilState(tokenAtom);
   const setUserName = useSetRecoilState(userNameState);

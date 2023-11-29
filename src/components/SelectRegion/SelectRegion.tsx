@@ -26,7 +26,7 @@ export default function SelectRegion({
 
       <StyledRegionContainer>
         <StyledRegionList>
-          {modalData.map((sigungu) => (
+          {modalData?.map((sigungu) => (
             <StyledRegionItem
               key={sigungu.id}
               onClick={() => {

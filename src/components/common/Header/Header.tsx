@@ -1,14 +1,15 @@
 import { theme } from '@styles/theme';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import Logo from '@assets/mainLogo.svg';
-import CartIcon from '@assets/shoppingBag.png';
-import HomeIcon from '@assets/home.png';
+import Logo from '@assets/images/mainLogo.svg';
+import { GrLinkPrevious } from 'react-icons/gr';
+import HomeIcon from '@assets/images/home.png';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BsArrowLeft } from 'react-icons/bs';
 import { ReactComponent as ChevronDown } from '@assets/images/chevron-down.svg';
 import { isClickedRegionState } from '@recoil/regionList';
 import { Modal } from '@components/Modal';
+import { FaCartShopping } from 'react-icons/fa6';
 
 import {
   useRecoilCallback,
@@ -38,17 +39,18 @@ const Header = () => {
   const setUserName = useSetRecoilState(userNameState);
   const setEmail = useSetRecoilState(emailState);
   const setPw = useSetRecoilState(pwState);
+  const tokenRefreshUrl = `${process.env.REACT_APP_SERVER}/v1/refresh`;
+
   const [iatDatePlus9Hours, setIatDatePlus9Hours] = useRecoilState(
     iatDatePlus9HoursState,
   );
-  console.log('iatDatePlus9Hours', iatDatePlus9Hours);
   const navigate = useNavigate();
   const location = useLocation();
   const checkTokenExpiration = async () => {
     if (iatDatePlus9Hours && iatDatePlus9Hours < Date.now()) {
       try {
         const response = await axios.post(
-          'http://43.202.50.38:8080/v1/refresh',
+          tokenRefreshUrl,
           {
             accessToken: token,
             refreshToken: refreshToken,
@@ -217,7 +219,7 @@ const Header = () => {
         <StyledHeaderWhiteBox>
           <StyledHeaderWhiteContent>
             <div>
-              <BsArrowLeft size="40" onClick={handleArrowLeft} />
+              <StyledBefore size="25" onClick={handleArrowLeft} />
             </div>
             <div onClick={handleReservationText}>
               {location.pathname === '/cart'
@@ -237,7 +239,7 @@ const Header = () => {
           <StyledHeaderContent>
             {location.pathname === '/regionList' ? (
               <StyledHeaderRegionCover>
-                <BsArrowLeft size="40" onClick={handleArrowLeft} />
+                <StyledLeftBtn size="40" onClick={handleArrowLeft} />
                 <StyledHeaderRegion>{selectedRegion}</StyledHeaderRegion>
                 <StyledChevronDown
                   onClick={() => {
@@ -273,9 +275,8 @@ const Header = () => {
                   로그인
                 </StyledHeaderLogIn>
               )}
-              <StyledHeaderCartIcon>
-                <img src={CartIcon} alt="Cart Icon" onClick={handleCartIcon} />
-              </StyledHeaderCartIcon>
+              <StyledHeaderCartIcon onClick={handleCartIcon} />
+              {/* <StyledHeaderCartCount>0</StyledHeaderCartCount> */}
             </StyledHeaderRight>
           </StyledHeaderContent>
           <Modal isOpen={modalIsOpen} closeModal={closeModal} />
@@ -290,6 +291,10 @@ const sharedHeaderStyles = `
   margin-left: 1rem;
   white-space: nowrap;
 `;
+const StyledBefore = styled(GrLinkPrevious)`
+  vertical-align: top;
+  cursor: pointer;
+`;
 
 const StyledHeaderBox = styled.div`
   position: fixed;
@@ -297,7 +302,7 @@ const StyledHeaderBox = styled.div`
   left: 0;
   width: 100%;
   height: 3.5rem;
-  z-index: 100;
+  z-index: 1000;
   background-color: ${theme.colors.navy};
   color: white;
   @media (max-width: 1080px) {
@@ -309,7 +314,7 @@ const StyledHeaderContent = styled.div`
   justify-content: space-between;
   align-items: center;
   background-color: auto;
-  width: 50%;
+  width: 60%;
   height: 100%;
   margin: 0 auto;
   @media (max-width: 1080px) {
@@ -353,8 +358,8 @@ const StyledHeaderSearchBar = styled.input`
   width: 60%;
   color: white;
   box-sizing: border-box;
-  ::placeholder {
-    color: red;
+  &&::placeholder {
+    color: white;
   }
 `;
 
@@ -378,14 +383,22 @@ const StyledHeaderLogOut = styled.span`
   white-space: nowrap;
 `;
 
-const StyledHeaderCartIcon = styled.span`
+const StyledHeaderCartIcon = styled(FaCartShopping)`
   ${sharedHeaderStyles}
   cursor: pointer;
   margin-left: 1rem;
-  img {
-    width: 2rem;
-  }
+  font-size: 1.1rem;
+  margin-bottom: 0.1rem;
+  position: relative;
 `;
+
+// const StyledHeaderCartCount = styled.div`
+//   /* font-size: 0.5rem; */
+//   border-radius: 3rem;
+//   background-color: red;
+//   position: absolute;
+//   z-index: 999;
+// `;
 
 const StyledHeaderGreeting = styled.span`
   font-size: 0.8rem;
@@ -418,7 +431,6 @@ const StyledHeaderWhiteContent = styled.div`
   align-items: center;
   background-color: auto;
   width: 50%;
-  padding: 0 4rem;
   height: 100%;
   font-size: 1.2rem;
   margin: 0 auto;
@@ -447,10 +459,17 @@ const StyledHeaderHomeIcon = styled.div`
     width: 2rem;
   }
 `;
+
 const StyledChevronDown = styled(ChevronDown)`
   height: 1.5rem;
   fill: ${theme.colors.blue};
   margin-left: 0.5rem;
   cursor: pointer;
 `;
+
+const StyledLeftBtn = styled(BsArrowLeft)`
+  cursor: pointer;
+  color: ${theme.colors.navy};
+`;
+
 export default Header;
