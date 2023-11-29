@@ -30,18 +30,6 @@ import { getRegionListData } from '@utils/getData';
 import InfiniteScroll from 'react-infinite-scroller';
 import { useNavigate } from 'react-router-dom';
 
-interface Hotel {
-  id: number;
-  name: string;
-  // image: string;
-  favorites: boolean;
-  regularPrice: number;
-  price: number;
-  soldCount: number;
-  isAvailable: boolean;
-  peopleCount: number;
-}
-
 export const RegionList: React.FC = () => {
   const areaName = '서울특별시';
   const selectedSigungu = sessionStorage.getItem('selectedSigungu');
@@ -130,7 +118,7 @@ export const RegionList: React.FC = () => {
       getRegionListData(
         areaName,
         selectedSigungu,
-        // peopleCount,
+        peopleCount,
         startString,
         endString,
         priceA,
@@ -149,7 +137,6 @@ export const RegionList: React.FC = () => {
   });
 
   useEffect(() => {
-    // const timeDiff = endDate?.getTime() - startDate?.getTime();
     if (!startDate && !endDate) {
       const today = new Date();
       const todayMonth = (today?.getMonth() + 1).toString();
