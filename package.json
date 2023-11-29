@@ -49,7 +49,9 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
-    "eject": "craco eject"
+    "eject": "craco eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -85,11 +87,13 @@
     "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "gh-pages": "^6.1.0",
     "msw": "^2.0.8",
     "prettier": "^3.1.0",
     "tsconfig-paths-webpack-plugin": "^4.1.0"
   },
   "msw": {
     "workerDirectory": "public"
-  }
+  },
+  "homepage": "https://so2zy.github.io/so2zy_FE/"
 }
