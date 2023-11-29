@@ -96,7 +96,7 @@ const StyledMainPageItem = styled.div`
   width: 9.75rem;
   height: 10.5rem;
   border-radius: 1rem;
-  box-shadow: 4px 4px ${theme.shadows.shadow1.shadow};
+  box-shadow: ${theme.shadows.shadow1.shadow};
   position: relative;
   cursor: pointer;
 `;

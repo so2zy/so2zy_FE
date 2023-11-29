@@ -85,7 +85,7 @@ export const PlaceDetail: React.FC = () => {
     setModalIsOpen(false);
   };
 
-  //필터링 데이터 받기
+  //필터링 데이터
   const location = useLocation();
   const { startDate, endDate, personnel } = location.state || {
     startDate: formatDate(new Date()),
@@ -94,16 +94,18 @@ export const PlaceDetail: React.FC = () => {
   };
 
   //숙소 정보 get
-  // `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}?startDate=${startDate}?endDate=${endDate}?personnel=${personnel}`
   const accessToken = sessionStorage.getItem('accessToken');
   const getData = async (id: any) => {
     try {
-      const res = await axios.get(`/accommodations/${id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
+      const res = await axios.get(
+        `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}?startDate=${startDate}?endDate=${endDate}?personnel=${personnel}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         },
-      });
-      //console.log(`get test ${id}`);
+      );
+      console.log(res.data);
       setAccommodation(res.data);
       console.log('정보 가져오기 성공', res.data);
       setIsLoading(false);
@@ -112,18 +114,41 @@ export const PlaceDetail: React.FC = () => {
     }
   };
 
+  //찜
+  const toggleFavorite = async (id: any, isChecked: boolean) => {
+    try {
+      const url = `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}/favorite`;
+      const method = isChecked ? 'DELETE' : 'POST';
+
+      const headers = {
+        'Content-Type': 'application/json',
+        'Access-Token': accessToken,
+      };
+
+      await axios({
+        method: method,
+        url: url,
+        headers: headers,
+      });
+
+      console.log(`즐겨찾기 ${isChecked ? '삭제' : '추가'} 성공`);
+    } catch (error) {
+      console.error('즐겨찾기 실패:', error);
+    }
+  };
+
   useEffect(() => {
     console.log(`get test ${id}`);
     getData(id);
-  }, [isLoading]);
+  }, [id, startDate, endDate, personnel]);
 
-  useEffect(() => {
-    if (accommodation) {
-      console.log(accommodation);
-    }
-  }, [accommodation]);
+  // useEffect(() => {
+  //   if (accommodation) {
+  //     console.log(accommodation);
+  //   }
+  // }, [accommodation]);
 
-  //장바구니로 post하는 로직
+  //장바구니로 post
   const addCart = async (roomId: number) => {
     const confirm = window.confirm('장바구니에 추가하시겠습니까?');
 
@@ -174,6 +199,7 @@ export const PlaceDetail: React.FC = () => {
             className={isChecked ? 'checked' : 'unchecked'}
             onClick={() => {
               setIsChecked((prev) => !prev);
+              toggleFavorite(id, isChecked);
             }}
           />
         </StyledMainTitle>
