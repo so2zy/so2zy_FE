@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { theme } from '@styles/theme';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
-import MainTwoIcon from '@assets/mainLogoTwo.svg';
+import MainTwoIcon from '@assets/images/mainLogoTwo.svg';
 import { userNameState, emailState, pwState } from 'recoil/atom';
 import {
   // debounce,
@@ -26,12 +26,12 @@ export const SignUp: React.FC = () => {
   >(undefined);
   const [isSignUp, setIsSignUp] = useState(false);
   const navigate = useNavigate();
-  const emailCheckUrl = 'http://43.202.50.38:8080/v1/members';
-  const signUpUrl = 'http://43.202.50.38:8080/v1/members/register';
+  const emailCheckUrl = `${process.env.REACT_APP_SERVER}/v1/members/email/verify`;
+  const signUpUrl = `${process.env.REACT_APP_SERVER}/v1/members/register`;
 
   const checkEmail = async (email: string) => {
     try {
-      const response = await axios.get(`${emailCheckUrl}/email/verify`, {
+      const response = await axios.get(emailCheckUrl, {
         params: {
           email: email,
         },

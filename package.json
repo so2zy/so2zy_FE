@@ -22,6 +22,7 @@
     "@types/react-modal": "^3.16.3",
     "@types/react-slick": "^0.23.12",
     "axios": "^1.6.2",
+    "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",
     "date-fns": "^2.30.0",
     "jsonwebtoken-promisified": "^1.0.3",
@@ -70,6 +71,7 @@
     ]
   },
   "devDependencies": {
+    "@playwright/test": "^1.40.0",
     "@types/jsonwebtoken-promisified": "^1.0.4",
     "@types/lodash": "^4.14.202",
     "@types/react-datepicker": "^4.19.3",
@@ -85,11 +87,7 @@
     "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "msw": "^2.0.8",
     "prettier": "^3.1.0",
     "tsconfig-paths-webpack-plugin": "^4.1.0"
-  },
-  "msw": {
-    "workerDirectory": "public"
   }
 }

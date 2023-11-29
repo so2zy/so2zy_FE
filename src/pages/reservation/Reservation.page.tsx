@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { RoomList, IAccommodations } from 'pages/placeDetail/PlaceDetail.page';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export const Reservation: React.FC = () => {
   const location = useLocation();
@@ -17,6 +18,8 @@ export const Reservation: React.FC = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [personnel, setPersonnel] = useState('');
+  const accessToken = sessionStorage.getItem('accessToken');
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (location.state) {
@@ -50,10 +53,14 @@ export const Reservation: React.FC = () => {
           ` ${process.env.REACT_APP_SERVER}/v1/reservations`,
           data,
           {
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Token': accessToken,
+            },
           },
         );
         console.log(response.data);
+        navigate('/confirm', { state: { data: response.data } });
       } catch (error) {
         console.error('결제 실패', error);
       }
@@ -141,7 +148,7 @@ export const Reservation: React.FC = () => {
 };
 
 export const StyledButtonWrapper = styled.div`
-  width: 48rem;
+  width: 100%;
   margin: 2rem auto 1rem auto;
   border: 1px solid black;
   margin-right: 0.4rem;

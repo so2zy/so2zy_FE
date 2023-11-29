@@ -1,12 +1,6 @@
 import { theme } from '@styles/theme';
 import styled from 'styled-components';
-import {
-  RegionModalProps,
-  RegionSelectProps,
-  getRegionList,
-} from './getPlaces';
-import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { RegionModalProps } from './getPlaces';
 import { modalData } from './modalData';
 import { VscChromeClose } from 'react-icons/vsc';
 import { useRecoilState, useSetRecoilState } from 'recoil';
@@ -38,7 +32,9 @@ const RegionModal = ({ isOpen }: RegionModalProps) => {
   return (
     <StyledWrapper style={{ display: isOpen ? 'block' : 'none' }}>
       <StyledContainer onClick={handleModalClick}>
-        <StyledTitle>지역 선택</StyledTitle>
+        <StyledTitle>
+          <span>지역 선택</span>
+        </StyledTitle>
         <StyledRegionContainer>
           <StyledRegionList>
             {modalData.map((sigungu) => (
@@ -92,9 +88,16 @@ const StyledContainer = styled.div`
 
 const StyledTitle = styled.div`
   font-size: 1.5rem;
+  width: 8rem;
+  height: 3rem;
   font-weight: bold;
-  color: ${theme.colors.navy};
+  color: #fff;
   margin-top: 2rem;
+  border-radius: 0.825rem;
+  background-color: ${theme.colors.navy};
+  span {
+    line-height: 3.2rem;
+  }
 `;
 
 const StyledRegionContainer = styled.div`
@@ -105,7 +108,6 @@ const StyledRegionContainer = styled.div`
 `;
 
 const StyledRegionList = styled.div`
-  /* width: 90%; */
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(5, 1fr);
@@ -119,7 +121,6 @@ const StyledRegionItem = styled.button`
   font-size: 1.2rem;
   display: block;
   height: 5rem;
-  /* line-height: 5rem; */
   background-color: transparent;
   border-radius: 0.625rem;
   margin: 0.5rem 0.5rem 1rem 0.5rem;
