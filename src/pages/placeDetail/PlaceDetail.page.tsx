@@ -41,6 +41,7 @@ export interface RoomList {
 
 export const PlaceDetail: React.FC = () => {
   const { id } = useParams();
+  const accessToken = sessionStorage.getItem('accessToken');
   const [accommodation, setAccommodation] = useState<IAccommodations>({
     id: 0,
     accommodationName: '',
@@ -94,7 +95,7 @@ export const PlaceDetail: React.FC = () => {
   };
 
   //숙소 정보 get
-  const accessToken = sessionStorage.getItem('accessToken');
+
   const getData = async (id: any) => {
     try {
       const res = await axios.get(
@@ -138,15 +139,14 @@ export const PlaceDetail: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log(`get test ${id}`);
     getData(id);
   }, [id, startDate, endDate, personnel]);
 
-  // useEffect(() => {
-  //   if (accommodation) {
-  //     console.log(accommodation);
-  //   }
-  // }, [accommodation]);
+  useEffect(() => {
+    if (accommodation) {
+      console.log(accommodation);
+    }
+  }, [accommodation]);
 
   //장바구니로 post
   const addCart = async (roomId: number) => {
