@@ -5,6 +5,7 @@ import ReactDOMServer from 'react-dom/server';
 import { regionListState, updateRegionListState } from '@recoil/regionList';
 import { useRecoilValue } from 'recoil';
 import { useState } from 'react';
+import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
 
 declare global {
   interface Window {
@@ -44,6 +45,7 @@ const MapBox: React.FC = () => {
       name: region.name,
       latlng: new window.kakao.maps.LatLng(region.latitude, region.longitude),
       price: region.price,
+      image: region.accommodationImageUrl,
     }));
 
     for (let i = 0; i < positions.length; i++) {
@@ -62,48 +64,74 @@ const MapBox: React.FC = () => {
             cursor: 'pointer',
             fontWeight: 'bold',
             marginTop: '40px',
-            padding: '.5rem .75rem',
+            padding: '.5rem .75rem 0.25rem',
+            display: 'grid',
+            gridTemplateColumns: '0.42fr 0.58fr',
           }}
         >
-          <div
-            style={{
-              display: 'flex',
-              gap: '.5rem',
-              marginBottom: '.5rem',
-            }}
-          >
-            <div style={{ paddingTop: '.25rem' }}>
-              <a
-                href={`/place/${positions[i].id}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {positions[i].name}
-              </a>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'white',
-                padding: '0 .2rem',
-                borderRadius: '.3rem',
-                color: 'black',
-              }}
-            >
-              x
-            </div>
-          </div>
-          <div>
-            {positions[i].price.toLocaleString('ko-KR')}
+          <div style={{ marginRight: '0.5rem' }}>
             <a
               href={`/place/${positions[i].id}`}
               target="_blank"
               rel="noreferrer"
             >
-              원
+              {positions[i].image ? (
+                <img
+                  src={positions[i].image}
+                  alt="호텔 이미지"
+                  style={{ width: '3rem', height: '3rem' }}
+                />
+              ) : (
+                <img
+                  src={hotelDefaultImg}
+                  alt="대체 이미지"
+                  style={{ width: '3rem', height: '3rem' }}
+                />
+              )}
             </a>
+          </div>
+
+          <div>
+            <div
+              style={{
+                display: 'flex',
+                gap: '.5rem',
+                marginBottom: '.5rem',
+              }}
+            >
+              <div style={{ paddingTop: '.25rem' }}>
+                <a
+                  href={`/place/${positions[i].id}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {positions[i].name}
+                </a>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: 'white',
+                  padding: '0 .2rem',
+                  borderRadius: '.3rem',
+                  color: 'black',
+                }}
+              >
+                x
+              </div>
+            </div>
+            <div>
+              {positions[i].price.toLocaleString('ko-KR')}
+              <a
+                href={`/place/${positions[i].id}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                원
+              </a>
+            </div>
           </div>
         </div>,
       );

@@ -1,6 +1,4 @@
-import { isCheckedPeopleState } from 'recoil/searchList';
-import { isClickedPeopleState } from 'recoil/searchList';
-import { peopleCountState } from 'recoil/searchList';
+import { regionListState } from '@recoil/regionList';
 import { useSetRecoilState, useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { theme } from '@styles/theme';
@@ -14,6 +12,7 @@ export default function SelectRegion({
   closeModal: () => void;
 }) {
   const navigate = useNavigate();
+  const setRegionList = useSetRecoilState(regionListState);
 
   const handleSelectedSigungu = (selectedSigungu: string) => {
     sessionStorage.setItem('selectedSigungu', selectedSigungu);
@@ -29,7 +28,7 @@ export default function SelectRegion({
       'selectedSigunguHistory',
       JSON.stringify(selectedSigunguHistory),
     );
-
+    setRegionList([]); // 지역 바뀌면 초기화
     navigate(`/regionList?sigunguname=${selectedSigungu}`);
     closeModal();
   };

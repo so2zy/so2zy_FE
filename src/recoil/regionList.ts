@@ -6,7 +6,7 @@ export type RegionListType = {
   latitude: number;
   longitude: number;
   price: number;
-  // ... 다른 필요한 속성들 ...
+  accommodationImageUrl: string;
 };
 
 export const isClickedRegionState = atom({
