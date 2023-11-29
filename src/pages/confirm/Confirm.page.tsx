@@ -5,8 +5,47 @@ import {
   StyleRoomName,
   StyledDetailDes,
 } from 'pages/cart/Cart.page';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import {
+  StyledBtnText,
+  StyledButtonWrapper,
+} from '@pages/reservation/Reservation.page';
+
+interface RoomList {
+  roomId: number;
+  type: string;
+  price: number;
+  capacity: number;
+  maxCapacity: number;
+  checkIn: string;
+  checkOut: string;
+  roomImageUrl?: string;
+  startDate: string;
+  endDate: string;
+  roomReservationNumber: number;
+}
 
 export const Confirm: React.FC = () => {
+  const location = useLocation();
+  console.log('확인 데이터', location.state.data.data);
+
+  const [reservationNumber, setReservationNumber] = useState(0);
+  const [dealDateTime, setDealDateTime] = useState();
+  const [roomList, setRoomList] = useState<RoomList[]>([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.state && location.state.data) {
+      const { dealDateTime, reservationNumber, roomList } =
+        location.state.data.data;
+      console.log('room', roomList);
+      setDealDateTime(dealDateTime);
+      setReservationNumber(reservationNumber);
+      setRoomList(roomList);
+    }
+  }, [location.state]);
+
   return (
     <>
       <StyleMainTitle>예약확인서</StyleMainTitle>
@@ -24,29 +63,46 @@ export const Confirm: React.FC = () => {
       <StyleMainTitle>주문정보</StyleMainTitle>
 
       <StyleMainWrapper>
-        <StyleDescription>통합 주문번호: 1234567890</StyleDescription>
-        <StyleDescription>거래일시: 2022.06.25(토)</StyleDescription>
+        <StyleDescription>통합 주문번호:{reservationNumber}</StyleDescription>
+        <StyleDescription>거래일시: {dealDateTime}</StyleDescription>
       </StyleMainWrapper>
 
       <StyleMainTitle>상품이용 및 이용정보</StyleMainTitle>
 
-      <StyleMainWrapper>
-        <StyleDescription>숙소 예약번호: 489598</StyleDescription>
-        <StyleSubWrapper>
-          <StyledMiniImage src="https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg" />
-          <StyleDetail>
-            <StyleRoomName>P3</StyleRoomName>
-            <StyledDetailDes>체크인 15:00 - 체크아웃 18:00 </StyledDetailDes>
-            <StyledDetailDes>기준 2인 최대 4인</StyledDetailDes>
-          </StyleDetail>
-          <StyleDetail>
-            <StyledDetailDes>23.11.11-23.11.12</StyledDetailDes>
-          </StyleDetail>
-          <StyleDetail>
-            <StyledDetailDes>75,000원</StyledDetailDes>
-          </StyleDetail>
-        </StyleSubWrapper>
-      </StyleMainWrapper>
+      {roomList.map((room) => (
+        <StyleMainWrapper key={room.roomId}>
+          <StyleDescription>
+            숙소 예약번호: {room.roomReservationNumber}
+          </StyleDescription>
+          <StyleSubWrapper>
+            <StyledMiniImage src="https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg" />
+            <StyleDetail>
+              <StyleRoomName>{room.type}</StyleRoomName>
+              <StyledDetailDes>
+                체크인 {room.checkIn} - 체크아웃 {room.checkOut}
+              </StyledDetailDes>
+              <StyledDetailDes>
+                기준 {room.capacity}인 최대{room.maxCapacity}인
+              </StyledDetailDes>
+            </StyleDetail>
+            <StyleDetail>
+              <StyledDetailDes>
+                {room.startDate}-{room.endDate}
+              </StyledDetailDes>
+            </StyleDetail>
+            <StyleDetail>
+              <StyledDetailDes>{room.price}원</StyledDetailDes>
+            </StyleDetail>
+          </StyleSubWrapper>
+        </StyleMainWrapper>
+      ))}
+      <StyledButtonWrapper
+        onClick={() => {
+          navigate('/');
+        }}
+      >
+        <StyledBtnText>홈으로 돌아가기</StyledBtnText>
+      </StyledButtonWrapper>
     </>
   );
 };

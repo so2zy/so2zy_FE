@@ -95,25 +95,29 @@ export const PlaceDetail: React.FC = () => {
   };
 
   //숙소 정보 get
-
   const getData = async (id: any) => {
     try {
+      console.log(startDate, endDate);
       const res = await axios.get(
-        `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}?startDate=${startDate}?endDate=${endDate}?personnel=${personnel}`,
+        `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}?startDate=${startDate}&endDate=${endDate}&personnel=${personnel}`,
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            'Access-Token': accessToken,
           },
         },
       );
-      console.log(res.data);
-      setAccommodation(res.data);
-      console.log('정보 가져오기 성공', res.data);
+      console.log('정보 가져오기 ', res.data);
+      setAccommodation(res.data.data);
+      console.log('정보 가져오기 성공', accommodation);
       setIsLoading(false);
     } catch (error) {
       console.error('숙소 정보 가져오기 실패', error);
     }
   };
+
+  useEffect(() => {
+    console.log('정보 가져오기 성공', accommodation);
+  }, [accommodation]);
 
   //찜
   const toggleFavorite = async (id: any, isChecked: boolean) => {
@@ -142,12 +146,6 @@ export const PlaceDetail: React.FC = () => {
     getData(id);
   }, [id, startDate, endDate, personnel]);
 
-  useEffect(() => {
-    if (accommodation) {
-      console.log(accommodation);
-    }
-  }, [accommodation]);
-
   //장바구니로 post
   const addCart = async (roomId: number) => {
     const confirm = window.confirm('장바구니에 추가하시겠습니까?');
@@ -158,7 +156,7 @@ export const PlaceDetail: React.FC = () => {
           `${process.env.REACT_APP_SERVER}/v2/carts/${roomId}`,
           {
             headers: {
-              Authorization: `Bearer ${accessToken}`,
+              'Access-Token': accessToken,
             },
           },
         );
