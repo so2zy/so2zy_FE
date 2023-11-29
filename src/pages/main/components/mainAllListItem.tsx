@@ -1,12 +1,13 @@
 import { theme } from '@styles/theme';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { FaStar } from 'react-icons/fa';
 import styled from 'styled-components';
-import { MainItemProps, MainListProps, getAllProduct } from './getPlaces';
+import { getAllProduct } from './getPlaces';
 import UseIntersectionObserver from '@utils/useIntersectionObserver';
 import ScrollTopBtn from '@components/common/ScrollToTop/ScrollToTop';
 import { formatDate } from '@utils/useFormatDate';
 import { useNavigate } from 'react-router-dom';
+import { eclipsText } from '@utils/textLength';
+import { MainItemProps, MainListProps } from './mainListItem';
 
 const MainAllListItem = ({ title }: MainListProps) => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const MainAllListItem = ({ title }: MainListProps) => {
     },
   });
 
+  console.log(data);
   const handleIntersect: IntersectionObserverCallback = (entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting && hasNextPage) {
@@ -49,7 +51,7 @@ const MainAllListItem = ({ title }: MainListProps) => {
       },
     });
   };
-
+  console.log(data?.pages);
   return (
     <StyledContainer>
       <StyledWrapper>
@@ -57,18 +59,16 @@ const MainAllListItem = ({ title }: MainListProps) => {
           data.pages?.length > 0 &&
           data.pages.map(
             (page) =>
-              page?.data?.map((item: MainItemProps) => (
+              page?.data?.body.map((item: MainItemProps) => (
                 <StyledMainAllItem key={item.id}>
                   <StyledAllItemImage src={item.accommodationImageUrl} />
-                  <StyledAllItemTitle>{item.name}</StyledAllItemTitle>
+                  <StyledAllItemTitle>
+                    {eclipsText(item.name, 8)}
+                  </StyledAllItemTitle>
                   <StyledAllItemDesc>
-                    <StyledStar />
                     <StyledAllItemPriceList>
-                      <StyledPriceOriginal>
-                        {item.saleprice ? item.price : ''}
-                      </StyledPriceOriginal>
                       <StyledPriceSale>
-                        {item.saleprice ? item?.saleprice : item.price}
+                        {item.price.toLocaleString('ko-KR')}원
                       </StyledPriceSale>
                     </StyledAllItemPriceList>
                     <StyledLookBtn onClick={() => handleDetailPage(item.id)}>
@@ -121,6 +121,7 @@ const StyledAllItemImage = styled.img`
 const StyledAllItemTitle = styled.div`
   font-size: 1rem;
   margin-top: 1.2rem;
+  font-weight: bold;
 `;
 const StyledAllItemDesc = styled.div`
   display: flex;
@@ -128,24 +129,11 @@ const StyledAllItemDesc = styled.div`
   justify-content: center;
 `;
 
-const StyledStar = styled(FaStar)`
-  position: absolute;
-  color: ${theme.colors.yellow};
-  top: 1.05rem;
-  right: 1rem;
-`;
-
 const StyledAllItemPriceList = styled.p`
   width: 6rem;
   position: absolute;
   bottom: 3.5rem;
   right: 1rem;
-`;
-
-const StyledPriceOriginal = styled.span`
-  text-decoration: line-through;
-  color: ${theme.colors.gray2};
-  font-size: 1rem;
 `;
 
 const StyledPriceSale = styled.span`
