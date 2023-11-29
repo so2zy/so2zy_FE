@@ -23,6 +23,7 @@ const MainAllListItem = ({ title }: MainListProps) => {
     },
   });
 
+  console.log(data);
   const handleIntersect: IntersectionObserverCallback = (entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting && hasNextPage) {

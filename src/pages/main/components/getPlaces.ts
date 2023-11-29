@@ -82,8 +82,9 @@ export const getMostSell = async () => {
 
 export const getFavorite = async () => {
   try {
-    const res = await axios.get('/api/main/favorite');
+    const res = await axios.get('api/main/mostsell');
     if (res) {
+      console.log('불러오기 성공');
       return res.data;
     } else {
       console.log('찜 상품 목록 불러오기 실패');
@@ -95,10 +96,13 @@ export const getFavorite = async () => {
   }
 };
 
-export const getAllProduct = async (page: any) => {
+export const getAllProduct = async (page: number, size: number = 10) => {
   try {
-    const res = await axios.get(`/api/main/allitems?page=${page}`);
-    if (res) {
+    const res = await axios.get(
+      `${process.env.REACT_APP_SERVER}v2/accommodations?page=${page}&size=${size}`,
+    );
+    console.log(res);
+    if (res.data) {
       console.log('전체 숙소 조회 성공');
       return res.data;
     } else {
