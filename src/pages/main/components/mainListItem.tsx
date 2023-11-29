@@ -49,7 +49,7 @@ const MainListItem = ({ title }: MainListProps) => {
     const endDate = new Date();
     const personnel = 1;
     endDate.setDate(endDate.getDate() + 1);
-    console.log('navigate 전', startDate, endDate, personnel);
+    //console.log('navigate 전', startDate, endDate, personnel);
 
     navigate(`/place/${selectedId}`, {
       state: {
@@ -59,7 +59,7 @@ const MainListItem = ({ title }: MainListProps) => {
       },
     });
 
-    console.log('navigate 후', startDate, endDate, personnel);
+    // console.log('navigate 후', startDate, endDate, personnel);
   };
   console.log(data);
   return (
