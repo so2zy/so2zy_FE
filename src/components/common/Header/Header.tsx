@@ -118,7 +118,7 @@ const Header = () => {
   if (isSignUpOrSignIn) {
     return null;
   }
-  console.log(refreshToken, token);
+  // console.log(refreshToken, token);
   const handleMainLogoClick = () => {
     navigate('/');
   };
