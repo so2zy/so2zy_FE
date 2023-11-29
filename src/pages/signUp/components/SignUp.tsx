@@ -13,6 +13,7 @@ import {
 } from '@utils/registerFunction';
 import axios, { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { StyledSignWrap } from 'pages/signIn/components/SignIn';
 
 export const SignUp: React.FC = () => {
   const [email, setEmail] = useRecoilState(emailState);
@@ -119,115 +120,118 @@ export const SignUp: React.FC = () => {
 
   return isSignUp ? null : (
     <>
-      <StyledNoHeaderWrap>
-        <StyledMainLogoTwo
-          onClick={() => {
-            setEmail('');
-            setPw('');
-            navigate('/');
-          }}
-        >
-          <img src={MainTwoIcon} />
-        </StyledMainLogoTwo>
-        <StyledSignUpWrap>
-          <StyledSignUpInputWrap>
-            <span>이메일</span>
-            <StyledSignUpInput
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setIsEmailDuplicated(undefined);
-                setEmailCheckClicked(false);
-              }}
-              placeholder="이메일 입력"
-            />
-            {email ? (
-              isIdentificationValid(email) === false ? (
-                <WarnText>이메일 형식이 올바르지 않습니다</WarnText>
-              ) : isEmailDuplicated === false && emailCheckClicked === true ? (
-                <CorrectText>사용가능한 이메일입니다</CorrectText>
-              ) : isEmailDuplicated === true && emailCheckClicked === true ? (
-                <WarnText>중복된 이메일입니다</WarnText>
-              ) : (
-                <WarnText>이메일 중복체크를 해주세요</WarnText>
-              )
-            ) : null}
-            <StyledSignUpEmailCheck onClick={handleEmailCheck}>
-              중복확인
-            </StyledSignUpEmailCheck>
-          </StyledSignUpInputWrap>
-          <hr />
-          <StyledSignUpInputWrap>
-            <span>비밀번호</span>
-            <StyledSignUpInput
-              value={pw}
-              type="password"
-              onChange={(e) => {
-                setPw(e.target.value);
-              }}
-              placeholder="영문, 숫자 포함 6~20자"
-            />
-            {pw ? (
-              isPasswordValid(pw) ? (
-                <CorrectText>사용가능한 비밀번호입니다</CorrectText>
-              ) : (
-                <WarnText>영문, 숫자 포함 6~20자</WarnText>
-              )
-            ) : null}
-            <StyledDiv></StyledDiv>
-          </StyledSignUpInputWrap>
-          <hr />
+      <StyledSignWrap>
+        <StyledNoHeaderWrap>
+          <StyledMainLogoTwo
+            onClick={() => {
+              setEmail('');
+              setPw('');
+              navigate('/');
+            }}
+          >
+            <img src={MainTwoIcon} />
+          </StyledMainLogoTwo>
+          <StyledSignUpWrap>
+            <StyledSignUpInputWrap>
+              <span>이메일</span>
+              <StyledSignUpInput
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setIsEmailDuplicated(undefined);
+                  setEmailCheckClicked(false);
+                }}
+                placeholder="이메일 입력"
+              />
+              {email ? (
+                isIdentificationValid(email) === false ? (
+                  <WarnText>이메일 형식이 올바르지 않습니다</WarnText>
+                ) : isEmailDuplicated === false &&
+                  emailCheckClicked === true ? (
+                  <CorrectText>사용가능한 이메일입니다</CorrectText>
+                ) : isEmailDuplicated === true && emailCheckClicked === true ? (
+                  <WarnText>중복된 이메일입니다</WarnText>
+                ) : (
+                  <WarnText>이메일 중복체크를 해주세요</WarnText>
+                )
+              ) : null}
+              <StyledSignUpEmailCheck onClick={handleEmailCheck}>
+                중복확인
+              </StyledSignUpEmailCheck>
+            </StyledSignUpInputWrap>
+            <hr />
+            <StyledSignUpInputWrap>
+              <span>비밀번호</span>
+              <StyledSignUpInput
+                value={pw}
+                type="password"
+                onChange={(e) => {
+                  setPw(e.target.value);
+                }}
+                placeholder="영문, 숫자 포함 6~20자"
+              />
+              {pw ? (
+                isPasswordValid(pw) ? (
+                  <CorrectText>사용가능한 비밀번호입니다</CorrectText>
+                ) : (
+                  <WarnText>영문, 숫자 포함 6~20자</WarnText>
+                )
+              ) : null}
+              <StyledDiv></StyledDiv>
+            </StyledSignUpInputWrap>
+            <hr />
 
-          <StyledSignUpInputWrap>
-            <span>비밀번호 확인</span>
-            <StyledSignUpInput
-              value={pwCheck}
-              type="password"
-              onChange={(e) => {
-                setPwCheck(e.target.value);
-              }}
-              placeholder="비밀번호 확인"
-            />
-            {pwCheck ? (
-              pw === pwCheck ? (
-                <CorrectText>비밀번호가 일치합니다</CorrectText>
-              ) : (
-                <WarnText>비밀번호가 일치하지 않습니다</WarnText>
-              )
-            ) : null}
-            <StyledDiv></StyledDiv>
-          </StyledSignUpInputWrap>
-          <hr />
-          <StyledSignUpInputWrap>
-            <span>이름</span>
-            <StyledSignUpInput
-              onChange={(e) => {
-                setUserName(e.target.value);
-              }}
-              placeholder="이름 2~6자"
-            />
-            {userName ? (
-              isNameValid(userName) ? (
-                <CorrectText></CorrectText>
-              ) : (
-                <WarnText>한글이름 2글자 이상 6글자 이하입니다</WarnText>
-              )
-            ) : null}
-            <StyledDiv></StyledDiv>
-          </StyledSignUpInputWrap>
-          <hr />
-          <StyledSignUpButton onClick={handleSignUpButtonClick}>
-            가입 완료
-          </StyledSignUpButton>
-        </StyledSignUpWrap>
-      </StyledNoHeaderWrap>
+            <StyledSignUpInputWrap>
+              <span>비밀번호 확인</span>
+              <StyledSignUpInput
+                value={pwCheck}
+                type="password"
+                onChange={(e) => {
+                  setPwCheck(e.target.value);
+                }}
+                placeholder="비밀번호 확인"
+              />
+              {pwCheck ? (
+                pw === pwCheck ? (
+                  <CorrectText>비밀번호가 일치합니다</CorrectText>
+                ) : (
+                  <WarnText>비밀번호가 일치하지 않습니다</WarnText>
+                )
+              ) : null}
+              <StyledDiv></StyledDiv>
+            </StyledSignUpInputWrap>
+            <hr />
+            <StyledSignUpInputWrap>
+              <span>이름</span>
+              <StyledSignUpInput
+                onChange={(e) => {
+                  setUserName(e.target.value);
+                }}
+                placeholder="이름 2~6자"
+              />
+              {userName ? (
+                isNameValid(userName) ? (
+                  <CorrectText></CorrectText>
+                ) : (
+                  <WarnText>한글이름 2글자 이상 6글자 이하입니다</WarnText>
+                )
+              ) : null}
+              <StyledDiv></StyledDiv>
+            </StyledSignUpInputWrap>
+            <hr />
+            <StyledSignUpButton onClick={handleSignUpButtonClick}>
+              가입 완료
+            </StyledSignUpButton>
+          </StyledSignUpWrap>
+        </StyledNoHeaderWrap>
+      </StyledSignWrap>
     </>
   );
 };
 export const StyledNoHeaderWrap = styled.div`
   box-shadow: 4px 4px 4px ${theme.colors.gray2};
   width: 1080px;
-  height: 800px;
+  height: 100%;
   margin: 0 auto;
   background-color: ${theme.colors.gray1};
   @media (max-width: 1080px) {
