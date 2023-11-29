@@ -18,12 +18,12 @@ import {
   priceBState,
   startDateState,
   endDateState,
-  searchInputState,
 } from 'recoil/searchList';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { getSearchListData } from '@utils/getData';
 import InfiniteScroll from 'react-infinite-scroller';
+import { useNavigate } from 'react-router-dom';
 
 interface Hotel {
   id: number;
@@ -38,7 +38,7 @@ interface Hotel {
 }
 
 export const SearchList: React.FC = () => {
-  const [hotels, setHotels] = useState<Hotel[]>([]);
+  const searchedHotel = sessionStorage.getItem('searchedHotel');
   const [sortBy, setSortBy] = useState('price');
   const [sortOrder, setSortOrder] = useState('asc');
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -55,8 +55,8 @@ export const SearchList: React.FC = () => {
   const startDate = useRecoilValue(startDateState);
   const endDate = useRecoilValue(endDateState);
   const [date, setDate] = useState('');
-  const searchedName = useRecoilValue(searchInputState); // 검색한 이름
   const size = 6;
+  const navigate = useNavigate();
 
   const shortenPrice = (price: number) => {
     if (price === 0) {
@@ -104,7 +104,7 @@ export const SearchList: React.FC = () => {
   } = useInfiniteQuery({
     queryKey: [
       'searchListData',
-      searchedName,
+      searchedHotel,
       peopleCount,
       isClickedReservation,
       startDate,
@@ -116,7 +116,7 @@ export const SearchList: React.FC = () => {
     ],
     queryFn: ({ pageParam = 0 }) =>
       getSearchListData(
-        searchedName,
+        searchedHotel,
         peopleCount,
         isClickedReservation,
         startDate,
@@ -164,6 +164,16 @@ export const SearchList: React.FC = () => {
       );
     }
   }, [startDate, endDate]);
+
+  const handleItemClick = (id: number) => {
+    navigate(`/place/${id}`, {
+      state: {
+        startDate,
+        endDate,
+        personnel: peopleCount,
+      },
+    });
+  };
 
   return (
     <div>
@@ -250,10 +260,11 @@ export const SearchList: React.FC = () => {
         </StyledSort>
       </StyledFilterSortWrapper>
       <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
-        {searchListData?.pages.map((page, pageIndex) => (
+        {searchListData?.pages?.map((page, pageIndex) => (
           <StyledContainer key={pageIndex}>
-            {page.data.map((hotel: any) => (
+            {page?.data?.map((hotel: any) => (
               <Item
+                onClick={() => handleItemClick(hotel.id)}
                 key={hotel.id}
                 name={hotel.name}
                 // image={hotel.image}
@@ -275,7 +286,7 @@ export const SearchList: React.FC = () => {
 const StyledContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  margin: 2rem auto;
+  margin: 1rem auto;
   width: 50%;
   align-items: center;
   justify-items: center;

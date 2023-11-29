@@ -22,13 +22,9 @@ export interface IAccommodations {
   longitude: number;
   addressCode: string;
   phoneNumber: string;
-  accommodationImageList: ImageList[];
+  accommodationUrl: string;
+  favorite: boolean;
   roomInfoList: RoomList[];
-}
-
-export interface ImageList {
-  id: number;
-  url: string;
 }
 
 export interface RoomList {
@@ -39,13 +35,13 @@ export interface RoomList {
   maxCapacity: number;
   checkIn: string;
   checkOut: string;
-  stock: number;
   url: string;
+  stock: number;
 }
 
 export const PlaceDetail: React.FC = () => {
   const { id } = useParams();
-
+  const accessToken = sessionStorage.getItem('accessToken');
   const [accommodation, setAccommodation] = useState<IAccommodations>({
     id: 0,
     accommodationName: '',
@@ -53,7 +49,8 @@ export const PlaceDetail: React.FC = () => {
     longitude: 0,
     addressCode: '',
     phoneNumber: '',
-    accommodationImageList: [{ id: 0, url: '' }],
+    accommodationUrl: '',
+    favorite: false,
     roomInfoList: [
       {
         id: 0,
@@ -89,7 +86,7 @@ export const PlaceDetail: React.FC = () => {
     setModalIsOpen(false);
   };
 
-  //필터링 데이터 받기
+  //필터링 데이터
   const location = useLocation();
   const { startDate, endDate, personnel } = location.state || {
     startDate: formatDate(new Date()),
@@ -98,14 +95,20 @@ export const PlaceDetail: React.FC = () => {
   };
 
   //숙소 정보 get
-  // `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}/${startDate}/${endDate}/${personnel}`
   const getData = async (id: any) => {
     try {
-      const res = await axios.get(`/accommodations/${id}`);
-
-      console.log(`get test ${id}`);
-      setAccommodation(res.data);
-      console.log('정보 가져오기 성공', res.data);
+      console.log(startDate, endDate);
+      const res = await axios.get(
+        `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}?startDate=${startDate}&endDate=${endDate}&personnel=${personnel}`,
+        {
+          headers: {
+            'Access-Token': accessToken,
+          },
+        },
+      );
+      console.log('정보 가져오기 ', res.data);
+      setAccommodation(res.data.data);
+      console.log('정보 가져오기 성공', accommodation);
       setIsLoading(false);
     } catch (error) {
       console.error('숙소 정보 가져오기 실패', error);
@@ -113,27 +116,49 @@ export const PlaceDetail: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log(`get test ${id}`);
-    getData(id);
-  }, [isLoading]);
-
-  useEffect(() => {
-    if (accommodation) {
-      console.log(accommodation);
-    }
+    console.log('정보 가져오기 성공', accommodation);
   }, [accommodation]);
 
-  //장바구니로 post하는 로직
-  // `${process.env.REACT_APP_SERVER}/v2/carts/{room_id}
-  const userKey = sessionStorage.getItem('userKey');
+  //찜
+  const toggleFavorite = async (id: any, isChecked: boolean) => {
+    try {
+      const url = `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}/favorite`;
+      const method = isChecked ? 'DELETE' : 'POST';
 
+      const headers = {
+        'Content-Type': 'application/json',
+        'Access-Token': accessToken,
+      };
+
+      await axios({
+        method: method,
+        url: url,
+        headers: headers,
+      });
+
+      console.log(`즐겨찾기 ${isChecked ? '삭제' : '추가'} 성공`);
+    } catch (error) {
+      console.error('즐겨찾기 실패:', error);
+    }
+  };
+
+  useEffect(() => {
+    getData(id);
+  }, [id, startDate, endDate, personnel]);
+
+  //장바구니로 post
   const addCart = async (roomId: number) => {
     const confirm = window.confirm('장바구니에 추가하시겠습니까?');
-    console.log(userKey);
+
     if (confirm) {
       try {
         const res = await axios.post(
-          `${process.env.REACT_APP_SERVER}/v1/carts/${userKey}/${roomId}`,
+          `${process.env.REACT_APP_SERVER}/v2/carts/${roomId}`,
+          {
+            headers: {
+              'Access-Token': accessToken,
+            },
+          },
         );
         navigate('/cart');
         console.log('장바구니 성공', res.data);
@@ -164,7 +189,7 @@ export const PlaceDetail: React.FC = () => {
           </StyledSpan>
         </StyledBar>
 
-        <StyledImg src={accommodation.accommodationImageList[0].url} />
+        <StyledImg src={accommodation.accommodationUrl} />
 
         <StyledMainTitle>
           {accommodation.accommodationName}
@@ -172,6 +197,7 @@ export const PlaceDetail: React.FC = () => {
             className={isChecked ? 'checked' : 'unchecked'}
             onClick={() => {
               setIsChecked((prev) => !prev);
+              toggleFavorite(id, isChecked);
             }}
           />
         </StyledMainTitle>
@@ -227,14 +253,6 @@ export const PlaceDetail: React.FC = () => {
                     </StyledReservationButton>
                     <StyledReservationButton
                       onClick={() => {
-                        // console.log(
-                        //   'Before',
-                        //   accommodation,
-                        //   room,
-                        //   startDate,
-                        //   endDate,
-                        //   personnel,
-                        // );
                         navigate(`/reservation`, {
                           state: {
                             accommodation,
@@ -244,14 +262,14 @@ export const PlaceDetail: React.FC = () => {
                             personnel,
                           },
                         });
-                        console.log(
-                          'After',
-                          accommodation,
-                          room,
-                          startDate,
-                          endDate,
-                          personnel,
-                        );
+                        // console.log(
+                        //   'After',
+                        //   accommodation,
+                        //   room,
+                        //   startDate,
+                        //   endDate,
+                        //   personnel,
+                        // );
                       }}
                     >
                       예약하기

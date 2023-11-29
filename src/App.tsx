@@ -28,44 +28,32 @@ function App() {
     <ThemeProvider theme={theme}>
       <GlobalStyle />
       <BrowserRouter>
-        <Header />
         <div className="App">
           <Suspense fallback={<Loading />}>
             <Routes>
               <Route
                 path="/"
                 element={
-                  <Card>
-                    <Main />
-                  </Card>
+                  <>
+                    <Header />
+                    <Card>
+                      <Main />
+                    </Card>
+                  </>
                 }
               />
 
               <Route path="/searchList" element={<SearchList />} />
-              <Route
-                path="/searchList"
-                element={
-                  <>
-                    <Header />
-                    <SearchList />
-                  </>
-                }
-              />
-              <Route
-                path="/regionList"
-                element={
-                  <>
-                    <Header />
-                    <RegionList />
-                  </>
-                }
-              />
+              <Route path="/regionList" element={<RegionList />} />
               <Route
                 path="/place/:id"
                 element={
-                  <Card>
-                    <PlaceDetail />
-                  </Card>
+                  <>
+                    <Header />
+                    <Card>
+                      <PlaceDetail />
+                    </Card>
+                  </>
                 }
               />
               <Route path="/signUp" element={<SignUp />} />
@@ -73,25 +61,34 @@ function App() {
               <Route
                 path="/reservation"
                 element={
-                  <Card>
-                    <Reservation />
-                  </Card>
+                  <>
+                    <Header />
+                    <Card>
+                      <Reservation />
+                    </Card>
+                  </>
                 }
               />
               <Route
                 path="/cart" //:id도 받아줘야함
                 element={
-                  <Card>
-                    <Cart />
-                  </Card>
+                  <>
+                    <Header />
+                    <Card>
+                      <Cart />
+                    </Card>
+                  </>
                 }
               />
               <Route
                 path="/confirm" //:id도 받아줘야함
                 element={
-                  <Card>
-                    <Confirm />
-                  </Card>
+                  <>
+                    <Header />
+                    <Card>
+                      <Confirm />
+                    </Card>
+                  </>
                 }
               />
               <Route path="*" element={<NotFound />} />

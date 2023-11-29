@@ -42,3 +42,8 @@ export const userKeyState = atom({
   key: 'userKeyState',
   default: '',
 });
+
+export const iatDatePlus9HoursState = atom({
+  key: 'iatDatePlus9HoursState',
+  default: 0,
+});

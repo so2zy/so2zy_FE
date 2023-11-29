@@ -6,7 +6,10 @@ import CartIcon from '@assets/shoppingBag.png';
 import HomeIcon from '@assets/home.png';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BsArrowLeft } from 'react-icons/bs';
-import { searchInputState } from '@recoil/searchList';
+import { ReactComponent as ChevronDown } from '@assets/images/chevron-down.svg';
+import { isClickedRegionState } from '@recoil/regionList';
+import { Modal } from '@components/Modal';
+
 import {
   useRecoilCallback,
   useRecoilState,
@@ -15,6 +18,7 @@ import {
 } from 'recoil';
 import {
   emailState,
+  iatDatePlus9HoursState,
   isLogInSelector,
   pwState,
   refreshTokenAtom,
@@ -22,7 +26,7 @@ import {
   userKeyState,
   userNameState,
 } from 'recoil/atom';
-import { debounce } from 'lodash';
+import jwt from 'jsonwebtoken-promisified';
 import axios from 'axios';
 
 const Header = () => {
@@ -34,11 +38,56 @@ const Header = () => {
   const setUserName = useSetRecoilState(userNameState);
   const setEmail = useSetRecoilState(emailState);
   const setPw = useSetRecoilState(pwState);
-
+  const [iatDatePlus9Hours, setIatDatePlus9Hours] = useRecoilState(
+    iatDatePlus9HoursState,
+  );
+  console.log('iatDatePlus9Hours', iatDatePlus9Hours);
   const navigate = useNavigate();
   const location = useLocation();
+  const checkTokenExpiration = async () => {
+    if (iatDatePlus9Hours && iatDatePlus9Hours < Date.now()) {
+      try {
+        const response = await axios.post(
+          'http://43.202.50.38:8080/v1/refresh',
+          {
+            accessToken: token,
+            refreshToken: refreshToken,
+          },
+          {
+            headers: {
+              accept: '*/*',
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+
+        if (response.status === 201) {
+          const newAccessToken = response.data.data.accessToken;
+          const decodedToken = jwt.decode(newAccessToken);
+          const { iat } = decodedToken;
+          const iatPlus = iat * 1000 + 9 * 60 * 60 * 1000;
+          setIatDatePlus9Hours(iatPlus);
+          sessionStorage.setItem('iatDatePlus9Hours', newAccessToken);
+          sessionStorage.setItem('accessToken', String(iatPlus));
+
+          setToken(newAccessToken);
+          console.log('재발급성공');
+        } else {
+          console.error('AccessToken 재발급 실패');
+          handleLogOut();
+        }
+      } catch (error) {
+        console.error('AccessToken 재발급 요청 에러:', error);
+        handleLogOut();
+      }
+    }
+  };
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const setIsClickedRegion = useSetRecoilState(isClickedRegionState); // 필터링 지역버튼 클릭 여부
+  const [selectedRegion, setSelectedRegion] = useState('');
+  const selectedSigungu = sessionStorage.getItem('selectedSigungu');
+
   const [localSearchInput, setLocalSearchInput] = useState('');
-  const setSearchInput = useSetRecoilState(searchInputState);
 
   const onInputChange = (query: string) => {
     if (query) {
@@ -46,23 +95,20 @@ const Header = () => {
     }
   };
 
-  const handleInputChange = debounce(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setLocalSearchInput(event.target.value);
-    },
-    300,
-  );
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalSearchInput(event.target.value);
+  };
 
   const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      setSearchInput(localSearchInput);
+      sessionStorage.setItem('searchedHotel', localSearchInput);
       onInputChange(localSearchInput);
       setLocalSearchInput('');
     }
   };
 
   const isSearchPage =
-    location.pathname === '/' || location.pathname === '/searchList';
+    location.pathname === '/' || location.pathname.startsWith('/searchList');
   const isReservedPage = ['/reservation', '/confirm', '/cart'].includes(
     location.pathname,
   );
@@ -70,7 +116,7 @@ const Header = () => {
   if (isSignUpOrSignIn) {
     return null;
   }
-  console.log(refreshToken, token);
+  // console.log(refreshToken, token);
   const handleMainLogoClick = () => {
     navigate('/');
   };
@@ -112,6 +158,7 @@ const Header = () => {
         reset(emailState);
         reset(pwState);
         reset(userNameState);
+        reset(iatDatePlus9HoursState);
       },
     [],
   );
@@ -121,6 +168,15 @@ const Header = () => {
 
     await resetRecoilState();
   };
+
+  useEffect(() => {
+    if (token) {
+      const tokenCheckInterval = setInterval(() => {
+        checkTokenExpiration();
+      }, 1800000);
+      return () => clearInterval(tokenCheckInterval);
+    }
+  }, []);
   useEffect(() => {
     const storedLoginState = sessionStorage.getItem('loginState');
     if (storedLoginState === 'true') {
@@ -129,7 +185,6 @@ const Header = () => {
       const storedRefreshToken = sessionStorage.getItem('refreshToken') || '';
       const storedEmail = sessionStorage.getItem('email') || '';
       const storedUserName = sessionStorage.getItem('userName') || '';
-
       setUserKey(storedUserKey);
       setRefreshToken(storedRefreshToken);
       setToken(storedAccessToken);
@@ -139,13 +194,30 @@ const Header = () => {
     }
   }, []);
 
+  const openModal = (type: string) => {
+    if (type == '지역') {
+      setIsClickedRegion(true);
+    }
+    setModalIsOpen(true);
+  };
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setIsClickedRegion(false);
+  };
+
+  useEffect(() => {
+    if (selectedSigungu !== null) {
+      setSelectedRegion(selectedSigungu);
+    }
+  }, [selectedSigungu]);
+
   return (
     <>
       {isReservedPage ? (
         <StyledHeaderWhiteBox>
           <StyledHeaderWhiteContent>
             <div>
-              <BsArrowLeft size="40" onClick={handleArrowLeft} />
+              <StyledLeftBtn size="40" onClick={handleArrowLeft} />
             </div>
             <div onClick={handleReservationText}>
               {location.pathname === '/cart'
@@ -165,8 +237,13 @@ const Header = () => {
           <StyledHeaderContent>
             {location.pathname === '/regionList' ? (
               <StyledHeaderRegionCover>
-                <BsArrowLeft size="40" onClick={handleArrowLeft} />
-                <StyledHeaderRegion>강남/역삼/삼성</StyledHeaderRegion>
+                <StyledLeftBtn size="40" onClick={handleArrowLeft} />
+                <StyledHeaderRegion>{selectedRegion}</StyledHeaderRegion>
+                <StyledChevronDown
+                  onClick={() => {
+                    openModal('지역');
+                  }}
+                />
               </StyledHeaderRegionCover>
             ) : (
               <StyledHeaderMainLogo>
@@ -201,6 +278,7 @@ const Header = () => {
               </StyledHeaderCartIcon>
             </StyledHeaderRight>
           </StyledHeaderContent>
+          <Modal isOpen={modalIsOpen} closeModal={closeModal} />
         </StyledHeaderBox>
       )}
     </>
@@ -231,7 +309,7 @@ const StyledHeaderContent = styled.div`
   justify-content: space-between;
   align-items: center;
   background-color: auto;
-  width: 1080px;
+  width: 50%;
   height: 100%;
   margin: 0 auto;
   @media (max-width: 1080px) {
@@ -369,5 +447,14 @@ const StyledHeaderHomeIcon = styled.div`
     width: 2rem;
   }
 `;
+const StyledChevronDown = styled(ChevronDown)`
+  height: 1.5rem;
+  fill: ${theme.colors.blue};
+  margin-left: 0.5rem;
+  cursor: pointer;
+`;
 
+const StyledLeftBtn = styled(BsArrowLeft)`
+  cursor: pointer;
+`;
 export default Header;
