@@ -2,22 +2,47 @@ import axios from 'axios';
 
 export interface MainListProps {
   title: string;
+  // startDate: Date;
+  // endDate: Date;
+  // personnel: number;
 }
 
 export interface MainItemProps {
+  page: number;
+  size: number;
   id: number;
-  ranking: number;
   name: string;
-  price: string;
-  saleprice?: string;
-  image: string;
-  islast?: boolean;
-  page?: number;
+  latitude: number;
+  longitude: number;
+  addressCode: string;
+  likeCount: number;
+  phoneNumber: string;
+  accommodationImageUrl: string;
+  // 아래는 백엔드에서 데이터 주면 수정 예정
+  price: number;
+  saleprice: number;
+  like: boolean;
+}
+export interface ImageList {
+  id: number;
+  url: string;
+}
+
+export interface RoomList {
+  id: number;
+  type: string;
+  price: number;
+  capacity: number;
+  maxCapacity: number;
+  checkIn: string;
+  checkOut: string;
+  stock: number;
+  url: string;
 }
 
 export interface RegionSelectProps {
   id: string;
-  name: 'string';
+  sigungu: string;
   regions: string[];
 }
 
@@ -57,8 +82,9 @@ export const getMostSell = async () => {
 
 export const getFavorite = async () => {
   try {
-    const res = await axios.get('/api/main/favorite');
+    const res = await axios.get('api/main/mostsell');
     if (res) {
+      console.log('불러오기 성공');
       return res.data;
     } else {
       console.log('찜 상품 목록 불러오기 실패');
@@ -70,10 +96,14 @@ export const getFavorite = async () => {
   }
 };
 
-export const getAllProduct = async () => {
+export const getAllProduct = async (page: number, size: number = 10) => {
   try {
-    const res = await axios.get('/api/main/allproduct');
-    if (res) {
+    const res = await axios.get(
+      `${process.env.REACT_APP_SERVER}v2/accommodations?page=${page}&size=${size}`,
+    );
+    console.log(res);
+    if (res.data) {
+      console.log('전체 숙소 조회 성공');
       return res.data;
     } else {
       console.log('모든 상품 받아오기 실패');
@@ -88,3 +118,19 @@ export const getAllProduct = async () => {
 export const noProduct = () => {
   return [];
 };
+
+// 클릭하면 상세 페이지로 props로 전달해주면서 이동하는 함수
+// export const handleDetailPage = () => {
+//   const startDate = new Date();
+//   const endDate = new Date();
+//   const personnel = 1;
+//   endDate.setDate(endDate.getDate() + 1);
+//   const navigate = useNavigate();
+//   navigate(`/place/:id`, {
+//     state: {
+//       startDate: formatDate(startDate),
+//       endDate: formatDate(endDate),
+//       personnel: personnel,
+//     },
+//   });
+// };

@@ -13,7 +13,7 @@ export const theme = {
   fonts: {
     subtitle1: {
       fontSize: '2.5rem',
-      fontWeight: '1000',
+      fontWeight: '900',
       lineHeight: '1.5',
     },
     subtitle2: {
