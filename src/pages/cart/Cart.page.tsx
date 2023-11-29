@@ -5,10 +5,33 @@ import { FaTrashCan } from 'react-icons/fa6';
 import {
   StyledItemDesc,
   StyledItemTitle,
-  StyledWrapper,
   StyledBtnText,
+  StyledButtonWrapper,
 } from 'pages/reservation/Reservation.page';
 
+export interface cartItemProps {
+  accommodationList: accommodationList[];
+}
+
+export interface accommodationList {
+  accommodationId: number;
+  accommodationName: string;
+  address: string;
+  roomList: CartRoomList[];
+}
+
+export interface CartRoomList {
+  roomId: number;
+  type: string;
+  checkIn: string;
+  checkOut: string;
+  capacity: number;
+  maxCapacity: number;
+  price: number;
+  startDate: string;
+  endDate: string;
+  roomImageUrl: string;
+}
 export const Cart: React.FC = () => {
   //전체 선택
   // const [selectAllChecked, setSelectAllChecked] = useState(false);
@@ -33,10 +56,18 @@ export const Cart: React.FC = () => {
           <StyledListItem>
             {/* key 주기 */}
             <Checkbox />
-            <StyledSpan>전체 선택</StyledSpan>
-            <StyledProductSpan>예약 상품</StyledProductSpan>
-            <StyledSpan>날짜</StyledSpan>
-            <StyledSpan>가격</StyledSpan>
+            <StyledTitleDesc>
+              <StyledSpan>전체 선택</StyledSpan>
+            </StyledTitleDesc>
+            <StyledTitleDesc>
+              <StyledProductSpan>예약 상품</StyledProductSpan>
+            </StyledTitleDesc>
+            <StyledTitleDesc>
+              <StyledSpan>날짜</StyledSpan>
+            </StyledTitleDesc>
+            <StyledTitleDesc>
+              <StyledSpan>가격</StyledSpan>
+            </StyledTitleDesc>
           </StyledListItem>
 
           <StyledLine />
@@ -44,34 +75,19 @@ export const Cart: React.FC = () => {
             <StyledCheckbox />
             <StyledMiniImage src="https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg" />
             <StyleDetail>
-              <StyleRoomName>P1</StyleRoomName>
+              <StyleRoomName>P3</StyleRoomName>
               <StyledDetailDes>체크인 15:00 - 체크아웃 18:00 </StyledDetailDes>
               <StyledDetailDes>기준 2인 최대 4인</StyledDetailDes>
             </StyleDetail>
             <StyleDetail>
-              <StyledDetailDes>23.11.11-23.11.12</StyledDetailDes>
+              <StyledDetailDes>
+                <p>23.11.11-23.11.12</p>
+              </StyledDetailDes>
             </StyleDetail>
             <StyleDetail>
-              <StyledDetailDes>75,000원</StyledDetailDes>
-            </StyleDetail>
-            <StyleDetail>
-              <StyledTrashCan />
-            </StyleDetail>
-          </StyledListItem>
-
-          <StyledListItem>
-            <StyledCheckbox />
-            <StyledMiniImage src="https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg" />
-            <StyleDetail>
-              <StyleRoomName>P2</StyleRoomName>
-              <StyledDetailDes>체크인 15:00 - 체크아웃 18:00 </StyledDetailDes>
-              <StyledDetailDes>기준 2인 최대 4인</StyledDetailDes>
-            </StyleDetail>
-            <StyleDetail>
-              <StyledDetailDes>23.11.11-23.11.12</StyledDetailDes>
-            </StyleDetail>
-            <StyleDetail>
-              <StyledDetailDes>75,000원</StyledDetailDes>
+              <StyledDetailDes>
+                <p>75,000원</p>
+              </StyledDetailDes>
             </StyleDetail>
             <StyleDetail>
               <StyledTrashCan />
@@ -87,16 +103,43 @@ export const Cart: React.FC = () => {
               <StyledDetailDes>기준 2인 최대 4인</StyledDetailDes>
             </StyleDetail>
             <StyleDetail>
-              <StyledDetailDes>23.11.11-23.11.12</StyledDetailDes>
+              <StyledDetailDes>
+                <p>23.11.11-23.11.12</p>
+              </StyledDetailDes>
             </StyleDetail>
             <StyleDetail>
-              <StyledDetailDes>75,000원</StyledDetailDes>
+              <StyledDetailDes>
+                <p>75,000원</p>
+              </StyledDetailDes>
             </StyleDetail>
             <StyleDetail>
               <StyledTrashCan />
             </StyleDetail>
           </StyledListItem>
         </StyledList>
+
+        <StyledListItem>
+          <StyledCheckbox />
+          <StyledMiniImage src="https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg" />
+          <StyleDetail>
+            <StyleRoomName>P3</StyleRoomName>
+            <StyledDetailDes>체크인 15:00 - 체크아웃 18:00 </StyledDetailDes>
+            <StyledDetailDes>기준 2인 최대 4인</StyledDetailDes>
+          </StyleDetail>
+          <StyleDetail>
+            <StyledDetailDes>
+              <p>23.11.11-23.11.12</p>
+            </StyledDetailDes>
+          </StyleDetail>
+          <StyleDetail>
+            <StyledDetailDes>
+              <p>75,000원</p>
+            </StyledDetailDes>
+          </StyleDetail>
+          <StyleDetail>
+            <StyledTrashCan />
+          </StyleDetail>
+        </StyledListItem>
       </StyledBox>
 
       <StyleSubWrapper>
@@ -116,13 +159,12 @@ export const Cart: React.FC = () => {
         </StyledPriceWrapper>
       </StyleSubWrapper>
 
-      <StyledWrapper>
+      <StyledButtonWrapper>
         <StyledBtnText>예약하기</StyledBtnText>
-      </StyledWrapper>
+      </StyledButtonWrapper>
     </StyleMainWrapper>
   );
 };
-
 const StyledProductSpan = styled.span`
   margin-right: 8.5rem;
   font-weight: ${theme.fonts.subtitle3.fontWeight};
@@ -134,25 +176,34 @@ const StyledSpan = styled.span`
 `;
 
 const StyleDetail = styled.div`
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
   margin-left: 1rem;
   font-weight: ${theme.fonts.subtitle3.fontWeight};
+`;
+
+const StyledTitleDesc = styled.div`
+  display: flex;
+  padding: 0.8rem 0 0.8rem 0;
 `;
 
 export const StyleRoomName = styled.div`
   font-weight: ${theme.fonts.subtitle1.fontWeight};
   font-size: ${theme.fonts.subtitle5.fontSize};
   color: ${theme.colors.navy};
-  margin-bottom: 0.5rem;
-  display: block;
+  margin-top: 0.5rem;
+  margin-bottom: 2rem;
 `;
 
 export const StyledDetailDes = styled.div`
   font-weight: ${theme.fonts.subtitle5.fontWeight};
   font-size: ${theme.fonts.body.fontSize};
 
-  display: block;
+  /* display: block; */
   margin: 0 0 0.5rem 0rem;
+  p {
+    margin-top: 2.5rem;
+  }
 `;
 
 const StyledCheckbox = styled(Checkbox)`
@@ -163,8 +214,10 @@ const StyledList = styled.ul`
   vertical-align: top;
 `;
 
-export const StyledListItem = styled.li`
-  display: inline-block;
+export const StyledListItem = styled.div`
+  display: flex;
+  margin-top: 2rem;
+  gap: 1.25rem;
 `;
 
 export const StyledMiniImage = styled.img`
@@ -229,7 +282,8 @@ export const StyledPrices = styled.span`
 `;
 
 const StyledTrashCan = styled(FaTrashCan)`
-  margin-left: 3rem;
+  /* padding-left: 3rem; */
+  margin: 2.5rem 0 0 5rem;
   color: ${theme.colors.navy};
   cursor: pointer;
 
