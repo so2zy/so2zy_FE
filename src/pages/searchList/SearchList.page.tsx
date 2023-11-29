@@ -260,9 +260,9 @@ export const SearchList: React.FC = () => {
         </StyledSort>
       </StyledFilterSortWrapper>
       <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
-        {searchListData?.pages.map((page, pageIndex) => (
+        {searchListData?.pages?.map((page, pageIndex) => (
           <StyledContainer key={pageIndex}>
-            {page.data.map((hotel: any) => (
+            {page?.data?.map((hotel: any) => (
               <Item
                 onClick={() => handleItemClick(hotel.id)}
                 key={hotel.id}
