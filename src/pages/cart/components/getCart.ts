@@ -5,7 +5,7 @@ export const getCarts = async () => {
   try {
     const res = await axios.get(`${process.env.REACT_APP_SERVER}/v2/cart`, {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        'Access-Token': `${accessToken}`,
       },
     });
     if (res) {
