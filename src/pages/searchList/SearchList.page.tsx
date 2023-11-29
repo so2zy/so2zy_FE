@@ -118,10 +118,8 @@ export const SearchList: React.FC = () => {
       ),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
-      const lastData = lastPage?.searchListData;
-      if (!lastData || lastData.length === 0) return undefined;
-
-      return lastPageParam + 1;
+      const lastData = lastPage?.data?.body;
+      return lastData && lastData.length === 10 ? lastPageParam + 1 : undefined;
     },
   });
 

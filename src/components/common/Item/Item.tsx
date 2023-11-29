@@ -14,6 +14,8 @@ interface ItemProps {
 const Item: React.FC<ItemProps> = (props: ItemProps) => {
   // const { name, image, favorites, regularPrice, price, salesCount } = props;
   const { name, likeCount, image, price, onClick } = props;
+  const regularPrice = price * 1.2;
+
   return (
     <StyledItem onClick={onClick}>
       <StyledImgWrapper>
@@ -33,7 +35,7 @@ const Item: React.FC<ItemProps> = (props: ItemProps) => {
         </StyledNameWrapper>
         <StyledPriceWrapper>
           <StyledRegularPrice>
-            {price.toLocaleString('ko-KR')}원
+            {regularPrice.toLocaleString('ko-KR')}원
           </StyledRegularPrice>
           <Styledprice>{price.toLocaleString('ko-KR')}원 ~</Styledprice>
         </StyledPriceWrapper>

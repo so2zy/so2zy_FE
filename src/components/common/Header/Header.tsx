@@ -102,7 +102,7 @@ const Header = () => {
     if (event.key === 'Enter') {
       sessionStorage.setItem('searchedHotel', localSearchInput);
       onInputChange(localSearchInput);
-      setLocalSearchInput('');
+      event.currentTarget.blur();
     }
   };
 
