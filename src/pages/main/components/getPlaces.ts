@@ -2,6 +2,9 @@ import axios from 'axios';
 
 export interface MainListProps {
   title: string;
+  data?: {
+    body: MainItemProps[];
+  };
   // startDate: Date;
   // endDate: Date;
   // personnel: number;
@@ -67,8 +70,16 @@ export const getRegionList = async () => {
 
 export const getMostSell = async () => {
   try {
-    const res = await axios.get('/api/main/mostsell');
+    const res = await axios.get(
+      `${process.env.REACT_APP_SERVER}/v2/accommodations`,
+      {
+        params: {
+          orderCondition: 'soldCount',
+        },
+      },
+    );
     if (res) {
+      console.log(res.data);
       return res.data;
     } else {
       console.log('인기 상품 목록 불러오기 실패');
@@ -82,7 +93,14 @@ export const getMostSell = async () => {
 
 export const getFavorite = async () => {
   try {
-    const res = await axios.get('api/main/mostsell');
+    const res = await axios.get(
+      `${process.env.REACT_APP_SERVER}/v2/accommodations`,
+      {
+        params: {
+          orderCondition: 'likeCount',
+        },
+      },
+    );
     if (res) {
       console.log('불러오기 성공');
       return res.data;
@@ -96,12 +114,11 @@ export const getFavorite = async () => {
   }
 };
 
-export const getAllProduct = async (page: number, size: number = 10) => {
+export const getAllProduct = async (page: number) => {
   try {
     const res = await axios.get(
-      `${process.env.REACT_APP_SERVER}v2/accommodations?page=${page}&size=${size}`,
+      `${process.env.REACT_APP_SERVER}/v2/accommodations?page=${page}`,
     );
-    console.log(res);
     if (res.data) {
       console.log('전체 숙소 조회 성공');
       return res.data;

@@ -7,6 +7,7 @@ import UseIntersectionObserver from '@utils/useIntersectionObserver';
 import ScrollTopBtn from '@components/common/ScrollToTop/ScrollToTop';
 import { formatDate } from '@utils/useFormatDate';
 import { useNavigate } from 'react-router-dom';
+import { eclipsText } from '@utils/textLength';
 
 const MainAllListItem = ({ title }: MainListProps) => {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ const MainAllListItem = ({ title }: MainListProps) => {
       },
     });
   };
-
+  console.log(data?.pages);
   return (
     <StyledContainer>
       <StyledWrapper>
@@ -58,10 +59,12 @@ const MainAllListItem = ({ title }: MainListProps) => {
           data.pages?.length > 0 &&
           data.pages.map(
             (page) =>
-              page?.data?.map((item: MainItemProps) => (
+              page?.data?.body.map((item: MainItemProps) => (
                 <StyledMainAllItem key={item.id}>
                   <StyledAllItemImage src={item.accommodationImageUrl} />
-                  <StyledAllItemTitle>{item.name}</StyledAllItemTitle>
+                  <StyledAllItemTitle>
+                    {eclipsText(item.name, 8)}
+                  </StyledAllItemTitle>
                   <StyledAllItemDesc>
                     <StyledStar />
                     <StyledAllItemPriceList>
@@ -69,7 +72,7 @@ const MainAllListItem = ({ title }: MainListProps) => {
                         {item.saleprice ? item.price : ''}
                       </StyledPriceOriginal>
                       <StyledPriceSale>
-                        {item.saleprice ? item?.saleprice : item.price}
+                        {item.price.toLocaleString('ko-KR')}원
                       </StyledPriceSale>
                     </StyledAllItemPriceList>
                     <StyledLookBtn onClick={() => handleDetailPage(item.id)}>

@@ -17,7 +17,7 @@ import { formatDate } from '@utils/useFormatDate';
 
 const MainListItem = ({ title }: MainListProps) => {
   const navigate = useNavigate();
-  const { data } = useQuery<MainItemProps[]>({
+  const { data } = useQuery<MainListProps>({
     queryKey: [title],
     queryFn: title === '많이 판매된 숙소' ? getMostSell : getFavorite,
     // refetchInterval: 1000,
@@ -47,24 +47,29 @@ const MainListItem = ({ title }: MainListProps) => {
 
     console.log('navigate 후', startDate, endDate, personnel);
   };
-
+  console.log(data);
   return (
     <StyledWrapper {...settings}>
-      {data?.map((item) => (
-        <StyledMainPageItem
-          key={item.id}
-          onClick={() => handleDetailPage(item.id)}
-        >
-          <StyledItemImage src={item.accommodationImageUrl} alt="호텔 사진" />
-          <StyledItemDesc>
-            <StyledItemName>
-              {item.id}. {eclipsText(item.name, 8)}
-            </StyledItemName>
-            <StyledItemPrice>{item.price}~</StyledItemPrice>
-          </StyledItemDesc>
-          {item.like ? <StyledStar /> : <StyledNoStar />}
-        </StyledMainPageItem>
-      ))}
+      {data &&
+        data.data &&
+        data.data.body.map((item, index) => (
+          <StyledMainPageItem
+            key={item.id}
+            onClick={() => handleDetailPage(item.id)}
+          >
+            <StyledItemImage src={item.accommodationImageUrl} alt="호텔 사진" />
+            <StyledItemDesc>
+              <StyledItemName>
+                {index + 1}. {eclipsText(item.name, 8)}
+              </StyledItemName>
+              <StyledItemPrice>
+                {' '}
+                {item.price.toLocaleString('ko-KR')}원~
+              </StyledItemPrice>
+            </StyledItemDesc>
+            {item.like ? <StyledStar /> : <StyledNoStar />}
+          </StyledMainPageItem>
+        ))}
     </StyledWrapper>
   );
 };
