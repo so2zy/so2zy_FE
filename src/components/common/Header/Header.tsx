@@ -9,7 +9,7 @@ import { BsArrowLeft } from 'react-icons/bs';
 import { ReactComponent as ChevronDown } from '@assets/images/chevron-down.svg';
 import { isClickedRegionState } from '@recoil/regionList';
 import { Modal } from '@components/Modal';
-
+import { ReactComponent as House } from '@assets/images/house.svg';
 import {
   useRecoilCallback,
   useRecoilState,
@@ -28,7 +28,6 @@ import {
 } from 'recoil/atom';
 import jwt from 'jsonwebtoken-promisified';
 import axios from 'axios';
-
 const Header = () => {
   const isUserLoggedIn = useRecoilValue(isLogInSelector);
   const [refreshToken, setRefreshToken] = useRecoilState(refreshTokenAtom);
@@ -132,6 +131,24 @@ const Header = () => {
       history.back();
     } else if (location.pathname === '/confirm') {
       history.back();
+    } else if (location.pathname == '/regionList') {
+      history.back();
+      const selectedSigunguHistory = JSON.parse(
+        sessionStorage.getItem('selectedSigunguHistory') || '[]',
+      ) as string[];
+      if (selectedSigunguHistory.length > 0) {
+        selectedSigunguHistory.pop();
+        if (selectedSigunguHistory.length >= 1) {
+          sessionStorage.setItem(
+            'selectedSigungu',
+            selectedSigunguHistory[selectedSigunguHistory.length - 1],
+          );
+        }
+        sessionStorage.setItem(
+          'selectedSigunguHistory',
+          JSON.stringify(selectedSigunguHistory),
+        );
+      }
     } else {
       history.back();
     }
@@ -217,7 +234,11 @@ const Header = () => {
         <StyledHeaderWhiteBox>
           <StyledHeaderWhiteContent>
             <div>
-              <BsArrowLeft size="40" onClick={handleArrowLeft} />
+              <BsArrowLeft
+                size="30"
+                style={{ cursor: 'pointer' }}
+                onClick={handleArrowLeft}
+              />
             </div>
             <div onClick={handleReservationText}>
               {location.pathname === '/cart'
@@ -237,13 +258,18 @@ const Header = () => {
           <StyledHeaderContent>
             {location.pathname === '/regionList' ? (
               <StyledHeaderRegionCover>
-                <BsArrowLeft size="40" onClick={handleArrowLeft} />
+                <BsArrowLeft
+                  size="30"
+                  style={{ cursor: 'pointer' }}
+                  onClick={handleArrowLeft}
+                />
                 <StyledHeaderRegion>{selectedRegion}</StyledHeaderRegion>
                 <StyledChevronDown
                   onClick={() => {
                     openModal('지역');
                   }}
                 />
+                <StyledHouse onClick={handleHomeIcon} />
               </StyledHeaderRegionCover>
             ) : (
               <StyledHeaderMainLogo>
@@ -453,4 +479,13 @@ const StyledChevronDown = styled(ChevronDown)`
   margin-left: 0.5rem;
   cursor: pointer;
 `;
+
+const StyledHouse = styled(House)`
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-left: 1rem;
+  cursor: pointer;
+  fill: white;
+`;
+
 export default Header;

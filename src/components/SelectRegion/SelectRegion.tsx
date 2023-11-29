@@ -17,6 +17,19 @@ export default function SelectRegion({
 
   const handleSelectedSigungu = (selectedSigungu: string) => {
     sessionStorage.setItem('selectedSigungu', selectedSigungu);
+    const selectedSigunguHistory = JSON.parse(
+      sessionStorage.getItem('selectedSigunguHistory') || '[]',
+    ) as string[];
+
+    if (!selectedSigunguHistory.includes(selectedSigungu)) {
+      selectedSigunguHistory.push(selectedSigungu);
+    }
+
+    sessionStorage.setItem(
+      'selectedSigunguHistory',
+      JSON.stringify(selectedSigunguHistory),
+    );
+
     navigate(`/regionList?sigunguname=${selectedSigungu}`);
     closeModal();
   };
