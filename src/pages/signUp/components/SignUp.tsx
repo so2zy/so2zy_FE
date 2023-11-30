@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { theme } from '@styles/theme';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
@@ -28,6 +28,9 @@ export const SignUp: React.FC = () => {
   const navigate = useNavigate();
   const emailCheckUrl = `${process.env.REACT_APP_SERVER}/v1/members/email/verify`;
   const signUpUrl = `${process.env.REACT_APP_SERVER}/v1/members/register`;
+  const passwordInputRef = React.useRef<HTMLInputElement>(null);
+  const pwCheckInputRef = React.useRef<HTMLInputElement>(null);
+  const userNameInputRef = React.useRef<HTMLInputElement>(null);
 
   const checkEmail = async (email: string) => {
     try {
@@ -94,8 +97,7 @@ export const SignUp: React.FC = () => {
       );
     }
   };
-  const handleSignUpButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const handleSignUpButtonClick = () => {
     if (emailCheckClicked === false) {
       alert('이메일 중복확인을 해주세요');
     } else if (
@@ -109,7 +111,23 @@ export const SignUp: React.FC = () => {
       handleSignUp(email, pw, userName);
     }
   };
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    nextInputRef?: React.RefObject<HTMLInputElement>,
+  ) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
 
+      if (nextInputRef && nextInputRef.current) {
+        nextInputRef.current.focus();
+      } else {
+        // 포커스 이동이 마지막 인풋까지 완료되면 클릭 이벤트 실행
+        const activeElement = document.activeElement as HTMLElement;
+        activeElement?.blur(); // 현재 포커스를 해제
+        handleSignUpButtonClick();
+      }
+    }
+  };
   const handleEmailCheck = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (isIdentificationValid(email)) {
@@ -142,6 +160,7 @@ export const SignUp: React.FC = () => {
                   setEmailCheckClicked(false);
                 }}
                 placeholder="이메일 입력"
+                onKeyDown={(e) => handleKeyDown(e, passwordInputRef)}
               />
               {email ? (
                 isIdentificationValid(email) === false ? (
@@ -163,12 +182,14 @@ export const SignUp: React.FC = () => {
             <StyledSignUpInputWrap>
               <span>비밀번호</span>
               <StyledSignUpInput
+                onKeyDown={(e) => handleKeyDown(e, pwCheckInputRef)}
                 value={pw}
                 type="password"
                 onChange={(e) => {
                   setPw(e.target.value);
                 }}
                 placeholder="영문, 숫자 포함 6~20자"
+                ref={passwordInputRef}
               />
               {pw ? (
                 isPasswordValid(pw) ? (
@@ -184,11 +205,13 @@ export const SignUp: React.FC = () => {
             <StyledSignUpInputWrap>
               <span>비밀번호 확인</span>
               <StyledSignUpInput
+                onKeyDown={(e) => handleKeyDown(e, userNameInputRef)}
                 value={pwCheck}
                 type="password"
                 onChange={(e) => {
                   setPwCheck(e.target.value);
                 }}
+                ref={pwCheckInputRef}
                 placeholder="비밀번호 확인"
               />
               {pwCheck ? (
@@ -208,6 +231,8 @@ export const SignUp: React.FC = () => {
                   setUserName(e.target.value);
                 }}
                 placeholder="이름 2~6자"
+                ref={userNameInputRef}
+                onKeyDown={(e) => handleKeyDown(e)}
               />
               {userName ? (
                 isNameValid(userName) ? (
