@@ -38,7 +38,7 @@ export const getMostSell = async () => {
       },
     );
     if (res) {
-      console.log(res.data);
+      //console.log(res.data);
       return res.data;
     } else {
       console.log('인기 상품 목록 불러오기 실패');
