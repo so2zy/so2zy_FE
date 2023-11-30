@@ -43,7 +43,7 @@ export interface RoomList {
 
 export const PlaceDetail: React.FC = () => {
   const { id } = useParams();
-  const accessToken = sessionStorage.getItem('accessToken');
+  const accessToken = localStorage.getItem('accessToken');
   const [accommodation, setAccommodation] = useState<IAccommodations>({
     id: 0,
     accommodationName: '',

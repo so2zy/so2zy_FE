@@ -69,8 +69,8 @@ const Header = () => {
           const { iat } = decodedToken;
           const iatPlus = iat * 1000 + 9 * 60 * 60 * 1000;
           setIatDatePlus9Hours(iatPlus);
-          sessionStorage.setItem('iatDatePlus9Hours', newAccessToken);
-          sessionStorage.setItem('accessToken', String(iatPlus));
+          localStorage.setItem('iatDatePlus9Hours', newAccessToken);
+          localStorage.setItem('accessToken', String(iatPlus));
 
           setToken(newAccessToken);
           console.log('재발급성공');
@@ -184,7 +184,7 @@ const Header = () => {
   );
 
   const handleLogOut = async () => {
-    sessionStorage.clear();
+    localStorage.clear();
 
     await resetRecoilState();
   };
@@ -198,13 +198,13 @@ const Header = () => {
     }
   }, []);
   useEffect(() => {
-    const storedLoginState = sessionStorage.getItem('loginState');
+    const storedLoginState = localStorage.getItem('loginState');
     if (storedLoginState === 'true') {
-      const storedUserKey = sessionStorage.getItem('userKey') || '';
-      const storedAccessToken = sessionStorage.getItem('accessToken') || '';
-      const storedRefreshToken = sessionStorage.getItem('refreshToken') || '';
-      const storedEmail = sessionStorage.getItem('email') || '';
-      const storedUserName = sessionStorage.getItem('userName') || '';
+      const storedUserKey = localStorage.getItem('userKey') || '';
+      const storedAccessToken = localStorage.getItem('accessToken') || '';
+      const storedRefreshToken = localStorage.getItem('refreshToken') || '';
+      const storedEmail = localStorage.getItem('email') || '';
+      const storedUserName = localStorage.getItem('userName') || '';
       setUserKey(storedUserKey);
       setRefreshToken(storedRefreshToken);
       setToken(storedAccessToken);
