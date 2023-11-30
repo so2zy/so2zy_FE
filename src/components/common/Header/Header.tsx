@@ -9,6 +9,7 @@ import { BsArrowLeft } from 'react-icons/bs';
 import { ReactComponent as ChevronDown } from '@assets/images/chevron-down.svg';
 import { isClickedRegionState } from '@recoil/regionList';
 import { Modal } from '@components/Modal';
+import { ReactComponent as House } from '@assets/images/house.svg';
 import { FaCartShopping } from 'react-icons/fa6';
 
 import {
@@ -29,7 +30,6 @@ import {
 } from 'recoil/atom';
 import jwt from 'jsonwebtoken-promisified';
 import axios from 'axios';
-
 const Header = () => {
   const isUserLoggedIn = useRecoilValue(isLogInSelector);
   const [refreshToken, setRefreshToken] = useRecoilState(refreshTokenAtom);
@@ -105,7 +105,7 @@ const Header = () => {
     if (event.key === 'Enter') {
       sessionStorage.setItem('searchedHotel', localSearchInput);
       onInputChange(localSearchInput);
-      setLocalSearchInput('');
+      event.currentTarget.blur();
     }
   };
 
@@ -134,6 +134,24 @@ const Header = () => {
       history.back();
     } else if (location.pathname === '/confirm') {
       history.back();
+    } else if (location.pathname == '/regionList') {
+      history.back();
+      const selectedSigunguHistory = JSON.parse(
+        sessionStorage.getItem('selectedSigunguHistory') || '[]',
+      ) as string[];
+      if (selectedSigunguHistory.length > 0) {
+        selectedSigunguHistory.pop();
+        if (selectedSigunguHistory.length >= 1) {
+          sessionStorage.setItem(
+            'selectedSigungu',
+            selectedSigunguHistory[selectedSigunguHistory.length - 1],
+          );
+        }
+        sessionStorage.setItem(
+          'selectedSigunguHistory',
+          JSON.stringify(selectedSigunguHistory),
+        );
+      }
     } else {
       history.back();
     }
@@ -219,7 +237,7 @@ const Header = () => {
         <StyledHeaderWhiteBox>
           <StyledHeaderWhiteContent>
             <div>
-              <StyledBefore size="25" onClick={handleArrowLeft} />
+              <StyledBefore size="30" onClick={handleArrowLeft} />
             </div>
             <div onClick={handleReservationText}>
               {location.pathname === '/cart'
@@ -239,13 +257,14 @@ const Header = () => {
           <StyledHeaderContent>
             {location.pathname === '/regionList' ? (
               <StyledHeaderRegionCover>
-                <StyledLeftBtn size="40" onClick={handleArrowLeft} />
+                <StyledLeftBtn size="30" onClick={handleArrowLeft} />
                 <StyledHeaderRegion>{selectedRegion}</StyledHeaderRegion>
                 <StyledChevronDown
                   onClick={() => {
                     openModal('지역');
                   }}
                 />
+                <StyledHouse onClick={handleHomeIcon} />
               </StyledHeaderRegionCover>
             ) : (
               <StyledHeaderMainLogo>
@@ -340,7 +359,7 @@ const StyledHeaderRegionCover = styled.div`
 `;
 
 const StyledHeaderRegion = styled.div`
-  margin-left: 4rem;
+  margin-left: 1rem;
   font-size: 2rem;
   font-weight: 800;
   padding: 0.375rem 0 0;
@@ -467,6 +486,13 @@ const StyledChevronDown = styled(ChevronDown)`
   cursor: pointer;
 `;
 
+const StyledHouse = styled(House)`
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-left: 1rem;
+  cursor: pointer;
+  fill: white;
+       
 const StyledLeftBtn = styled(BsArrowLeft)`
   cursor: pointer;
   color: ${theme.colors.navy};

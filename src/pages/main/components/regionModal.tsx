@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { RegionModalProps } from './getPlaces';
 import { modalData } from './modalData';
 import { VscChromeClose } from 'react-icons/vsc';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { regionModalOpen } from '@recoil/regionModal';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,6 +20,12 @@ const RegionModal = ({ isOpen }: RegionModalProps) => {
 
   const handleSelectedSigungu = (selectedSigungu: string) => {
     sessionStorage.setItem('selectedSigungu', selectedSigungu);
+    sessionStorage.setItem(
+      'selectedSigunguHistory',
+      JSON.stringify([selectedSigungu]),
+    );
+
+    setModalOpen(!modalOpen);
     navigate(`/regionList?sigunguname=${selectedSigungu}`);
   };
 
