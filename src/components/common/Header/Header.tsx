@@ -246,7 +246,7 @@ const Header = () => {
             <div>
               <StyledBefore size="30" onClick={handleArrowLeft} />
             </div>
-            <div onClick={handleReservationText}>
+            <StyledHeaderTitle onClick={handleReservationText}>
               {location.pathname === '/cart'
                 ? '장바구니'
                 : location.pathname === '/reservation'
@@ -254,7 +254,7 @@ const Header = () => {
                   : location.pathname === '/cartreservation'
                     ? '예약'
                     : ''}
-            </div>
+            </StyledHeaderTitle>
             <StyledHeaderHomeIcon>
               <img src={HomeIcon} alt="Cart Icon" onClick={handleHomeIcon} />
             </StyledHeaderHomeIcon>
@@ -424,6 +424,11 @@ const StyledHeaderCartIcon = styled(FaCartShopping)`
   position: relative;
 `;
 
+const StyledHeaderTitle = styled.div`
+  font-weight: bold;
+  font-size: 1.6rem;
+  padding-top: 0.8rem;
+`;
 // const StyledHeaderCartCount = styled.div`
 //   /* font-size: 0.5rem; */
 //   border-radius: 3rem;
@@ -509,7 +514,7 @@ const StyledHouse = styled(House)`
 
 const StyledLeftBtn = styled(BsArrowLeft)`
   cursor: pointer;
-  color: white;
+  color: ${theme.colors.navy};
 `;
 
 export default Header;
