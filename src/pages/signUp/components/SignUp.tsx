@@ -39,9 +39,9 @@ export const SignUp: React.FC = () => {
           accept: '*/*',
         },
       });
-      console.log(response);
+      // console.log(response);
       if (response.status === 200) {
-        console.log('이메일 확인완료');
+        //  console.log('이메일 확인완료');
         setIsEmailDuplicated(false);
       }
     } catch (error: unknown) {
@@ -66,18 +66,18 @@ export const SignUp: React.FC = () => {
         password: pw,
         name: userName,
       };
-      console.log(email, pw, userName);
+      //console.log(email, pw, userName);
       const response = await axios.post(signUpUrl, requestBody, {
         headers: { accept: '*/*' },
       });
-      console.log('signup response', response);
+      //  console.log('signup response', response);
       if (response.status === 200) {
         try {
           console.log(response);
           setIsSignUp(true);
           setUserName('');
           navigate('/signIn');
-          console.log('가입에 성공했습니다.');
+          // console.log('가입에 성공했습니다.');
         } catch (error) {
           console.error('유저 데이터 업로드를 실패했습니다 : ', error);
         }

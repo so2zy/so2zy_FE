@@ -59,7 +59,7 @@ const MainListItem = ({ title }: MainListProps) => {
       },
     });
   };
-  console.log(data);
+
   return (
     <StyledWrapper {...settings}>
       {data &&

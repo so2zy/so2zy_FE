@@ -23,7 +23,7 @@ const MapBox: React.FC = () => {
     if (status === 'OK') {
       setCenterLat(result[0].y);
       setCenterLng(result[0].x);
-      console.log('해당 시군구의 중심좌표를 구했습니다!');
+      // console.log('해당 시군구의 중심좌표를 구했습니다!');
     } else if (status === 'ZERO_RESULT') {
       console.log('검색 결과가 없습니다.');
     }

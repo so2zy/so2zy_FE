@@ -78,7 +78,6 @@ export const Cart: React.FC = () => {
 
   const handleReservation = () => {
     navigate(`/cartreservation`, { state: { checkedHotel } });
-    console.log('정보 전송 성공: ', checkedHotel);
   };
 
   useEffect(() => {

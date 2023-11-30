@@ -127,7 +127,6 @@ export const PlaceDetail: React.FC = () => {
           },
         },
       );
-      console.log(`즐겨찾기 등록 성공`);
     } catch (error) {
       console.error('즐겨찾기 실패:', error);
     }
