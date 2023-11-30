@@ -492,10 +492,11 @@ const StyledHouse = styled(House)`
   margin-left: 1rem;
   cursor: pointer;
   fill: white;
-       
+`;
+
 const StyledLeftBtn = styled(BsArrowLeft)`
   cursor: pointer;
-  color: ${theme.colors.navy};
+  color: white;
 `;
 
 export default Header;
