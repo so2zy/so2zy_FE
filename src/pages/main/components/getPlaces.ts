@@ -41,7 +41,7 @@ export const getMostSell = async () => {
       //console.log(res.data);
       return res.data;
     } else {
-      console.log('인기 상품 목록 불러오기 실패');
+      //  console.log('인기 상품 목록 불러오기 실패');
       return [];
     }
   } catch (error) {
@@ -61,10 +61,10 @@ export const getFavorite = async () => {
       },
     );
     if (res) {
-      console.log('불러오기 성공');
+      //  console.log('불러오기 성공');
       return res.data;
     } else {
-      console.log('찜 상품 목록 불러오기 실패');
+      //  console.log('찜 상품 목록 불러오기 실패');
       return [];
     }
   } catch (error) {
@@ -79,10 +79,10 @@ export const getAllProduct = async (page: number) => {
       `${process.env.REACT_APP_SERVER}/v2/accommodations?page=${page}`,
     );
     if (res.data) {
-      console.log('전체 숙소 조회 성공');
+      // console.log('전체 숙소 조회 성공');
       return res.data;
     } else {
-      console.log('모든 상품 받아오기 실패');
+      //   console.log('모든 상품 받아오기 실패');
       return [];
     }
   } catch (error) {
