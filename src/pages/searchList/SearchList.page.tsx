@@ -26,6 +26,7 @@ import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { getSearchListData } from '@utils/getData';
 import InfiniteScroll from 'react-infinite-scroller';
 import { useNavigate } from 'react-router-dom';
+import { formatDate } from '@utils/useFormatDate';
 
 export const SearchList: React.FC = () => {
   const searchedHotel = sessionStorage.getItem('searchedHotel');
@@ -48,6 +49,8 @@ export const SearchList: React.FC = () => {
   const endString = useRecoilValue(endStringState);
   const [date, setDate] = useState('');
   const navigate = useNavigate();
+  const [formatStartDate, setFormatStartDate] = useState('');
+  const [formatEndDate, setFormatEndDate] = useState('');
 
   const shortenPrice = (price: number) => {
     if (price === 0) {
@@ -126,17 +129,20 @@ export const SearchList: React.FC = () => {
   useEffect(() => {
     if (!startDate && !endDate) {
       const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+
       const todayMonth = (today?.getMonth() + 1).toString();
       const todayDate = today?.getDate();
-      setDate(`${todayMonth}.${todayDate}`);
+      const tomorrowMonth = (tomorrow.getMonth() + 1).toString();
+      const tomorrowDate = tomorrow.getDate();
+
+      setDate(
+        `${todayMonth}.${todayDate} ~ ${tomorrowMonth}.${tomorrowDate}, 1박`,
+      );
       return;
     }
-    if (startDate && !endDate) {
-      const startMonth = (startDate?.getMonth() + 1).toString();
-      const startDay = startDate?.getDate();
-      setDate(`${startMonth}.${startDay}`);
-      return;
-    }
+
     if (startDate && endDate) {
       const differDate = Math.floor(
         (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
@@ -154,12 +160,25 @@ export const SearchList: React.FC = () => {
   const handleItemClick = (id: number) => {
     navigate(`/place/${id}`, {
       state: {
-        startDate,
-        endDate,
+        startDate: formatStartDate,
+        endDate: formatEndDate,
         personnel: peopleCount,
       },
     });
   };
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      setFormatStartDate(formatDate(startDate));
+      setFormatEndDate(formatDate(endDate));
+    } else {
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      setFormatStartDate(formatDate(today));
+      setFormatEndDate(formatDate(tomorrow));
+    }
+  }, [startDate, endDate]);
 
   return (
     <div>
