@@ -105,12 +105,12 @@ export const Reservation: React.FC = () => {
           </StyledPayPrice>
           <StyledItemPrice>
             <span>상품금액</span>
-            <span>숙박/1박 {roomInfo?.price}원</span>
+            <span>숙박/1박 {roomInfo?.price ? roomInfo.price * 1.2 : 0}원</span>
           </StyledItemPrice>
           <StyledItemSalePrice>
             <span>할인</span>
             <StyledItemSaleText>
-              <span>-0원</span>
+              <span>-{roomInfo?.price ? roomInfo.price * 0.2 : 0}원</span>
               <span id="no-refund">※ 환불 불가 </span>
             </StyledItemSaleText>
           </StyledItemSalePrice>
