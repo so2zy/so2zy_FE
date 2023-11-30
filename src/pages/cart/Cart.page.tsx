@@ -11,7 +11,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getCarts } from './components/getCart';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-
+import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
 export interface CartItemProps {
   data: {
     accommodationList: AccommodationList[];
@@ -53,18 +53,41 @@ export const Cart: React.FC = () => {
   const navigate = useNavigate();
   const handleCheckBoxChange = (accommodation: AccommodationList) => {
     if (
-      checkedHotel.some(
-        (a) => a.accommodationId === accommodation.accommodationId,
-      )
+      checkedHotel.some((a) => {
+        if (a.accommodationId === accommodation.accommodationId) {
+          return a.roomList.some((room) =>
+            accommodation.roomList.some(
+              (incomingRoom) =>
+                incomingRoom.roomId === room.roomId &&
+                a.accommodationId === accommodation.accommodationId,
+            ),
+          );
+        }
+        return false;
+      })
     ) {
       setCheckedHotel((prev) =>
-        prev.filter((a) => a.accommodationId !== accommodation.accommodationId),
+        prev.map((a) => {
+          if (a.accommodationId === accommodation.accommodationId) {
+            return {
+              ...a,
+              roomList: a.roomList.filter(
+                (room) =>
+                  !accommodation.roomList.some(
+                    (incomingRoom) =>
+                      incomingRoom.roomId === room.roomId &&
+                      a.accommodationId === accommodation.accommodationId,
+                  ),
+              ),
+            };
+          }
+          return a;
+        }),
       );
     } else {
       setCheckedHotel((prev) => [...prev, accommodation]);
     }
   };
-
   const handleAllCheckBoxChange = () => {
     if (checkedAllHotel) {
       setCheckedHotel([]);
@@ -102,9 +125,18 @@ export const Cart: React.FC = () => {
     setSalePrice(sale);
     setTotalPrice(total);
   }, [checkedHotel]);
-
+  console.log(checkedHotel);
   return (
     <StyleMainWrapper>
+      <StyledTitleDesc>
+        <StyledCheckbox
+          checked={checkedAllHotel}
+          onChange={handleAllCheckBoxChange}
+        />
+        <StyledAllCheckSpan>
+          {checkedAllHotel ? '전체 해제' : '전체 선택'}
+        </StyledAllCheckSpan>
+      </StyledTitleDesc>
       {data &&
         data.data.accommodationList.map((accommodation) => (
           <>
@@ -119,14 +151,7 @@ export const Cart: React.FC = () => {
             </StyledCartItemDesc>
             <StyledBox>
               <StyledList>
-                <StyledListItem>
-                  <StyledCheckbox
-                    checked={checkedAllHotel}
-                    onChange={handleAllCheckBoxChange}
-                  />
-                  <StyledTitleDesc>
-                    <StyledSpan>전체 선택</StyledSpan>
-                  </StyledTitleDesc>
+                <StyledListTitle>
                   <StyledTitleDesc>
                     <StyledProductSpan>예약 상품</StyledProductSpan>
                   </StyledTitleDesc>
@@ -136,18 +161,23 @@ export const Cart: React.FC = () => {
                   <StyledPriceTitleDesc>
                     <StyledSpan>가격</StyledSpan>
                   </StyledPriceTitleDesc>
-                </StyledListItem>
+                </StyledListTitle>
                 <StyledLine />
                 {accommodation.roomList.map((room) => (
                   <StyledListItem key={room.roomId}>
                     <StyledCheckbox
                       checked={checkedHotel.some(
                         (a) =>
-                          a.accommodationId === accommodation.accommodationId,
+                          a.accommodationId === accommodation.accommodationId &&
+                          a.roomList.some((r) => r.roomId === room.roomId),
                       )}
                       onChange={() => handleCheckBoxChange(accommodation)}
                     />
-                    <StyledMiniImage src={room.roomImageUrl} />
+                    {room.roomImageUrl ? (
+                      <StyledMiniImage src={room.roomImageUrl} />
+                    ) : (
+                      <StyledMiniImage src={hotelDefaultImg} alt="대체 사진" />
+                    )}
                     <StyleDetail>
                       <StyleRoomName>{room.type}</StyleRoomName>
                       <StyledDetailDes>
@@ -220,6 +250,12 @@ const StyledSpan = styled.span`
   font-weight: ${theme.fonts.subtitle3.fontWeight};
 `;
 
+const StyledAllCheckSpan = styled(StyledSpan)`
+  padding-top: 0.9rem;
+  font-size: 1.1rem;
+  /* line-height: 2.5rem; */
+`;
+
 const StyleDetail = styled.div`
   display: flex;
   flex-direction: column;
@@ -252,6 +288,7 @@ export const StyledDetailDes = styled.div`
   /* display: block; */
   margin: 0 1rem 0rem -1rem;
   p {
+    /* width: 12rem; */
     margin: 2.5rem 0 0 -1rem;
     display: grid;
   }
@@ -282,6 +319,11 @@ export const StyledListItem = styled.div`
   display: flex;
   margin: 2rem 0 2rem 0;
   gap: 1.25rem;
+`;
+
+const StyledListTitle = styled(StyledListItem)`
+  margin-left: 14rem;
+  gap: 2.5rem;
 `;
 
 export const StyledMiniImage = styled.img`
@@ -344,14 +386,3 @@ export const StyledPrices = styled.span`
   font-weight: ${theme.fonts.subtitle5.fontWeight};
   font-size: ${theme.fonts.subtitle5.fontSize};
 `;
-
-// const StyledTrashCan = styled(FaTrashCan)`
-//   /* padding-left: 3rem; */
-//   margin: 2.5rem 0 0 5rem;
-//   color: ${theme.colors.navy};
-//   cursor: pointer;
-
-//   &:hover {
-//     color: ${theme.colors.gray3};
-//   }
-// `;
