@@ -3,7 +3,7 @@ import axios from 'axios';
 export const getCarts = async () => {
   const accessToken = sessionStorage.getItem('accessToken');
   try {
-    const res = await axios.get(`${process.env.REACT_APP_SERVER}/v2/cart`, {
+    const res = await axios.get(`${process.env.REACT_APP_SERVER}/v2/carts`, {
       headers: {
         'Access-Token': `${accessToken}`,
       },

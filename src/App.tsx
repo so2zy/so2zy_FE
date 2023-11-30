@@ -17,6 +17,7 @@ import Confirm from 'pages/confirm';
 import { Loading } from '@components/common/Loading';
 import { NotFound } from '@components/common/NotFound';
 import { Footer } from '@components/common/Footer';
+import CartReservation from '@pages/cartReservation';
 
 const Main = React.lazy(() => import('./pages/main'));
 // const SearchList = React.lazy(() => import('./pages/searchList'));
@@ -89,7 +90,18 @@ function App() {
                 }
               />
               <Route
-                path="/cart" //:id도 받아줘야함
+                path="/cartreservation"
+                element={
+                  <>
+                    <Header />
+                    <Card>
+                      <CartReservation />
+                    </Card>
+                  </>
+                }
+              />
+              <Route
+                path="/cart"
                 element={
                   <>
                     <Header />
@@ -100,7 +112,7 @@ function App() {
                 }
               />
               <Route
-                path="/confirm" //:id도 받아줘야함
+                path="/confirm"
                 element={
                   <>
                     <Header />

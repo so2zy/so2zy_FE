@@ -32,37 +32,45 @@ export const Reservation: React.FC = () => {
   }, [location.state]);
 
   const handlePayment = async () => {
-    if (roomInfo && agreement) {
-      const data = {
-        roomList: [
-          {
-            roomId: roomInfo.id,
-            startDate: startDate,
-            endDate: endDate,
-            price: roomInfo.price,
-          },
-        ],
-        personnel,
-        agreement,
-        isFromCart: false, //장바구니 아닐땐 false
-      };
+    if (!roomInfo || !agreement) {
+      return;
+    }
 
-      try {
-        const response = await axios.post(
-          ` ${process.env.REACT_APP_SERVER}/v1/reservations`,
-          data,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Token': accessToken,
-            },
+    const data = {
+      roomList: [
+        {
+          roomId: roomInfo.id,
+          startDate: startDate,
+          endDate: endDate,
+          price: roomInfo.price,
+          personnel: personnel,
+        },
+      ],
+      agreement,
+      isFromCart: false,
+    };
+
+    const confirm = window.confirm('결제 하시겠습니까?');
+    if (!confirm) {
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVER}/v1/reservations`,
+        data,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Token': accessToken,
           },
-        );
-        console.log(response.data);
-        navigate('/confirm', { state: { data: response.data } });
-      } catch (error) {
-        console.error('결제 실패', error);
-      }
+        },
+      );
+
+      console.log(response.data);
+      navigate('/confirm', { state: { data: response.data } });
+    } catch (error) {
+      console.error('결제 실패', error);
     }
   };
 
