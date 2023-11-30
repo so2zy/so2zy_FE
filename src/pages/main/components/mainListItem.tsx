@@ -8,6 +8,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import { eclipsText } from '@utils/textLength';
 import { useNavigate } from 'react-router-dom';
 import { formatDate } from '@utils/useFormatDate';
+import hotelDefaultImg2 from '@assets/images/hotelDefaultImg2.png';
 
 export interface MainListProps {
   title: string;
@@ -71,14 +72,22 @@ const MainListItem = ({ title }: MainListProps) => {
             key={item.id}
             onClick={() => handleDetailPage(item.id)}
           >
-            <StyledItemImage src={item.accommodationImageUrl} alt="호텔 사진" />
+            {item.accommodationImageUrl ? (
+              <StyledItemImage
+                src={item.accommodationImageUrl}
+                alt="호텔 사진"
+              />
+            ) : (
+              <StyledItemImage src={hotelDefaultImg2} alt="대체 사진" />
+            )}
+
             <StyledItemDesc>
               <StyledItemName>
                 {index + 1}. {eclipsText(item.name, 8)}
               </StyledItemName>
               <StyledItemPrice>
                 {' '}
-                {item.price.toLocaleString('ko-KR')}원~
+                {item.price.toLocaleString('ko-KR')}원 ~
               </StyledItemPrice>
             </StyledItemDesc>
           </StyledMainPageItem>
@@ -114,7 +123,9 @@ const StyledMainPageItem = styled.div`
   width: 9.75rem;
   height: 10.5rem;
   border-radius: 1rem;
-  box-shadow: ${theme.shadows.shadow2.shadow};
+  box-shadow: 4px 4px 4px ${theme.colors.gray2};
+  border: 0.5px solid ${theme.colors.gray2};
+
   position: relative;
   cursor: pointer;
 `;
@@ -139,5 +150,6 @@ const StyledItemName = styled.p`
 `;
 
 const StyledItemPrice = styled.p`
+  padding: 0.25rem 0.9rem;
   font-size: 0.8rem;
 `;
