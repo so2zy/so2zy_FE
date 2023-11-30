@@ -1,5 +1,4 @@
 import Modal from 'react-modal';
-import { VscChromeClose } from 'react-icons/vsc';
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import { theme } from '@styles/theme';
@@ -27,7 +26,7 @@ const MapBox: React.FC<MapBoxProps> = ({ latitude, longitude }) => {
     marker.setMap(map);
   }, [latitude, longitude]);
 
-  return <div id="map" style={{ width: '50vw', height: '50vh' }} />;
+  return <div id="map" style={{ width: '40vw', height: '37vh' }} />;
 };
 
 export interface MapModalProps {
@@ -44,8 +43,13 @@ const customStyles = {
     right: 'auto',
     bottom: 'auto',
     transform: 'translate(-50%, -50%)',
-    borderRadius: '10px',
+    borderRadius: '2rem',
     padding: '2.5rem',
+    width: '46%',
+    height: '54%',
+  },
+  overlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
 };
 
@@ -76,7 +80,6 @@ const MapModal: React.FC<MapModalProps> = ({
       >
         <StyledTitleWrapper>
           <StyledTitle>위치</StyledTitle>
-          <StyledClose onClick={onRequestClose} />
         </StyledTitleWrapper>
         <StyledLine />
         {isMapVisible && <MapBox latitude={latitude} longitude={longitude} />}
@@ -90,19 +93,13 @@ export default MapModal;
 const StyledTitleWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
   font-weight: ${theme.fonts.subtitle1.fontWeight};
   font-size: ${theme.fonts.subtitle5.fontSize};
 `;
 
 const StyledTitle = styled.span`
-  vertical-align: top;
-  display: flex;
+  margin: auto;
+  font-size: 1.5rem;
+  justify-content: center;
   align-items: center;
-`;
-
-const StyledClose = styled(VscChromeClose)`
-  display: flex;
-  vertical-align: top;
-  cursor: pointer;
 `;
