@@ -236,7 +236,7 @@ export const Cart: React.FC = () => {
     </StyleMainWrapper>
   );
 };
-// 임시 추가
+
 const StyledCartItemDesc = styled(StyledItemDesc)`
   margin-top: 4rem;
 `;
