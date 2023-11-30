@@ -184,9 +184,11 @@ const Header = () => {
   );
 
   const handleLogOut = async () => {
-    sessionStorage.clear();
+    if (confirm('로그아웃 하시겠습니다까 ?')) {
+      sessionStorage.clear();
 
-    await resetRecoilState();
+      await resetRecoilState();
+    }
   };
 
   useEffect(() => {
