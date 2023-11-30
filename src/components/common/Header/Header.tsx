@@ -379,6 +379,9 @@ const StyledHeaderSearchBar = styled.input`
   box-sizing: border-box;
   &&::placeholder {
     color: white;
+    font-family: 'GmarketSans';
+    src: url('./assets/fonts/GmarketSansTTFLight.ttf');
+    font-weight: 500;
   }
 `;
 
