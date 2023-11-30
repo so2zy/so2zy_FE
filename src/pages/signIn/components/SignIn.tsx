@@ -234,7 +234,7 @@ const StyledSignInError = styled.div`
 
 const StyledSignInButton = styled.button`
   cursor: pointer;
-  padding-top: 0.3rem;
+  padding-top: 0.2rem;
   width: 100%;
   height: 2.5rem;
   background-color: ${theme.colors.navy};

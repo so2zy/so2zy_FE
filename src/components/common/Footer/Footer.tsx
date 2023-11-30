@@ -29,6 +29,7 @@ const StyledWrapper = styled.div`
   width: 100%;
   height: 4rem;
   img {
+    margin-right: 1rem;
     position: relative;
     top: 4px;
     width: 5rem;
@@ -39,7 +40,7 @@ const StyledContent = styled.div`
   justify-content: center;
   align-items: center;
   margin: 0 auto;
-  width: 50%;
+  width: 60%;
   height: 100%;
 
   @media (max-width: 1080px) {
@@ -53,7 +54,7 @@ const StyledDiv = styled.div`
   height: 1.2rem;
   margin-top: 1.5rem;
   position: relative;
-  top: -7px;
+  top: -5px;
   font-size: 0.9rem;
   color: #919191;
   margin-top: 0.5rem;

@@ -282,7 +282,7 @@ const StyledSignUpInput = styled.input`
   }
 `;
 const StyledSignUpButton = styled.button`
-  padding-top: 0.3rem;
+  padding-top: 0.15rem;
   cursor: pointer;
   width: 100%;
   height: 3rem;
