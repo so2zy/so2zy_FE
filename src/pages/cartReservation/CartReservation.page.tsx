@@ -28,7 +28,7 @@ interface CartReservationRoomProps {
 export const CartReservation: React.FC = () => {
   const location = useLocation();
   const checkedHotel = location.state?.checkedHotel;
-  const accessToken = sessionStorage.getItem('accessToken');
+  const accessToken = localStorage.getItem('accessToken');
   const navigate = useNavigate();
 
   const [agreement, setAgreement] = useState(false);

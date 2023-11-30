@@ -13,18 +13,18 @@ export const priceBState = atom({
 export const isCheckedPriceState = atom({
   // 가격 필터링 여부
   key: 'isCheckedPriceState',
-  default: false,
+  default: true,
 });
 
 export const isCheckedPeopleState = atom({
   // 인원수 필터링 여부
   key: 'isCheckedPeopleState',
-  default: false,
+  default: true,
 });
 export const isCheckedCalendarState = atom({
   // 날짜 필터링 여부
   key: 'isCheckedCalendarState',
-  default: false,
+  default: true,
 });
 
 export const isClickedPriceState = atom({
