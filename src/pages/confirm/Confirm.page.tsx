@@ -46,7 +46,7 @@ export const Confirm: React.FC = () => {
   }, [location.state]);
 
   return (
-    <>
+    <StyledWrapper>
       <StyleMainTitle>예약확인서</StyleMainTitle>
 
       <StyleMainWrapper>
@@ -81,21 +81,26 @@ export const Confirm: React.FC = () => {
             )}
             <StyleDetail>
               <StyleRoomName>{room.type}</StyleRoomName>
-              <StyledDetailDes>
-                체크인 {room.checkIn} - 체크아웃 {room.checkOut}
-              </StyledDetailDes>
-              <StyledDetailDes>
+              <StyledCheckInOutTitle>
+                체크인 {room.checkIn.replace(/:00$/, '')} - 체크아웃{' '}
+                {room.checkOut.replace(/:00$/, '')}
+              </StyledCheckInOutTitle>
+              <StyledCheckInOutTitle>
                 기준 {room.capacity}인 최대{room.maxCapacity}인
-              </StyledDetailDes>
+              </StyledCheckInOutTitle>
             </StyleDetail>
-            <StyleDetail>
-              <StyledDetailDes>
-                {room.startDate}-{room.endDate}
-              </StyledDetailDes>
-            </StyleDetail>
-            <StyleDetail>
-              <StyledDetailDes>{room.price}원</StyledDetailDes>
-            </StyleDetail>
+            <StyledPriceDateBox>
+              <StyleDetail>
+                <StyledDetailDes>
+                  {room.startDate.slice(2)}~{room.endDate.slice(2)}
+                </StyledDetailDes>
+              </StyleDetail>
+              <StyleDetail>
+                <StyledDetailDes>
+                  {room.price.toLocaleString('ko-KR')}원
+                </StyledDetailDes>
+              </StyleDetail>
+            </StyledPriceDateBox>
           </StyleSubWrapper>
         </StyleMainWrapper>
       ))}
@@ -106,9 +111,13 @@ export const Confirm: React.FC = () => {
       >
         <StyledBtnText>홈으로 돌아가기</StyledBtnText>
       </StyledButtonWrapper>
-    </>
+    </StyledWrapper>
   );
 };
+
+const StyledWrapper = styled.div`
+  margin-top: 2rem;
+`;
 
 export const StyleDetail = styled.div`
   display: inline-block;
@@ -131,7 +140,7 @@ const StyleMainWrapper = styled.div`
   border-radius: 8px;
   box-shadow: 4px 4px 4px ${theme.colors.gray2};
   padding: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 4rem;
 `;
 
 const StyleSubWrapper = styled.span`
@@ -157,4 +166,13 @@ const StyleImportant = styled.div`
   font-weight: ${theme.fonts.subtitle5.fontWeight};
   line-height: ${theme.fonts.subtitle4.lineHeight};
   font-weight: bold;
+`;
+
+const StyledCheckInOutTitle = styled(StyledDetailDes)`
+  margin-left: 0.05rem;
+  margin-bottom: 0.2rem;
+`;
+
+const StyledPriceDateBox = styled.div`
+  margin-top: 3.45rem;
 `;

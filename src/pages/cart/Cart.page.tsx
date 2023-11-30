@@ -156,7 +156,7 @@ export const Cart: React.FC = () => {
                     <StyledProductSpan>예약 상품</StyledProductSpan>
                   </StyledTitleDesc>
                   <StyledTitleDesc>
-                    <StyledSpan>날짜</StyledSpan>
+                    <StyledDateSpan>날짜</StyledDateSpan>
                   </StyledTitleDesc>
                   <StyledPriceTitleDesc>
                     <StyledSpan>가격</StyledSpan>
@@ -180,23 +180,24 @@ export const Cart: React.FC = () => {
                     )}
                     <StyleDetail>
                       <StyleRoomName>{room.type}</StyleRoomName>
-                      <StyledDetailDes>
-                        체크인 {room.checkIn} - 체크아웃 {room.checkOut}
-                      </StyledDetailDes>
-                      <StyledDetailDes>
+                      <StyledCheckInOutTitle>
+                        체크인 {room.checkIn.replace(/:00$/, '')} - 체크아웃{' '}
+                        {room.checkOut.replace(/:00$/, '')}
+                      </StyledCheckInOutTitle>
+                      <StyledCheckInOutTitle>
                         기준 {room.capacity}인 최대 {room.maxCapacity}인
-                      </StyledDetailDes>
+                      </StyledCheckInOutTitle>
                     </StyleDetail>
                     <StyleDetail>
                       <StyledDetailDes>
                         <p>
-                          {room.startDate}~{room.endDate}
+                          {room.startDate.slice(2)}~{room.endDate.slice(2)}
                         </p>
                       </StyledDetailDes>
                     </StyleDetail>
                     <StyleDetail>
                       <StyledDetailDes>
-                        <p>
+                        <p id="priceDesc">
                           <span>
                             {(room.price * 1.2).toLocaleString('ko-KR')}원
                           </span>
@@ -250,6 +251,10 @@ const StyledSpan = styled.span`
   font-weight: ${theme.fonts.subtitle3.fontWeight};
 `;
 
+const StyledDateSpan = styled(StyledSpan)`
+  padding-left: 1.2rem;
+`;
+
 const StyledAllCheckSpan = styled(StyledSpan)`
   padding-top: 0.9rem;
   font-size: 1.1rem;
@@ -286,17 +291,30 @@ export const StyledDetailDes = styled.div`
   font-size: ${theme.fonts.body.fontSize};
 
   /* display: block; */
-  margin: 0 1rem 0rem -1rem;
+  margin: 0 1rem 0rem 0.2rem;
   p {
     /* width: 12rem; */
-    margin: 2.5rem 0 0 -1rem;
+    margin: 2rem 0 0 -1.2rem;
     display: grid;
+  }
+  #priceDesc {
+    margin-top: 1.5rem;
+    margin-left: 2.4rem;
   }
   span {
     text-decoration: line-through;
     color: ${theme.colors.gray2};
     font-size: 0.8rem;
+    margin-bottom: 0.2rem;
   }
+  /* #sale-price {
+    margin-bottom: 0.2rem;
+  } */
+`;
+
+export const StyledCheckInOutTitle = styled(StyledDetailDes)`
+  margin-left: 0.05rem;
+  margin-bottom: 0.2rem;
 `;
 
 export const StyledDetailDescription = styled.div`
