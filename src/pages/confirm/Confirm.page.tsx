@@ -29,7 +29,6 @@ interface RoomList {
 
 export const Confirm: React.FC = () => {
   const location = useLocation();
-  console.log('확인 데이터', location.state.data.data);
 
   const [reservationNumber, setReservationNumber] = useState(0);
   const [dealDateTime, setDealDateTime] = useState();
@@ -40,7 +39,6 @@ export const Confirm: React.FC = () => {
     if (location.state && location.state.data) {
       const { dealDateTime, reservationNumber, roomList } =
         location.state.data.data;
-      console.log('room', roomList);
       setDealDateTime(dealDateTime);
       setReservationNumber(reservationNumber);
       setRoomList(roomList);

@@ -73,7 +73,6 @@ export const CartReservation: React.FC = () => {
         },
       );
 
-      console.log(response.data);
       navigate('/confirm', { state: { data: response.data } });
     } catch (error) {
       console.error('결제 실패', error);

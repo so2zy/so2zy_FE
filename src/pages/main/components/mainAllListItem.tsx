@@ -12,7 +12,7 @@ import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
 
 const MainAllListItem = ({ title }: MainListProps) => {
   const navigate = useNavigate();
-  console.log(title);
+
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: ['title'],
     queryFn: ({ pageParam }) => getAllProduct(pageParam),
@@ -24,8 +24,6 @@ const MainAllListItem = ({ title }: MainListProps) => {
       return lastPageParam + 1;
     },
   });
-
-  console.log(data);
   const handleIntersect: IntersectionObserverCallback = (entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting && hasNextPage) {
@@ -52,7 +50,7 @@ const MainAllListItem = ({ title }: MainListProps) => {
       },
     });
   };
-  console.log(data?.pages);
+
   return (
     <StyledContainer>
       <StyledWrapper>

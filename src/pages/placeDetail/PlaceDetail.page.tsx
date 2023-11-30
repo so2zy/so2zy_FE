@@ -78,7 +78,6 @@ export const PlaceDetail: React.FC = () => {
   const [modalLongitude, setModalLongitude] = useState<number>(0);
 
   const openModal = (latitude: number, longitude: number) => {
-    console.log(latitude, longitude);
     setModalLatitude(latitude);
     setModalLongitude(longitude);
     setModalIsOpen(true);
@@ -99,7 +98,6 @@ export const PlaceDetail: React.FC = () => {
   //숙소 정보 get
   const getData = async (id: any) => {
     try {
-      console.log(startDate, endDate);
       const res = await axios.get(
         `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}?startDate=${startDate}&endDate=${endDate}&personnel=${personnel}`,
         {
@@ -108,46 +106,27 @@ export const PlaceDetail: React.FC = () => {
           },
         },
       );
-      console.log('정보 가져오기 ', res.data);
       setAccommodation(res.data.data);
       setIsChecked(res.data.data.favorite);
-      console.log('정보 가져오기 성공', accommodation);
       setIsLoading(false);
     } catch (error) {
       console.error('숙소 정보 가져오기 실패', error);
     }
   };
 
-  useEffect(() => {
-    console.log('정보 가져오기 성공', accommodation);
-  }, [accommodation]);
-
   //찜
-  const toggleFavorite = async (id: any, isChecked: boolean) => {
+  const toggleFavorite = async (id: any) => {
     try {
-      if (isChecked) {
-        await axios.post(
-          `${process.env.REACT_APP_SERVER}/v1/accommodations/${id}/favorite`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Token': accessToken,
-            },
+      await axios.post(
+        `${process.env.REACT_APP_SERVER}/v1/accommodations/${id}/favorite`,
+        {},
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Token': accessToken,
           },
-        );
-        console.log(`즐겨찾기 등록 성공`);
-      } else {
-        await axios.delete(
-          `${process.env.REACT_APP_SERVER}/v1/accommodations/${id}/favorite`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Token': accessToken,
-            },
-          },
-        );
-        console.log(`즐겨찾기 삭제 성공`);
-      }
+        },
+      );
     } catch (error) {
       console.error('즐겨찾기 실패:', error);
     }
@@ -155,14 +134,14 @@ export const PlaceDetail: React.FC = () => {
 
   useEffect(() => {
     getData(id);
-  }, [id, startDate, endDate, personnel]);
+  }, []);
 
   //장바구니로 post
   const addCart = async (roomId: number) => {
     const confirm = window.confirm('장바구니에 추가하시겠습니까?');
     if (confirm) {
       try {
-        const res = await axios.post(
+        await axios.post(
           `${process.env.REACT_APP_SERVER}/v2/carts/${roomId}`,
           {
             startDate,
@@ -177,12 +156,12 @@ export const PlaceDetail: React.FC = () => {
           },
         );
         navigate('/cart');
-        console.log('장바구니 성공', res.data);
       } catch (error) {
         console.error('장바구니 실패', error);
       }
     }
   };
+
   if (accessToken) {
     if (isLoading) {
       return <Loading />;
@@ -215,13 +194,13 @@ export const PlaceDetail: React.FC = () => {
             {accommodation.accommodationName}
             <StyledStar
               className={isChecked ? 'checked' : 'unchecked'}
-              onClick={() => {
-                setIsChecked((prev) => {
-                  const newChecked = !prev;
-                  console.log(newChecked);
-                  toggleFavorite(id, newChecked);
-                  return newChecked;
-                });
+              onClick={async () => {
+                try {
+                  await toggleFavorite(id);
+                  setIsChecked((prev) => !prev);
+                } catch (error) {
+                  console.error('즐겨찾기 실패:', error);
+                }
               }}
             />
           </StyledMainTitle>
@@ -270,7 +249,7 @@ export const PlaceDetail: React.FC = () => {
                   <StyledCapacity>
                     ({room.capacity}명 기준/최대 {room.maxCapacity}명)
                   </StyledCapacity>
-                  <StyledRealPrice>{room.price}원</StyledRealPrice>
+                  <StyledRealPrice>{room.price * 1.2}원</StyledRealPrice>
                   <StyledSalePrice> {room.price}원</StyledSalePrice>
                   {room.stock === 0 ? (
                     <StyledNoStock>예약불가</StyledNoStock>
@@ -506,14 +485,15 @@ const StyledSpan = styled.span`
 `;
 
 const StyledButton = styled.button`
-  margin-left: 1px;
+  margin-left: 0.5rem;
   vertical-align: top;
   background-color: ${theme.colors.blue};
   color: white;
   border: none;
   border-radius: 6px;
-  height: 1.75rem;
+  // height: 2.5rem;
   padding: 0.25rem;
+  margin-bottom: 0.2rem;
   cursor: pointer;
 `;
 
