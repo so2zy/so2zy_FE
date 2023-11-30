@@ -75,7 +75,9 @@ const MainAllListItem = ({ title }: MainListProps) => {
                   <StyledAllItemDesc>
                     <StyledAllItemPriceList>
                       <StyledPriceSale>
-                        {item.price.toLocaleString('ko-KR')}원
+                        {item.price
+                          ? `${item.price.toLocaleString('ko-KR')}원~`
+                          : '품절'}
                       </StyledPriceSale>
                     </StyledAllItemPriceList>
                     <StyledLookBtn onClick={() => handleDetailPage(item.id)}>
@@ -147,7 +149,7 @@ const StyledAllItemPriceList = styled.p`
 `;
 
 const StyledPriceSale = styled.span`
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: bold;
 `;
 

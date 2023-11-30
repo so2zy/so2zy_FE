@@ -26,6 +26,20 @@ export const SignIn: React.FC = () => {
   const setRefreshToken = useSetRecoilState(refreshTokenAtom);
   const setIatDatePlus9Hours = useSetRecoilState(iatDatePlus9HoursState);
   const navigate = useNavigate();
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const nextInput =
+        e.currentTarget.parentElement?.nextElementSibling?.querySelector(
+          'input',
+        );
+      if (nextInput) {
+        nextInput.focus();
+      } else {
+        handleSignIn(email, pw);
+      }
+    }
+  };
   const handleSignIn = async (email: string, pw: string) => {
     const params = new URLSearchParams({
       username: email,
@@ -61,6 +75,7 @@ export const SignIn: React.FC = () => {
         setEmail(email);
         setUserName(userName);
         setSignInButtonClick(false);
+        alert(`환영합니다! ${userName}님`);
         navigate('/');
       } else {
         setSignInButtonClick(true);
@@ -94,6 +109,7 @@ export const SignIn: React.FC = () => {
             <StyledInputWrap>
               <div>Email</div>
               <input
+                onKeyDown={handleKeyDown}
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
@@ -104,6 +120,7 @@ export const SignIn: React.FC = () => {
             <StyledInputWrap>
               <div>비밀번호</div>
               <input
+                onKeyDown={handleKeyDown}
                 value={pw}
                 onChange={(e) => {
                   setPw(e.target.value);
