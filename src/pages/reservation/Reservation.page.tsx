@@ -10,9 +10,8 @@ import { useNavigate } from 'react-router-dom';
 export const Reservation: React.FC = () => {
   const location = useLocation();
 
-  const [accommodationInfo, setAccommodationInfo] =
-    useState<IAccommodations | null>(null);
-  const [roomInfo, setRoomInfo] = useState<RoomList | null>(null);
+  const [accommodationInfo, setAccommodationInfo] = useState<IAccommodations>();
+  const [roomInfo, setRoomInfo] = useState<RoomList>();
   const [agreement, setAgreement] = useState(false);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -66,7 +65,6 @@ export const Reservation: React.FC = () => {
         },
       );
 
-      console.log(response.data);
       navigate('/confirm', { state: { data: response.data } });
     } catch (error) {
       console.error('결제 실패', error);

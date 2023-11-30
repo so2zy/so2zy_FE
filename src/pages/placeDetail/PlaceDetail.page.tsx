@@ -16,7 +16,6 @@ import { formatDate } from '@utils/useFormatDate';
 import { NeedLogin } from '@components/common/NeedLogin';
 import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
 import hotelDefaultImg2 from '@assets/images/hotelDefaultImg2.png';
-import _ from 'lodash';
 
 export interface IAccommodations {
   id: number;
@@ -143,7 +142,7 @@ export const PlaceDetail: React.FC = () => {
     const confirm = window.confirm('장바구니에 추가하시겠습니까?');
     if (confirm) {
       try {
-        const res = await axios.post(
+        await axios.post(
           `${process.env.REACT_APP_SERVER}/v2/carts/${roomId}`,
           {
             startDate,
@@ -158,7 +157,6 @@ export const PlaceDetail: React.FC = () => {
           },
         );
         navigate('/cart');
-        console.log('장바구니 성공', res.data);
       } catch (error) {
         console.error('장바구니 실패', error);
       }
@@ -197,12 +195,13 @@ export const PlaceDetail: React.FC = () => {
             {accommodation.accommodationName}
             <StyledStar
               className={isChecked ? 'checked' : 'unchecked'}
-              onClick={() => {
-                setIsChecked((prev) => {
-                  const newChecked = !prev;
-                  toggleFavorite(id);
-                  return newChecked;
-                });
+              onClick={async () => {
+                try {
+                  await toggleFavorite(id);
+                  setIsChecked((prev) => !prev);
+                } catch (error) {
+                  console.error('즐겨찾기 실패:', error);
+                }
               }}
             />
           </StyledMainTitle>
