@@ -371,12 +371,14 @@ const StyledHeaderSearchBar = styled.input`
   z-index: 2;
   background-color: transparent;
   border: 1px solid white;
-  padding: 0 1rem;
+  padding: 0.25rem 1rem 0;
   font-size: 1rem;
   height: 85%;
   width: 60%;
   color: white;
   box-sizing: border-box;
+  font-family: 'GmarketSans', sans-serif;
+
   &&::placeholder {
     color: white;
   }
