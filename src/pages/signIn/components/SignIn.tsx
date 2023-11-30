@@ -61,6 +61,7 @@ export const SignIn: React.FC = () => {
         setEmail(email);
         setUserName(userName);
         setSignInButtonClick(false);
+        alert(`환영합니다! ${userName}님`);
         navigate('/');
       } else {
         setSignInButtonClick(true);
