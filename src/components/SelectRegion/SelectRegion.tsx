@@ -82,28 +82,27 @@ const StyledRegionList = styled.div`
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(5, 1fr);
   border-radius: 0.825rem;
-  background-color: ${theme.colors.gray1};
   margin: auto;
 `;
 
 const StyledRegionItem = styled.button`
-  font-size: 1.2rem;
+  font-size: 1rem;
   display: block;
   height: 3rem;
   line-height: 3rem;
   background-color: transparent;
   border-radius: 0.625rem;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
+  margin: 0.5rem 0.5rem 1rem;
+  padding-top: 0.225rem;
   color: ${theme.colors.navy};
   font-weight: bold;
   &:hover {
-    background-color: #f1fff9;
+    background-color: #7be8b2;
     box-shadow: 1px 1px 35px rgba(198, 211, 255, 0.28);
-    border: 1px solid ${theme.colors.navy};
     transform: translate3d(0px, 0px, 0px) scale3d(1.05, 1.05, 1) rotateX(0deg)
       rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);
     transform-style: preserve-3d;
     color: ${theme.colors.navy};
+    cursor: pointer;
   }
 `;
