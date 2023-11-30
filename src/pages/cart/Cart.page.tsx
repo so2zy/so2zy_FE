@@ -1,7 +1,6 @@
 import { theme } from '@styles/theme';
 import styled from 'styled-components';
 import { Checkbox } from '@mui/material';
-import { FaTrashCan } from 'react-icons/fa6';
 import {
   StyledItemDesc,
   StyledItemTitle,
@@ -11,6 +10,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { getCarts } from './components/getCart';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 
 export interface CartItemProps {
   data: {
@@ -49,6 +49,8 @@ export const Cart: React.FC = () => {
   const [originalPrice, setOriginalPrice] = useState<number>(0);
   const [salePrice, setSalePrice] = useState<number>(0);
   const [totalPrice, setTotalPrice] = useState<number>(0);
+
+  const navigate = useNavigate();
   const handleCheckBoxChange = (accommodation: AccommodationList) => {
     if (
       checkedHotel.some(
@@ -74,6 +76,11 @@ export const Cart: React.FC = () => {
     setCheckedAllHotel(!checkedAllHotel);
   };
 
+  const handleReservation = () => {
+    navigate(`/cartreservation`, { state: { checkedHotel } });
+    console.log('정보 전송 성공: ', checkedHotel);
+  };
+
   useEffect(() => {
     const sum = checkedHotel.reduce((acc, accommodation) => {
       return (
@@ -83,7 +90,14 @@ export const Cart: React.FC = () => {
         }, 0)
       );
     }, 0);
-    const sale = sum * 0.2;
+    const sale = checkedHotel.reduce((acc, accommodation) => {
+      return (
+        acc +
+        accommodation.roomList.reduce((roomAcc, room) => {
+          return roomAcc + room.price * 0.2;
+        }, 0)
+      );
+    }, 0);
     const total = sum - sale;
     setOriginalPrice(sum);
     setSalePrice(sale);
@@ -165,9 +179,6 @@ export const Cart: React.FC = () => {
                         </p>
                       </StyledDetailDes>
                     </StyleDetail>
-                    <StyleDetail>
-                      <StyledTrashCan />
-                    </StyleDetail>
                   </StyledListItem>
                 ))}
               </StyledList>
@@ -194,7 +205,7 @@ export const Cart: React.FC = () => {
           <StyledPrice>{totalPrice.toLocaleString('ko-KR')}원</StyledPrice>
         </StyledPriceWrapper>
       </StyleSubWrapper>
-      <StyledButtonWrapper>
+      <StyledButtonWrapper onClick={handleReservation}>
         <StyledBtnText>예약하기</StyledBtnText>
       </StyledButtonWrapper>
     </StyleMainWrapper>
@@ -242,6 +253,7 @@ export const StyledDetailDes = styled.div`
   margin: 0 1rem 0.5rem 0;
   p {
     margin-top: 2.5rem;
+    display: grid;
   }
   span {
     text-decoration: line-through;
@@ -327,13 +339,13 @@ export const StyledPrices = styled.span`
   font-size: ${theme.fonts.subtitle5.fontSize};
 `;
 
-const StyledTrashCan = styled(FaTrashCan)`
-  /* padding-left: 3rem; */
-  margin: 2.5rem 0 0 5rem;
-  color: ${theme.colors.navy};
-  cursor: pointer;
+// const StyledTrashCan = styled(FaTrashCan)`
+//   /* padding-left: 3rem; */
+//   margin: 2.5rem 0 0 5rem;
+//   color: ${theme.colors.navy};
+//   cursor: pointer;
 
-  &:hover {
-    color: ${theme.colors.gray3};
-  }
-`;
+//   &:hover {
+//     color: ${theme.colors.gray3};
+//   }
+// `;
