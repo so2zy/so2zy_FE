@@ -5,6 +5,8 @@ import {
   isClickedCalendarState,
   startDateState,
   endDateState,
+  startStringState,
+  endStringState,
 } from 'recoil/searchList';
 import { useSetRecoilState } from 'recoil';
 import { theme } from '@styles/theme';
@@ -20,16 +22,24 @@ export default function CalendarComponent({
 }) {
   const setGlobalStartDate = useSetRecoilState(startDateState);
   const setGlobalEndDate = useSetRecoilState(endDateState);
+  const setGlobalStartString = useSetRecoilState(startStringState);
+  const setGlobalEndString = useSetRecoilState(endStringState);
   const setIsCheckedCalendar = useSetRecoilState(isCheckedCalendarState);
   const setIsClickedCalendar = useSetRecoilState(isClickedCalendarState);
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [endDate, setEndDate] = useState<Date | null>(null);
   const handleFilter = () => {
-    setGlobalStartDate(startDate);
-    setGlobalEndDate(endDate);
-    setIsCheckedCalendar(true);
-    setIsClickedCalendar(false);
-    closeModal();
+    if (startDate && endDate) {
+      setGlobalStartDate(startDate);
+      setGlobalEndDate(endDate);
+      const formattedStartDate = startDate.toLocaleDateString('ko-KR');
+      const formattedEndDate = endDate.toLocaleDateString('ko-KR');
+      setGlobalStartString(formattedStartDate);
+      setGlobalEndString(formattedEndDate);
+      setIsCheckedCalendar(true);
+      setIsClickedCalendar(false);
+      closeModal();
+    }
   };
 
   const onChange = (dates: [Date | null, Date | null] | null) => {

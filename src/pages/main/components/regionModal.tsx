@@ -1,15 +1,9 @@
 import { theme } from '@styles/theme';
 import styled from 'styled-components';
-import {
-  RegionModalProps,
-  RegionSelectProps,
-  getRegionList,
-} from './getPlaces';
-import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { RegionModalProps } from './getPlaces';
 import { modalData } from './modalData';
 import { VscChromeClose } from 'react-icons/vsc';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { regionModalOpen } from '@recoil/regionModal';
 import { useNavigate } from 'react-router-dom';
 
@@ -26,13 +20,21 @@ const RegionModal = ({ isOpen }: RegionModalProps) => {
 
   const handleSelectedSigungu = (selectedSigungu: string) => {
     sessionStorage.setItem('selectedSigungu', selectedSigungu);
+    sessionStorage.setItem(
+      'selectedSigunguHistory',
+      JSON.stringify([selectedSigungu]),
+    );
+
+    setModalOpen(!modalOpen);
     navigate(`/regionList?sigunguname=${selectedSigungu}`);
   };
 
   return (
     <StyledWrapper style={{ display: isOpen ? 'block' : 'none' }}>
       <StyledContainer onClick={handleModalClick}>
-        <StyledTitle>지역 선택</StyledTitle>
+        <StyledTitle>
+          <span>지역 선택</span>
+        </StyledTitle>
         <StyledRegionContainer>
           <StyledRegionList>
             {modalData.map((sigungu) => (
@@ -68,8 +70,8 @@ const StyledWrapper = styled.div`
 `;
 
 const StyledContainer = styled.div`
-  width: 40rem;
-  height: 40rem;
+  width: 30rem;
+  height: 30rem;
   position: relative;
   top: 50%;
   left: 50%;
@@ -77,7 +79,7 @@ const StyledContainer = styled.div`
   align-items: center;
   background-color: ${theme.colors.gray1};
   box-shadow: ${theme.shadows.shadow1.shadow};
-  border-radius: 1rem;
+  border-radius: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -86,9 +88,15 @@ const StyledContainer = styled.div`
 
 const StyledTitle = styled.div`
   font-size: 1.5rem;
+  width: 8rem;
+  height: 3rem;
   font-weight: bold;
-  color: ${theme.colors.navy};
-  margin-top: 2rem;
+  color: black;
+  margin-top: 0.5rem;
+  border-radius: 0.825rem;
+  span {
+    line-height: 3.2rem;
+  }
 `;
 
 const StyledRegionContainer = styled.div`
@@ -99,7 +107,6 @@ const StyledRegionContainer = styled.div`
 `;
 
 const StyledRegionList = styled.div`
-  /* width: 90%; */
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(5, 1fr);
@@ -109,22 +116,20 @@ const StyledRegionList = styled.div`
 `;
 
 const StyledRegionItem = styled.button`
-  min-width: 6rem;
-  font-size: 1.2rem;
+  min-width: 4rem;
+  font-size: 1rem;
   display: block;
-  height: 5rem;
-  /* line-height: 5rem; */
+  height: 3.5rem;
   background-color: transparent;
   border-radius: 0.625rem;
-  margin: 0.5rem 0.5rem 1rem 0.5rem;
-  padding: 0 0.5rem 0 0.5rem;
+  margin: 0.25rem 0.25rem 0.5rem 0.25rem;
+  padding: 0.25rem 0.5rem 0 0.5rem;
   color: ${theme.colors.navy};
   font-weight: bold;
   cursor: pointer;
   &:hover {
-    background-color: #f1fff9;
+    background-color: #7be8b2;
     box-shadow: 1px 1px 35px rgba(198, 211, 255, 0.28);
-    border: 1px solid ${theme.colors.navy};
     transform: translate3d(0px, 0px, 0px) scale3d(1.05, 1.05, 1) rotateX(0deg)
       rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);
     transform-style: preserve-3d;

@@ -9,22 +9,15 @@ import { RecoilRoot } from 'recoil';
 
 const queryClient = new QueryClient();
 
-async function deferRender() {
-  const { worker } = await import('./mocks/browsers.js');
-  return worker.start();
-}
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <RecoilRoot>
+        <App />
+      </RecoilRoot>
+      <ReactQueryDevtools />
+    </QueryClientProvider>
+  </React.StrictMode>,
+);
 
-deferRender().then(() => {
-  ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-    <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <RecoilRoot>
-          <App />
-        </RecoilRoot>
-        <ReactQueryDevtools />
-      </QueryClientProvider>
-    </React.StrictMode>,
-  );
-
-  reportWebVitals();
-});
+reportWebVitals();

@@ -19,30 +19,21 @@ import {
   priceBState,
   startDateState,
   endDateState,
+  startStringState,
+  endStringState,
   isClickedMapState,
 } from 'recoil/searchList';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { regionListState, updateRegionListState } from '@recoil/regionList';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { getRegionListData } from '@utils/getData';
 import InfiniteScroll from 'react-infinite-scroller';
 import { useNavigate } from 'react-router-dom';
 
-interface Hotel {
-  id: number;
-  name: string;
-  // image: string;
-  favorites: boolean;
-  regularPrice: number;
-  discountPrice: number;
-  salesCount: number;
-  isAvailable: boolean;
-  peopleCount: number;
-}
-
 export const RegionList: React.FC = () => {
-  const areaName = '서울시';
+  const areaName = '서울특별시';
   const selectedSigungu = sessionStorage.getItem('selectedSigungu');
-  const [hotels, setHotels] = useState<Hotel[]>([]);
+  const [regionList, setRegionList] = useRecoilState(regionListState);
   const [sortBy, setSortBy] = useState('price');
   const [sortOrder, setSortOrder] = useState('asc');
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -59,11 +50,10 @@ export const RegionList: React.FC = () => {
   const peopleCount = useRecoilValue(peopleCountState); // 인원수
   const startDate = useRecoilValue(startDateState);
   const endDate = useRecoilValue(endDateState);
+  const startString = useRecoilValue(startStringState);
+  const endString = useRecoilValue(endStringState);
   const [date, setDate] = useState('');
-  const size = 10;
   const navigate = useNavigate();
-  const latitude = 33.450701;
-  const longitude = 126.570667;
 
   const shortenPrice = (price: number) => {
     if (price === 0) {
@@ -117,43 +107,34 @@ export const RegionList: React.FC = () => {
       areaName,
       selectedSigungu,
       peopleCount,
-      isClickedReservation,
-      startDate,
-      endDate,
+      startString,
+      endString,
       priceA,
       priceB,
       sortOrder,
       sortBy,
-      latitude,
-      longitude,
     ],
-    queryFn: ({ pageParam = 0 }) =>
+    queryFn: ({ pageParam }) =>
       getRegionListData(
         areaName,
         selectedSigungu,
         peopleCount,
-        isClickedReservation,
-        startDate,
-        endDate,
+        startString,
+        endString,
         priceA,
         priceB,
         sortOrder,
         sortBy,
         pageParam,
-        size,
-        latitude,
-        longitude,
       ),
     initialPageParam: 0,
-    getNextPageParam: (lastPage, allPosts) => {
-      return lastPage.currentPage !== allPosts[0].totalPages
-        ? lastPage.currentPage + 1
-        : undefined;
+    getNextPageParam: (lastPage, allPages, lastPageParam) => {
+      const lastData = lastPage?.data?.body;
+      return lastData && lastData.length === 10 ? lastPageParam + 1 : undefined;
     },
   });
 
   useEffect(() => {
-    // const timeDiff = endDate?.getTime() - startDate?.getTime();
     if (!startDate && !endDate) {
       const today = new Date();
       const todayMonth = (today?.getMonth() + 1).toString();
@@ -191,6 +172,23 @@ export const RegionList: React.FC = () => {
     });
   };
 
+  useEffect(() => {
+    const newPagesData = regionListData?.pages
+      ?.map((page) => page.data?.body)
+      .flat();
+
+    if (newPagesData) {
+      setRegionList((prevRegionList) => [...prevRegionList, ...newPagesData]);
+    }
+  }, [regionListData]);
+
+  useEffect(() => {
+    console.log('전역', regionList);
+  }, [regionList]);
+
+  useEffect(() => {
+    console.log('startDate', startDate);
+  }, [startDate]);
   return (
     <div>
       <StyledFilterSortWrapper>
@@ -252,23 +250,21 @@ export const RegionList: React.FC = () => {
             </StyledSortWrapper>
           </StyledPriceButton>
           <StyledSalesButton
-            onClick={() => handleSortClick('salesCount')}
-            className={sortBy === 'salesCount' ? 'active' : ''}
+            onClick={() => handleSortClick('soldCount')}
+            className={sortBy === 'soldCount' ? 'active' : ''}
           >
             <StyledSales>판매량</StyledSales>
             <StyledSortWrapper>
               <StyledSortUp
                 viewBox="0 -250 320 512"
                 className={
-                  sortBy === 'salesCount' && sortOrder === 'asc' ? 'active' : ''
+                  sortBy === 'soldCount' && sortOrder === 'asc' ? 'active' : ''
                 }
               />
               <StyledSortDown
                 viewBox="0 250 320 512"
                 className={
-                  sortBy === 'salesCount' && sortOrder === 'desc'
-                    ? 'active'
-                    : ''
+                  sortBy === 'soldCount' && sortOrder === 'desc' ? 'active' : ''
                 }
               />
             </StyledSortWrapper>
@@ -283,18 +279,16 @@ export const RegionList: React.FC = () => {
         </StyledSort>
       </StyledFilterSortWrapper>
       <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
-        {regionListData?.pages.map((page, pageIndex) => (
+        {regionListData?.pages?.map((page, pageIndex) => (
           <StyledContainer key={pageIndex}>
-            {page.data.map((hotel: any) => (
+            {page?.data?.body?.map((hotel: any, index: number) => (
               <Item
                 onClick={() => handleItemClick(hotel.id)}
                 key={hotel.id}
                 name={hotel.name}
-                // image={hotel.image}
-                favorites={hotel.favorites}
-                regularPrice={hotel.regularPrice}
-                discountPrice={hotel.discountPrice}
-                // salesCount={hotel.salesCount}
+                image={hotel.accommodationImageUrl}
+                likeCount={hotel.likeCount}
+                price={hotel.price}
               />
             ))}
           </StyledContainer>

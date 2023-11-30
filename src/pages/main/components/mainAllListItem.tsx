@@ -1,12 +1,14 @@
 import { theme } from '@styles/theme';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { FaStar } from 'react-icons/fa';
 import styled from 'styled-components';
-import { MainItemProps, MainListProps, getAllProduct } from './getPlaces';
+import { getAllProduct } from './getPlaces';
 import UseIntersectionObserver from '@utils/useIntersectionObserver';
 import ScrollTopBtn from '@components/common/ScrollToTop/ScrollToTop';
 import { formatDate } from '@utils/useFormatDate';
 import { useNavigate } from 'react-router-dom';
+import { eclipsText } from '@utils/textLength';
+import { MainItemProps, MainListProps } from './mainListItem';
+import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
 
 const MainAllListItem = ({ title }: MainListProps) => {
   const navigate = useNavigate();
@@ -50,7 +52,7 @@ const MainAllListItem = ({ title }: MainListProps) => {
       },
     });
   };
-
+  console.log(data?.pages);
   return (
     <StyledContainer>
       <StyledWrapper>
@@ -58,18 +60,24 @@ const MainAllListItem = ({ title }: MainListProps) => {
           data.pages?.length > 0 &&
           data.pages.map(
             (page) =>
-              page?.data?.map((item: MainItemProps) => (
+              page?.data?.body.map((item: MainItemProps) => (
                 <StyledMainAllItem key={item.id}>
-                  <StyledAllItemImage src={item.accommodationImageUrl} />
-                  <StyledAllItemTitle>{item.name}</StyledAllItemTitle>
+                  {item.accommodationImageUrl ? (
+                    <StyledAllItemImage
+                      src={item.accommodationImageUrl}
+                      alt="호텔 사진"
+                    />
+                  ) : (
+                    <StyledAllItemImage src={hotelDefaultImg} alt="대체 사진" />
+                  )}
+
+                  <StyledAllItemTitle>
+                    {eclipsText(item.name, 12)}
+                  </StyledAllItemTitle>
                   <StyledAllItemDesc>
-                    <StyledStar />
                     <StyledAllItemPriceList>
-                      <StyledPriceOriginal>
-                        {item.saleprice ? item.price : ''}
-                      </StyledPriceOriginal>
                       <StyledPriceSale>
-                        {item.saleprice ? item?.saleprice : item.price}
+                        {item.price.toLocaleString('ko-KR')}원
                       </StyledPriceSale>
                     </StyledAllItemPriceList>
                     <StyledLookBtn onClick={() => handleDetailPage(item.id)}>
@@ -97,7 +105,7 @@ const StyledContainer = styled.div`
 const StyledWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.625rem;
+  column-gap: 1.25rem;
 `;
 
 const StyledMainAllItem = styled.div`
@@ -105,16 +113,18 @@ const StyledMainAllItem = styled.div`
   display: flex;
   flex: 0 0 calc(50% - 0.625rem);
   width: 32rem;
-  height: 16rem;
+  height: 10rem;
   border-radius: 1rem;
-  box-shadow: ${theme.shadows.shadow2.shadow};
+  box-shadow: 4px 4px 4px ${theme.colors.gray2};
+  border: 0.5px solid ${theme.colors.gray2};
+
   position: relative;
   overflow: hidden;
   margin-bottom: 3rem;
 `;
 
 const StyledAllItemImage = styled.img`
-  width: 10.5rem;
+  width: 8rem;
   border-radius: 0.625rem;
   margin: 1rem;
 `;
@@ -122,6 +132,8 @@ const StyledAllItemImage = styled.img`
 const StyledAllItemTitle = styled.div`
   font-size: 1rem;
   margin-top: 1.2rem;
+  margin-left: 1rem;
+  font-weight: bold;
 `;
 const StyledAllItemDesc = styled.div`
   display: flex;
@@ -129,24 +141,11 @@ const StyledAllItemDesc = styled.div`
   justify-content: center;
 `;
 
-const StyledStar = styled(FaStar)`
-  position: absolute;
-  color: ${theme.colors.yellow};
-  top: 1.05rem;
-  right: 1rem;
-`;
-
 const StyledAllItemPriceList = styled.p`
   width: 6rem;
   position: absolute;
   bottom: 3.5rem;
   right: 1rem;
-`;
-
-const StyledPriceOriginal = styled.span`
-  text-decoration: line-through;
-  color: ${theme.colors.gray2};
-  font-size: 1rem;
 `;
 
 const StyledPriceSale = styled.span`
@@ -159,7 +158,8 @@ const StyledLookBtn = styled.button`
   bottom: 1.05rem;
   right: 1rem;
   width: 6rem;
-  padding: 0.5rem;
+  font-weight: bold;
+  padding: 0.6rem 0.5rem 0.4rem;
   border-radius: 0.625rem;
   background-color: ${theme.colors.navy};
   color: #fff;

@@ -1,5 +1,4 @@
 import { Header } from '@components/common/Header';
-// import { Footer } from '@components/common/Footer';
 import styled from 'styled-components';
 import { GrLinkPrevious } from 'react-icons/gr';
 import { theme } from '@styles/theme';
@@ -14,6 +13,9 @@ import MapModal from './components/MapModal';
 import { Loading } from '@components/common/Loading';
 import { useLocation } from 'react-router-dom';
 import { formatDate } from '@utils/useFormatDate';
+import { NeedLogin } from '@components/common/NeedLogin';
+import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
+import hotelDefaultImg2 from '@assets/images/hotelDefaultImg2.png';
 
 export interface IAccommodations {
   id: number;
@@ -22,13 +24,9 @@ export interface IAccommodations {
   longitude: number;
   addressCode: string;
   phoneNumber: string;
-  accommodationImageList: ImageList[];
+  accommodationUrl: string;
+  favorite: boolean;
   roomInfoList: RoomList[];
-}
-
-export interface ImageList {
-  id: number;
-  url: string;
 }
 
 export interface RoomList {
@@ -39,13 +37,13 @@ export interface RoomList {
   maxCapacity: number;
   checkIn: string;
   checkOut: string;
-  stock: number;
   url: string;
+  stock: number;
 }
 
 export const PlaceDetail: React.FC = () => {
   const { id } = useParams();
-
+  const accessToken = sessionStorage.getItem('accessToken');
   const [accommodation, setAccommodation] = useState<IAccommodations>({
     id: 0,
     accommodationName: '',
@@ -53,7 +51,8 @@ export const PlaceDetail: React.FC = () => {
     longitude: 0,
     addressCode: '',
     phoneNumber: '',
-    accommodationImageList: [{ id: 0, url: '' }],
+    accommodationUrl: '',
+    favorite: false,
     roomInfoList: [
       {
         id: 0,
@@ -89,7 +88,7 @@ export const PlaceDetail: React.FC = () => {
     setModalIsOpen(false);
   };
 
-  //필터링 데이터 받기
+  //필터링 데이터
   const location = useLocation();
   const { startDate, endDate, personnel } = location.state || {
     startDate: formatDate(new Date()),
@@ -98,14 +97,21 @@ export const PlaceDetail: React.FC = () => {
   };
 
   //숙소 정보 get
-  // `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}/${startDate}/${endDate}/${personnel}`
   const getData = async (id: any) => {
     try {
-      const res = await axios.get(`/accommodations/${id}`);
-
-      console.log(`get test ${id}`);
-      setAccommodation(res.data);
-      console.log('정보 가져오기 성공', res.data);
+      console.log(startDate, endDate);
+      const res = await axios.get(
+        `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}?startDate=${startDate}&endDate=${endDate}&personnel=${personnel}`,
+        {
+          headers: {
+            'Access-Token': accessToken,
+          },
+        },
+      );
+      console.log('정보 가져오기 ', res.data);
+      setAccommodation(res.data.data);
+      setIsChecked(res.data.data.favorite);
+      console.log('정보 가져오기 성공', accommodation);
       setIsLoading(false);
     } catch (error) {
       console.error('숙소 정보 가져오기 실패', error);
@@ -113,27 +119,62 @@ export const PlaceDetail: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log(`get test ${id}`);
-    getData(id);
-  }, [isLoading]);
-
-  useEffect(() => {
-    if (accommodation) {
-      console.log(accommodation);
-    }
+    console.log('정보 가져오기 성공', accommodation);
   }, [accommodation]);
 
-  //장바구니로 post하는 로직
-  // `${process.env.REACT_APP_SERVER}/v2/carts/{room_id}
-  const userKey = sessionStorage.getItem('userKey');
+  //찜
+  const toggleFavorite = async (id: any, isChecked: boolean) => {
+    try {
+      if (isChecked) {
+        await axios.post(
+          `${process.env.REACT_APP_SERVER}/v1/accommodations/${id}/favorite`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Token': accessToken,
+            },
+          },
+        );
+        console.log(`즐겨찾기 등록 성공`);
+      } else {
+        await axios.delete(
+          `${process.env.REACT_APP_SERVER}/v1/accommodations/${id}/favorite`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Token': accessToken,
+            },
+          },
+        );
+        console.log(`즐겨찾기 삭제 성공`);
+      }
+    } catch (error) {
+      console.error('즐겨찾기 실패:', error);
+    }
+  };
 
+  useEffect(() => {
+    getData(id);
+  }, [id, startDate, endDate, personnel]);
+
+  //장바구니로 post
   const addCart = async (roomId: number) => {
     const confirm = window.confirm('장바구니에 추가하시겠습니까?');
-    console.log(userKey);
     if (confirm) {
       try {
         const res = await axios.post(
-          `${process.env.REACT_APP_SERVER}/v1/carts/${userKey}/${roomId}`,
+          `${process.env.REACT_APP_SERVER}/v2/carts/${roomId}`,
+          {
+            startDate,
+            endDate,
+            personnel,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Token': accessToken,
+            },
+          },
         );
         navigate('/cart');
         console.log('장바구니 성공', res.data);
@@ -142,129 +183,145 @@ export const PlaceDetail: React.FC = () => {
       }
     }
   };
+  if (accessToken) {
+    if (isLoading) {
+      return <Loading />;
+    } else {
+      return (
+        <>
+          <Header />
+          <StyledBar>
+            <StyledBefore
+              onClick={() => {
+                navigate('/'); //메인으로 이동
+              }}
+            />
+            <StyledTitle>{accommodation.accommodationName}</StyledTitle>
+            <StyledSpan>
+              <StyledButton>
+                {startDate}~{endDate}
+              </StyledButton>
+              <StyledButton>{personnel}명</StyledButton>
+            </StyledSpan>
+          </StyledBar>
 
-  if (isLoading) {
-    return <Loading />;
-  } else {
-    return (
-      <>
-        <Header />
-        <StyledBar>
-          <StyledBefore
-            onClick={() => {
-              navigate('/'); //메인으로 이동
-            }}
+          {accommodation.accommodationUrl ? (
+            <StyledImg src={accommodation.accommodationUrl} />
+          ) : (
+            <StyledImg src={hotelDefaultImg} alt="사진이 없습니다." />
+          )}
+
+          <StyledMainTitle>
+            {accommodation.accommodationName}
+            <StyledStar
+              className={isChecked ? 'checked' : 'unchecked'}
+              onClick={() => {
+                setIsChecked((prev) => {
+                  const newChecked = !prev;
+                  console.log(newChecked);
+                  toggleFavorite(id, newChecked);
+                  return newChecked;
+                });
+              }}
+            />
+          </StyledMainTitle>
+
+          <StyledLocation
+            onClick={() =>
+              openModal(accommodation.latitude, accommodation.longitude)
+            }
+          >
+            숙소 위치 보기
+            <MdPlace />
+          </StyledLocation>
+          <MapModal
+            isOpen={modalIsOpen}
+            onRequestClose={closeModal}
+            latitude={modalLatitude}
+            longitude={modalLongitude}
           />
-          <StyledTitle>{accommodation.accommodationName}</StyledTitle>
-          <StyledSpan>
-            <StyledButton>
-              {startDate}~{endDate}
-            </StyledButton>
-            <StyledButton>{personnel}명</StyledButton>
-          </StyledSpan>
-        </StyledBar>
 
-        <StyledImg src={accommodation.accommodationImageList[0].url} />
+          <StyledDescription>{accommodation.addressCode}</StyledDescription>
+          <StyledDescription> {accommodation.phoneNumber}</StyledDescription>
+          <StyledLine />
 
-        <StyledMainTitle>
-          {accommodation.accommodationName}
-          <StyledStar
-            className={isChecked ? 'checked' : 'unchecked'}
-            onClick={() => {
-              setIsChecked((prev) => !prev);
-            }}
-          />
-        </StyledMainTitle>
-
-        <StyledLocation
-          onClick={() =>
-            openModal(accommodation.latitude, accommodation.longitude)
-          }
-        >
-          숙소 위치 보기
-          <MdPlace />
-        </StyledLocation>
-        <MapModal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          latitude={modalLatitude}
-          longitude={modalLongitude}
-        />
-
-        <StyledDescription>{accommodation.addressCode}</StyledDescription>
-        <StyledDescription> {accommodation.phoneNumber}</StyledDescription>
-        <StyledLine />
-
-        <StyledSubCategory>객실 선택</StyledSubCategory>
-        {accommodation.roomInfoList &&
-          accommodation.roomInfoList.map((room) => (
-            <StyledSubContainer key={room.id}>
-              <StyledDetailImg src={room.url} />
-              <StyledDetail>
-                <StyledWrapper>
-                  <StyledRoomTitle>{room.type}</StyledRoomTitle>
-                </StyledWrapper>
-                <StyledRoomType>숙박</StyledRoomType>
-                <StyledCapacity>
-                  체크인 {room.checkIn}, 체크아웃
-                  {room.checkOut}
-                </StyledCapacity>
-                <StyledCapacity>
-                  ({room.capacity}명 기준/최대 {room.maxCapacity}명)
-                </StyledCapacity>
-                <StyledRealPrice>{room.price}원</StyledRealPrice>
-                <StyledSalePrice> {room.price}원</StyledSalePrice>
-                {room.stock === 0 ? (
-                  <StyledNoStock>예약불가</StyledNoStock>
+          <StyledSubCategory>객실 선택</StyledSubCategory>
+          {accommodation.roomInfoList &&
+          accommodation.roomInfoList.length > 0 ? (
+            accommodation.roomInfoList.map((room) => (
+              <StyledSubContainer key={room.id}>
+                {room.url ? (
+                  <StyledDetailImg src={room.url} />
                 ) : (
-                  <ReservationWrapper>
-                    <StyledReservationButton>
-                      <RiShoppingBagLine
-                        onClick={() => {
-                          addCart(room.id);
-                        }}
-                      />
-                    </StyledReservationButton>
-                    <StyledReservationButton
-                      onClick={() => {
-                        // console.log(
-                        //   'Before',
-                        //   accommodation,
-                        //   room,
-                        //   startDate,
-                        //   endDate,
-                        //   personnel,
-                        // );
-                        navigate(`/reservation`, {
-                          state: {
-                            accommodation,
-                            room,
-                            startDate,
-                            endDate,
-                            personnel,
-                          },
-                        });
-                        console.log(
-                          'After',
-                          accommodation,
-                          room,
-                          startDate,
-                          endDate,
-                          personnel,
-                        );
-                      }}
-                    >
-                      예약하기
-                    </StyledReservationButton>
-                  </ReservationWrapper>
+                  <StyledDetailImg
+                    src={hotelDefaultImg2}
+                    alt="사진이 없습니다."
+                  />
                 )}
-              </StyledDetail>
-            </StyledSubContainer>
-          ))}
-      </>
-    );
+                <StyledDetail>
+                  <StyledWrapper>
+                    <StyledRoomTitle>{room.type}</StyledRoomTitle>
+                  </StyledWrapper>
+                  <StyledRoomType>숙박</StyledRoomType>
+                  <StyledCapacity>
+                    체크인 {room.checkIn}, 체크아웃
+                    {room.checkOut}
+                  </StyledCapacity>
+                  <StyledCapacity>
+                    ({room.capacity}명 기준/최대 {room.maxCapacity}명)
+                  </StyledCapacity>
+                  <StyledRealPrice>{room.price}원</StyledRealPrice>
+                  <StyledSalePrice> {room.price}원</StyledSalePrice>
+                  {room.stock === 0 ? (
+                    <StyledNoStock>예약불가</StyledNoStock>
+                  ) : (
+                    <ReservationWrapper>
+                      <StyledReservationButton>
+                        <RiShoppingBagLine
+                          onClick={() => {
+                            addCart(room.id);
+                          }}
+                        />
+                      </StyledReservationButton>
+                      <StyledReservationButton
+                        onClick={() => {
+                          navigate(`/reservation`, {
+                            state: {
+                              accommodation,
+                              room,
+                              startDate,
+                              endDate,
+                              personnel,
+                            },
+                          });
+                        }}
+                      >
+                        예약하기
+                      </StyledReservationButton>
+                    </ReservationWrapper>
+                  )}
+                </StyledDetail>
+              </StyledSubContainer>
+            ))
+          ) : (
+            <StyledNotAvailable>
+              해당 숙소에는 예약 가능한 객실이 없습니다.
+            </StyledNotAvailable>
+          )}
+        </>
+      );
+    }
+  } else {
+    return <NeedLogin />;
   }
 };
+
+const StyledNotAvailable = styled.div`
+  color: ${theme.colors.gray3};
+  font-size: ${theme.fonts.subtitle5.fontSize};
+  font-weight: ${theme.fonts.subtitle1.fontWeight};
+  margin: 1rem 0 0;
+`;
 
 export const StyledLine = styled.hr`
   color: ${theme.colors.gray3};

@@ -4,28 +4,24 @@ import axios from 'axios';
 export const getSearchListData = async (
   name?: string | null,
   peopleCount?: number,
-  isAvailable?: boolean,
-  startDate?: Date | null,
-  endDate?: Date | null,
+  startString?: string | null,
+  endString?: string | null,
   lowestPrice?: number,
   highestPrice?: number,
   orderBy?: string,
   orderCondition?: string,
   page?: number,
-  size?: number,
 ) => {
   try {
-    let url = `/v1/accommodations?`;
+    let url = `${process.env.REACT_APP_SERVER}/v2/accommodations?`;
     // 필터링
     if (name) url += `&name=${name}`;
     if (peopleCount !== undefined) url += `&peopleCount=${peopleCount}`;
-    if (startDate !== null) url += `&startDate=${startDate}`;
-    if (endDate !== null) url += `&endDate=${endDate}`;
+    if (startString) url += `&startString=${startString}`;
+    if (endString) url += `&endString=${endString}`;
     if (lowestPrice !== undefined) url += `&lowestPrice=${lowestPrice}`;
     if (highestPrice !== undefined) url += `&highestPrice=${highestPrice}`;
-    if (isAvailable !== undefined) url += `&isAvailable=${isAvailable}`;
     if (page !== undefined) url += `&page=${page}`;
-    if (size !== undefined) url += `&size=${size}`;
     // 정렬
     if (orderBy !== undefined) url += `&orderBy=${orderBy}`;
     if (orderCondition !== undefined)
@@ -36,7 +32,7 @@ export const getSearchListData = async (
       console.log('getSearchListData', res.data);
       return res.data;
     } else {
-      console.log('데이터 불러오기 실패!');
+      console.log('데이터 불러오기 실패');
       return [];
     }
   } catch (error) {
@@ -49,34 +45,27 @@ export const getRegionListData = async (
   areaName?: string | null,
   sigunguName?: string | null,
   peopleCount?: number,
-  isAvailable?: boolean,
-  startDate?: Date | null,
-  endDate?: Date | null,
+  startString?: string | null,
+  endString?: string | null,
   lowestPrice?: number,
   highestPrice?: number,
   orderBy?: string,
   orderCondition?: string,
   page?: number,
-  size?: number,
-  latitude?: number,
-  longitude?: number,
 ) => {
   try {
-    let url = `/v1/accommodations?`;
+    // let url = `/v1/accommodations?`;
+    let url = `${process.env.REACT_APP_SERVER}/v2/accommodations?`;
 
     // 필터링
     if (areaName) url += `&areaName=${areaName}`;
     if (sigunguName) url += `&sigunguName=${sigunguName}`;
-    if (peopleCount !== undefined) url += `&peopleCount=${peopleCount}`;
-    if (startDate !== null) url += `&startDate=${startDate}`;
-    if (endDate !== null) url += `&endDate=${endDate}`;
+    if (peopleCount !== undefined) url += `&capacity=${peopleCount}`;
+    if (startString) url += `&startString=${startString}`;
+    if (endString) url += `&endString=${endString}`;
     if (lowestPrice !== undefined) url += `&lowestPrice=${lowestPrice}`;
     if (highestPrice !== undefined) url += `&highestPrice=${highestPrice}`;
-    if (isAvailable !== undefined) url += `&isAvailable=${isAvailable}`;
     if (page !== undefined) url += `&page=${page}`;
-    if (size !== undefined) url += `&size=${size}`;
-    if (latitude !== undefined) url += `&latitude=${latitude}`;
-    if (longitude !== undefined) url += `&longitude=${longitude}`;
     // 정렬
     if (orderBy !== undefined) url += `&orderBy=${orderBy}`;
     if (orderCondition !== undefined)
