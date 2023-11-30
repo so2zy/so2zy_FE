@@ -189,7 +189,7 @@ const Header = () => {
   );
 
   const handleLogOut = async () => {
-    if (confirm('로그아웃 하시겠습니다까 ?')) {
+    if (confirm('로그아웃 하시겠습니까?')) {
       localStorage.clear();
 
       await resetRecoilState();
