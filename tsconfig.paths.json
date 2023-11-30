@@ -4,12 +4,13 @@
     "paths": {
       "@api/*": ["api/*"],
       "@assets/*": ["assets/*"],
-      "@recoil/*": ["components/recoil/*"],
-      "@pages/*": ["components/pages/*"],
+      "@recoil/*": ["recoil/*"],
+      "@pages/*": ["pages/*"],
       "@hooks/*": ["hooks/*"],
       "@styles/*": ["styles/*"],
       "@utils/*": ["utils/*"],
-      "@components/*": ["components/*"]
+      "@components/*": ["components/*"],
+      "@mocks/*": ["mocks/*"]
     }
   }
 }

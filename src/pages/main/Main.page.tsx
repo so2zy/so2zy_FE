@@ -1,14 +1,15 @@
-import { Header } from '@components/common/Header';
 import { Footer } from '@components/common/Footer';
+import RegionSelectBtn from './components/regionSelectBtn';
+import MainListContainer from './components/mainListContainer';
+import MainAllListContainer from './components/mainAllListContainer';
 
 export const Main: React.FC = () => {
   return (
     <>
-      <Header />
-      <div>컴포넌트들</div>
-      <div>들어가는</div>
-      <div>곳</div>
-      <Footer />
+      <RegionSelectBtn />
+      <MainListContainer title={'많이 판매된 숙소'} />
+      <MainListContainer title={'찜 많은 숙소'} />
+      <MainAllListContainer title={'전체 숙소 보기'} />
     </>
   );
 };
