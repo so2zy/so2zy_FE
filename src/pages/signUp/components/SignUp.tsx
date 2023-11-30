@@ -275,6 +275,11 @@ const StyledSignUpInput = styled.input`
   background-color: transparent;
   outline: none;
   border: none;
+  &::placeholder {
+    font-family: 'GmarketSans';
+    src: url('./assets/fonts/GmarketSansTTFLight.ttf');
+    font-weight: 500;
+  }
 `;
 const StyledSignUpButton = styled.button`
   padding-top: 0.3rem;

@@ -176,6 +176,7 @@ const StyledSignInContent = styled.div`
 `;
 const StyledMainLogoTwo = styled.div`
   img {
+    width: 300px;
     cursor: pointer;
   }
 `;
@@ -217,6 +218,11 @@ const StyledInputWrap = styled.div`
     background-color: #d9d9d9;
     padding: 0.4rem 1rem;
     border-radius: 20px;
+    &::placeholder {
+      font-family: 'GmarketSans';
+      src: url('./assets/fonts/GmarketSansTTFLight.ttf');
+      font-weight: 500;
+    }
   }
 `;
 const StyledSignInError = styled.div`

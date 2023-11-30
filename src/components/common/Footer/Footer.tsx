@@ -5,9 +5,14 @@ const Footer = () => {
     <StyledWrapper>
       <StyledContent>
         <StyledDiv>
-          <img alt="Aroom" src={Logo} />
-          Aroom은 통신판매 중개자로서 통신판매의 당사자가 아니며 상품의 예약,
-          이용 및 환불 등과 관련한 의무와 책임은 각 판매자에게 있습니다.
+          <span>
+            <img alt="Aroom" src={Logo} />
+          </span>
+          <span>
+            {' '}
+            Aroom은 통신판매 중개자로서 통신판매의 당사자가 아니며 상품의 예약,
+            이용 및 환불 등과 관련한 의무와 책임은 각 판매자에게 있습니다.
+          </span>
         </StyledDiv>
       </StyledContent>
     </StyledWrapper>
@@ -26,7 +31,7 @@ const StyledWrapper = styled.div`
   img {
     position: relative;
     top: 4px;
-    width: 6rem;
+    width: 5rem;
   }
 `;
 const StyledContent = styled.div`
@@ -42,10 +47,13 @@ const StyledContent = styled.div`
   }
 `;
 const StyledDiv = styled.div`
+  diplay: flex;
+  justify-content: space-between;
   width: 100%;
   height: 1.2rem;
   margin-top: 1.5rem;
-
+  position: relative;
+  top: -7px;
   font-size: 0.9rem;
   color: #919191;
   margin-top: 0.5rem;
