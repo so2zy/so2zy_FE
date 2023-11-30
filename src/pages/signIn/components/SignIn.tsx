@@ -220,7 +220,6 @@ const StyledSignInError = styled.div`
 
 const StyledSignInButton = styled.button`
   cursor: pointer;
-
   width: 100%;
   height: 2.5rem;
   background-color: ${theme.colors.navy};
@@ -229,6 +228,7 @@ const StyledSignInButton = styled.button`
   font-weight: 900;
   border-radius: 10px;
 `;
+
 const StyledSignInGoSignUp = styled.div`
   margin-top: 0.5rem;
   text-align: center;
