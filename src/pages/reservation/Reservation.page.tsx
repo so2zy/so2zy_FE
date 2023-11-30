@@ -48,7 +48,6 @@ export const Reservation: React.FC = () => {
       };
 
       try {
-        // ${process.env.REACT_APP_SERVER}
         const response = await axios.post(
           ` ${process.env.REACT_APP_SERVER}/v1/reservations`,
           data,

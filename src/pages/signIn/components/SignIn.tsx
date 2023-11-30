@@ -234,6 +234,7 @@ const StyledSignInError = styled.div`
 
 const StyledSignInButton = styled.button`
   cursor: pointer;
+
   padding-top: 0.2rem;
   width: 100%;
   height: 2.5rem;
@@ -243,6 +244,7 @@ const StyledSignInButton = styled.button`
   font-weight: 900;
   border-radius: 10px;
 `;
+
 const StyledSignInGoSignUp = styled.div`
   margin-top: 0.5rem;
   text-align: center;
