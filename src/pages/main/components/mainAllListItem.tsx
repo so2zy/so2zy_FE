@@ -124,9 +124,8 @@ const StyledMainAllItem = styled.div`
 `;
 
 const StyledAllItemImage = styled.img`
-  width: 8rem;
-  border-radius: 0.625rem;
-  margin: 1rem;
+  width: 10.5rem;
+  border-radius: 0.625rem 0 0 0.625rem;
 `;
 
 const StyledAllItemTitle = styled.div`

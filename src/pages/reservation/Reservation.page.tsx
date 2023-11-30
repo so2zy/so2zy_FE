@@ -16,7 +16,7 @@ export const Reservation: React.FC = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [personnel, setPersonnel] = useState('');
-  const accessToken = sessionStorage.getItem('accessToken');
+  const accessToken = localStorage.getItem('accessToken');
   const navigate = useNavigate();
 
   useEffect(() => {
