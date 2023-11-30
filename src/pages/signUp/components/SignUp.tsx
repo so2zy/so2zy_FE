@@ -229,8 +229,7 @@ export const SignUp: React.FC = () => {
   );
 };
 export const StyledNoHeaderWrap = styled.div`
-  box-shadow: 4px 4px 4px ${theme.colors.gray2};
-  width: 1080px;
+  width: 50%;
   height: 100%;
   margin: 0 auto;
   background-color: ${theme.colors.gray1};
@@ -278,6 +277,7 @@ const StyledSignUpInput = styled.input`
   border: none;
 `;
 const StyledSignUpButton = styled.button`
+  padding-top: 0.3rem;
   cursor: pointer;
   width: 100%;
   height: 3rem;
@@ -290,6 +290,8 @@ const StyledSignUpButton = styled.button`
 `;
 
 const StyledSignUpEmailCheck = styled.button`
+  padding-top: 0.25rem;
+
   cursor: pointer;
   width: 6rem;
   color: white;

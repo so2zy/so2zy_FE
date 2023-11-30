@@ -148,8 +148,7 @@ export const StyledNoHeaderWrap = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 4px 4px 4px ${theme.colors.gray2};
-  width: 1080px;
+  width: 50%;
   height: 100%;
   margin: 0 auto;
   background-color: ${theme.colors.gray1};
@@ -159,6 +158,8 @@ export const StyledNoHeaderWrap = styled.div`
 `;
 const StyledSignInContent = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: center;
   width: 70%;
   height: 30rem;
   margin: 0 auto;
@@ -166,6 +167,9 @@ const StyledSignInContent = styled.div`
   border: 1px solid #a8a8a8;
   border-radius: 20px;
   box-shadow: 4px 4px 4px ${theme.colors.gray2};
+  > div {
+    height: 100%;
+  }
   @media (max-width: 1080px) {
     width: 100%;
   }
@@ -184,14 +188,18 @@ const StyledSignInLeft = styled.div`
   border-right: 1px solid #a8a8a8;
 `;
 const StyledSignInRight = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   color: ${theme.colors.navy};
   width: 50%;
   font-weight: 700;
-  padding: 3rem;
+  padding: 2rem;
 `;
 const StyledSignInGreeting = styled.div`
   div {
     line-height: 1.5;
+    white-space: nowrap;
   }
 `;
 const StyledInputWrap = styled.div`
@@ -215,12 +223,12 @@ const StyledSignInError = styled.div`
   color: ${theme.colors.error};
   font-size: 0.8rem;
   padding-left: 0.5rem;
-  margin: 1rem auto;
+  margin: 1rem auto 0.5rem auto;
 `;
 
 const StyledSignInButton = styled.button`
   cursor: pointer;
-
+  padding-top: 0.3rem;
   width: 100%;
   height: 2.5rem;
   background-color: ${theme.colors.navy};
