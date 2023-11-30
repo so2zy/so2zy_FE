@@ -111,9 +111,12 @@ const Header = () => {
 
   const isSearchPage =
     location.pathname === '/' || location.pathname.startsWith('/searchList');
-  const isReservedPage = ['/reservation', '/confirm', '/cart'].includes(
-    location.pathname,
-  );
+  const isReservedPage = [
+    '/reservation',
+    '/confirm',
+    '/cart',
+    '/cartreservation',
+  ].includes(location.pathname);
   const isSignUpOrSignIn = ['/signUp', '/signIn'].includes(location.pathname);
   if (isSignUpOrSignIn) {
     return null;
@@ -133,6 +136,8 @@ const Header = () => {
     } else if (location.pathname === '/reservation') {
       history.back();
     } else if (location.pathname === '/confirm') {
+      history.back();
+    } else if (location.pathname === '/cartreservation') {
       history.back();
     } else if (location.pathname == '/regionList') {
       history.back();
@@ -246,8 +251,9 @@ const Header = () => {
                 ? '장바구니'
                 : location.pathname === '/reservation'
                   ? '예약'
-                  : ''}
-              {/* 로고 넣기 */}
+                  : location.pathname === '/cartreservation'
+                    ? '예약'
+                    : ''}
             </div>
             <StyledHeaderHomeIcon>
               <img src={HomeIcon} alt="Cart Icon" onClick={handleHomeIcon} />
