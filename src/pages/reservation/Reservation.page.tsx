@@ -43,9 +43,9 @@ export const Reservation: React.FC = () => {
           startDate: startDate,
           endDate: endDate,
           price: roomInfo.price,
+          personnel: personnel,
         },
       ],
-      personnel,
       agreement,
       isFromCart: false,
     };
