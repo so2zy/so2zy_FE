@@ -166,7 +166,10 @@ const MapBox: React.FC = () => {
   }, [centerLat, centerLng]);
 
   return (
-    <div id="map" style={{ width: '40vw', height: '50vh', margin: '1rem 0' }} />
+    <div
+      id="map"
+      style={{ width: '38rem', height: '22rem', margin: '1rem 0' }}
+    />
   );
 };
 
