@@ -9,11 +9,9 @@ import { useNavigate } from 'react-router-dom';
 
 export const Reservation: React.FC = () => {
   const location = useLocation();
-  // console.log('Location 값 확인', location.state);
 
-  const [accommodationInfo, setAccommodationInfo] =
-    useState<IAccommodations | null>(null);
-  const [roomInfo, setRoomInfo] = useState<RoomList | null>(null);
+  const [accommodationInfo, setAccommodationInfo] = useState<IAccommodations>();
+  const [roomInfo, setRoomInfo] = useState<RoomList>();
   const [agreement, setAgreement] = useState(false);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -32,37 +30,44 @@ export const Reservation: React.FC = () => {
   }, [location.state]);
 
   const handlePayment = async () => {
-    if (roomInfo && agreement) {
-      const data = {
-        roomList: [
-          {
-            roomId: roomInfo.id,
-            startDate: startDate,
-            endDate: endDate,
-            price: roomInfo.price,
-          },
-        ],
-        personnel,
-        agreement,
-        isFromCart: false, //장바구니 아닐땐 false
-      };
+    if (!roomInfo || !agreement) {
+      return;
+    }
 
-      try {
-        const response = await axios.post(
-          ` ${process.env.REACT_APP_SERVER}/v1/reservations`,
-          data,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Token': accessToken,
-            },
+    const data = {
+      roomList: [
+        {
+          roomId: roomInfo.id,
+          startDate: startDate,
+          endDate: endDate,
+          price: roomInfo.price,
+          personnel: personnel,
+        },
+      ],
+      agreement,
+      isFromCart: false,
+    };
+
+    const confirm = window.confirm('결제 하시겠습니까?');
+    if (!confirm) {
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVER}/v1/reservations`,
+        data,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Token': accessToken,
           },
-        );
-        console.log(response.data);
-        navigate('/confirm', { state: { data: response.data } });
-      } catch (error) {
-        console.error('결제 실패', error);
-      }
+        },
+      );
+
+      navigate('/confirm', { state: { data: response.data } });
+    } catch (error) {
+      console.error('결제 실패', error);
     }
   };
 
@@ -100,12 +105,12 @@ export const Reservation: React.FC = () => {
           </StyledPayPrice>
           <StyledItemPrice>
             <span>상품금액</span>
-            <span>숙박/1박 {roomInfo?.price}원</span>
+            <span>숙박/1박 {roomInfo?.price ? roomInfo.price * 1.2 : 0}원</span>
           </StyledItemPrice>
           <StyledItemSalePrice>
             <span>할인</span>
             <StyledItemSaleText>
-              <span>-0원</span>
+              <span>-{roomInfo?.price ? roomInfo.price * 0.2 : 0}원</span>
               <span id="no-refund">※ 환불 불가 </span>
             </StyledItemSaleText>
           </StyledItemSalePrice>

@@ -11,6 +11,7 @@ import {
   StyledBtnText,
   StyledButtonWrapper,
 } from '@pages/reservation/Reservation.page';
+import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
 
 interface RoomList {
   roomId: number;
@@ -28,7 +29,6 @@ interface RoomList {
 
 export const Confirm: React.FC = () => {
   const location = useLocation();
-  console.log('확인 데이터', location.state.data.data);
 
   const [reservationNumber, setReservationNumber] = useState(0);
   const [dealDateTime, setDealDateTime] = useState();
@@ -39,7 +39,6 @@ export const Confirm: React.FC = () => {
     if (location.state && location.state.data) {
       const { dealDateTime, reservationNumber, roomList } =
         location.state.data.data;
-      console.log('room', roomList);
       setDealDateTime(dealDateTime);
       setReservationNumber(reservationNumber);
       setRoomList(roomList);
@@ -75,7 +74,11 @@ export const Confirm: React.FC = () => {
             숙소 예약번호: {room.roomReservationNumber}
           </StyleDescription>
           <StyleSubWrapper>
-            <StyledMiniImage src="https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg" />
+            {room.roomImageUrl ? (
+              <StyledMiniImage src={room.roomImageUrl} />
+            ) : (
+              <StyledMiniImage src={hotelDefaultImg} alt="사진이 없습니다." />
+            )}
             <StyleDetail>
               <StyleRoomName>{room.type}</StyleRoomName>
               <StyledDetailDes>
