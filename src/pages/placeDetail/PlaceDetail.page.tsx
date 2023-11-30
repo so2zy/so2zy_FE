@@ -162,6 +162,11 @@ export const PlaceDetail: React.FC = () => {
     }
   };
 
+  const inputstartString: string = startDate;
+  const startResult: string = inputstartString.substr(2, 5);
+  const inputendString: string = endDate;
+  const endResult: string = inputendString.substr(2, 5);
+
   if (accessToken) {
     if (isLoading) {
       return <Loading />;
@@ -178,7 +183,7 @@ export const PlaceDetail: React.FC = () => {
             <StyledTitle>{accommodation.accommodationName}</StyledTitle>
             <StyledSpan>
               <StyledButton>
-                {startDate}~{endDate}
+                {startResult}~{endResult}
               </StyledButton>
               <StyledButton>{personnel}명</StyledButton>
             </StyledSpan>
@@ -376,7 +381,7 @@ const StyledDescription = styled.div`
 
 //호텔 이미지
 const StyledImg = styled.img`
-  height: 25rem;
+  height: 28rem;
   background-color: ${theme.colors.gray2};
   border-radius: 8px;
   width: 100%;
@@ -468,10 +473,11 @@ const StyledBar = styled.div`
 const StyledBefore = styled(GrLinkPrevious)`
   vertical-align: top;
   cursor: pointer;
+  font-size: ${theme.fonts.subtitle4.fontSize};
 `;
 
 const StyledTitle = styled.span`
-  margin-left: 15rem;
+  flex-grow: 1;
   text-align: center;
   vertical-align: top;
   font-size: ${theme.fonts.subtitle4.fontSize};
@@ -480,7 +486,6 @@ const StyledTitle = styled.span`
 
 const StyledSpan = styled.span`
   margin-left: auto;
-  margin-right: 0;
   vertical-align: top;
 `;
 
