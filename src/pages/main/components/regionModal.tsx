@@ -128,9 +128,8 @@ const StyledRegionItem = styled.button`
   font-weight: bold;
   cursor: pointer;
   &:hover {
-    background-color: #f1fff9;
+    background-color: #7be8b2;
     box-shadow: 1px 1px 35px rgba(198, 211, 255, 0.28);
-    border: 1px solid ${theme.colors.navy};
     transform: translate3d(0px, 0px, 0px) scale3d(1.05, 1.05, 1) rotateX(0deg)
       rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);
     transform-style: preserve-3d;

@@ -35,7 +35,7 @@ const MapBox: React.FC = () => {
     const container = document.getElementById(`map`);
     const options = {
       center: new window.kakao.maps.LatLng(centerLat, centerLng),
-      level: 8,
+      level: 7,
     };
 
     const map = new window.kakao.maps.Map(container, options);

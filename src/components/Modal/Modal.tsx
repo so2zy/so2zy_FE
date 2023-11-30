@@ -41,7 +41,7 @@ const ModalComponent: React.FC<ModalProps> = ({ isOpen, closeModal }) => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      borderRadius: '1rem',
+      borderRadius: '2rem',
     },
     overlay: {
       backgroundColor: 'rgba(0, 0, 0, 0)',
@@ -52,13 +52,13 @@ const ModalComponent: React.FC<ModalProps> = ({ isOpen, closeModal }) => {
     content: {
       ...customStyles.content,
       height: isClickedCalendar
-        ? '57.5%'
+        ? '27.5rem'
         : isClickedMap
-          ? '67.5%'
+          ? '30rem'
           : isClickedRegion
-            ? '65%'
-            : '35%',
-      width: isClickedMap ? '45%' : isClickedRegion ? '30%' : '25%',
+            ? '30rem'
+            : '15rem',
+      width: isClickedMap ? '45rem' : isClickedRegion ? '27.5rem' : '25rem',
     },
     overlay: {
       ...customStyles.overlay,
