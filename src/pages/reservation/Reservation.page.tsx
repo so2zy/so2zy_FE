@@ -16,7 +16,7 @@ export const Reservation: React.FC = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [personnel, setPersonnel] = useState('');
-  const accessToken = sessionStorage.getItem('accessToken');
+  const accessToken = localStorage.getItem('accessToken');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -153,6 +153,8 @@ export const Reservation: React.FC = () => {
 
 export const StyledButtonWrapper = styled.div`
   width: 100%;
+  display: flex;
+  justify-content: center;
   margin: 2rem auto 1rem auto;
   border: 1px solid black;
   margin-right: 0.4rem;
@@ -171,6 +173,7 @@ export const StyledButtonWrapper = styled.div`
 export const StyledBtnText = styled.p`
   color: #fff;
   font-weight: bold;
+  padding-top: 0.2rem;
 `;
 
 export const StyledRuleWrapper = styled.div`

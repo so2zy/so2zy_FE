@@ -69,8 +69,8 @@ const Header = () => {
           const { iat } = decodedToken;
           const iatPlus = iat * 1000 + 9 * 60 * 60 * 1000;
           setIatDatePlus9Hours(iatPlus);
-          sessionStorage.setItem('iatDatePlus9Hours', newAccessToken);
-          sessionStorage.setItem('accessToken', String(iatPlus));
+          localStorage.setItem('iatDatePlus9Hours', newAccessToken);
+          localStorage.setItem('accessToken', String(iatPlus));
 
           setToken(newAccessToken);
           console.log('재발급성공');
@@ -111,14 +111,17 @@ const Header = () => {
 
   const isSearchPage =
     location.pathname === '/' || location.pathname.startsWith('/searchList');
-  const isReservedPage = ['/reservation', '/confirm', '/cart'].includes(
-    location.pathname,
-  );
+  const isReservedPage = [
+    '/reservation',
+    '/confirm',
+    '/cart',
+    '/cartreservation',
+  ].includes(location.pathname);
   const isSignUpOrSignIn = ['/signUp', '/signIn'].includes(location.pathname);
   if (isSignUpOrSignIn) {
     return null;
   }
-  // console.log(refreshToken, token);
+
   const handleMainLogoClick = () => {
     navigate('/');
   };
@@ -133,6 +136,8 @@ const Header = () => {
     } else if (location.pathname === '/reservation') {
       history.back();
     } else if (location.pathname === '/confirm') {
+      history.back();
+    } else if (location.pathname === '/cartreservation') {
       history.back();
     } else if (location.pathname == '/regionList') {
       history.back();
@@ -184,9 +189,11 @@ const Header = () => {
   );
 
   const handleLogOut = async () => {
-    sessionStorage.clear();
+    if (confirm('로그아웃 하시겠습니다까 ?')) {
+      localStorage.clear();
 
-    await resetRecoilState();
+      await resetRecoilState();
+    }
   };
 
   useEffect(() => {
@@ -198,13 +205,13 @@ const Header = () => {
     }
   }, []);
   useEffect(() => {
-    const storedLoginState = sessionStorage.getItem('loginState');
+    const storedLoginState = localStorage.getItem('loginState');
     if (storedLoginState === 'true') {
-      const storedUserKey = sessionStorage.getItem('userKey') || '';
-      const storedAccessToken = sessionStorage.getItem('accessToken') || '';
-      const storedRefreshToken = sessionStorage.getItem('refreshToken') || '';
-      const storedEmail = sessionStorage.getItem('email') || '';
-      const storedUserName = sessionStorage.getItem('userName') || '';
+      const storedUserKey = localStorage.getItem('userKey') || '';
+      const storedAccessToken = localStorage.getItem('accessToken') || '';
+      const storedRefreshToken = localStorage.getItem('refreshToken') || '';
+      const storedEmail = localStorage.getItem('email') || '';
+      const storedUserName = localStorage.getItem('userName') || '';
       setUserKey(storedUserKey);
       setRefreshToken(storedRefreshToken);
       setToken(storedAccessToken);
@@ -239,14 +246,15 @@ const Header = () => {
             <div>
               <StyledBefore size="30" onClick={handleArrowLeft} />
             </div>
-            <div onClick={handleReservationText}>
+            <StyledHeaderTitle onClick={handleReservationText}>
               {location.pathname === '/cart'
                 ? '장바구니'
                 : location.pathname === '/reservation'
                   ? '예약'
-                  : ''}
-              {/* 로고 넣기 */}
-            </div>
+                  : location.pathname === '/cartreservation'
+                    ? '예약'
+                    : ''}
+            </StyledHeaderTitle>
             <StyledHeaderHomeIcon>
               <img src={HomeIcon} alt="Cart Icon" onClick={handleHomeIcon} />
             </StyledHeaderHomeIcon>
@@ -416,6 +424,11 @@ const StyledHeaderCartIcon = styled(FaCartShopping)`
   position: relative;
 `;
 
+const StyledHeaderTitle = styled.div`
+  font-weight: bold;
+  font-size: 1.6rem;
+  padding-top: 0.8rem;
+`;
 // const StyledHeaderCartCount = styled.div`
 //   /* font-size: 0.5rem; */
 //   border-radius: 3rem;
@@ -501,7 +514,7 @@ const StyledHouse = styled(House)`
 
 const StyledLeftBtn = styled(BsArrowLeft)`
   cursor: pointer;
-  color: white;
+  color: ${theme.colors.navy};
 `;
 
 export default Header;

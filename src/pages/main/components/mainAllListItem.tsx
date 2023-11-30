@@ -75,7 +75,9 @@ const MainAllListItem = ({ title }: MainListProps) => {
                   <StyledAllItemDesc>
                     <StyledAllItemPriceList>
                       <StyledPriceSale>
-                        {item.price.toLocaleString('ko-KR')}원
+                        {item.price
+                          ? `${item.price.toLocaleString('ko-KR')}원~`
+                          : '품절'}
                       </StyledPriceSale>
                     </StyledAllItemPriceList>
                     <StyledLookBtn onClick={() => handleDetailPage(item.id)}>
@@ -122,9 +124,8 @@ const StyledMainAllItem = styled.div`
 `;
 
 const StyledAllItemImage = styled.img`
-  width: 8rem;
-  border-radius: 0.625rem;
-  margin: 1rem;
+  width: 10.5rem;
+  border-radius: 0.625rem 0 0 0.625rem;
 `;
 
 const StyledAllItemTitle = styled.div`
@@ -147,7 +148,7 @@ const StyledAllItemPriceList = styled.p`
 `;
 
 const StyledPriceSale = styled.span`
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: bold;
 `;
 

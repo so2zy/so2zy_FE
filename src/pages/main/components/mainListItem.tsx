@@ -29,6 +29,7 @@ export interface MainItemProps {
   phoneNumber: string;
   accommodationImageUrl: string;
   price: number;
+  isAvaliable: boolean;
 }
 
 const MainListItem = ({ title }: MainListProps) => {
@@ -83,7 +84,9 @@ const MainListItem = ({ title }: MainListProps) => {
                 {index + 1}. {eclipsText(item.name, 10)}
               </StyledItemName>
               <StyledItemPrice>
-                {item.price.toLocaleString('ko-KR')}원 ~
+                {item.price
+                  ? `${item.price.toLocaleString('ko-KR')}원 ~`
+                  : '품절'}
               </StyledItemPrice>
             </StyledItemDesc>
           </StyledMainPageItem>

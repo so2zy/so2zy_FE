@@ -6,6 +6,7 @@ import { regionListState, updateRegionListState } from '@recoil/regionList';
 import { useRecoilValue } from 'recoil';
 import { useState } from 'react';
 import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
+import { formatDate } from '@utils/useFormatDate';
 
 declare global {
   interface Window {
@@ -30,6 +31,12 @@ const MapBox: React.FC = () => {
   });
 
   const regionList = useRecoilValue(regionListState);
+  const startDate = new Date();
+  const endDate = new Date();
+  endDate.setDate(endDate.getDate() + 1);
+  const personnel = 1;
+  const startFormatDate = formatDate(startDate);
+  const endFormatDate = formatDate(endDate);
 
   useEffect(() => {
     const container = document.getElementById(`map`);

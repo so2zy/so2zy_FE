@@ -28,7 +28,7 @@ interface CartReservationRoomProps {
 export const CartReservation: React.FC = () => {
   const location = useLocation();
   const checkedHotel = location.state?.checkedHotel;
-  const accessToken = sessionStorage.getItem('accessToken');
+  const accessToken = localStorage.getItem('accessToken');
   const navigate = useNavigate();
 
   const [agreement, setAgreement] = useState(false);
@@ -112,30 +112,35 @@ export const CartReservation: React.FC = () => {
             {accommodation &&
               accommodation.roomList.map(
                 (roomInfo: CartReservationRoomProps) => (
-                  <StyledItemDesc key={roomInfo.roomId}>
-                    <StyledItemTitle>
-                      <span>{accommodation.accommodationName}</span>
-                    </StyledItemTitle>
-                    <StyledItemSubTitle>
-                      <span>{roomInfo.type}</span>
-                    </StyledItemSubTitle>
-                    <StyledAcceptPerson>
-                      <span>
-                        기준 {roomInfo.capacity}인/최대 {roomInfo.maxCapacity}인
-                      </span>
-                    </StyledAcceptPerson>
-                    <StyledCheckIn>
-                      <p>체크인</p>
-                      <span>
-                        {roomInfo.startDate} {roomInfo.checkIn}
-                      </span>
-                    </StyledCheckIn>
-                    <StyledCheckOut>
-                      <p>체크아웃</p>
-                      <span>
-                        {roomInfo.endDate} {roomInfo.checkOut}
-                      </span>
-                    </StyledCheckOut>
+                  <StyledItemContainer key={roomInfo.roomId}>
+                    <StyledItemDesc>
+                      <StyledItemTitle>
+                        <span>{accommodation.accommodationName}</span>
+                      </StyledItemTitle>
+                      <StyledItemSubTitle>
+                        <span>{roomInfo.type}</span>
+                      </StyledItemSubTitle>
+                      <StyledAcceptPerson>
+                        <span>
+                          기준 {roomInfo.capacity}인/최대 {roomInfo.maxCapacity}
+                          인
+                        </span>
+                      </StyledAcceptPerson>
+                      <StyledCheckIn>
+                        <p>체크인</p>
+                        <span>
+                          {roomInfo.startDate}{' '}
+                          {roomInfo.checkIn.replace(/:00$/, '')}
+                        </span>
+                      </StyledCheckIn>
+                      <StyledCheckOut>
+                        <p>체크아웃</p>
+                        <span>
+                          {roomInfo.endDate}{' '}
+                          {roomInfo.checkOut.replace(/:00$/, '')}
+                        </span>
+                      </StyledCheckOut>
+                    </StyledItemDesc>
                     <StyledPriceBox>
                       <StyledPayPrice>
                         <span>결제 금액</span>
@@ -158,7 +163,7 @@ export const CartReservation: React.FC = () => {
                         <span>{roomInfo.price}원</span>
                       </StyledFinalPayPrice>
                     </StyledPriceBox>
-                  </StyledItemDesc>
+                  </StyledItemContainer>
                 ),
               )}
           </StyledWrapper>
@@ -213,6 +218,7 @@ export const StyledButtonWrapper = styled.div`
 export const StyledBtnText = styled.p`
   color: #fff;
   font-weight: bold;
+  padding: 0.2rem;
 `;
 
 export const StyledRuleWrapper = styled.div`
@@ -233,6 +239,11 @@ export const StyledEssentialTerms = styled.div`
     font-weight: bold;
     color: ${theme.colors.navy};
   }
+`;
+
+const StyledItemContainer = styled.div`
+  display: flex;
+  gap: 11rem;
 `;
 
 export const StyledEssentialCheckList = styled.div``;
@@ -312,6 +323,7 @@ export const StyledCheckIn = styled.div`
   p {
     color: ${theme.colors.navy};
     font-weight: bold;
+    padding-bottom: 0.2rem;
   }
 `;
 
