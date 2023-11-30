@@ -168,6 +168,7 @@ export const PlaceDetail: React.FC = () => {
           {
             startDate,
             endDate,
+            personnel,
           },
           {
             headers: {
