@@ -102,6 +102,7 @@ export const Cart: React.FC = () => {
     setSalePrice(sale);
     setTotalPrice(total);
   }, [checkedHotel]);
+
   return (
     <StyleMainWrapper>
       {data &&
@@ -132,28 +133,25 @@ export const Cart: React.FC = () => {
                   <StyledTitleDesc>
                     <StyledSpan>날짜</StyledSpan>
                   </StyledTitleDesc>
-                  <StyledTitleDesc>
+                  <StyledPriceTitleDesc>
                     <StyledSpan>가격</StyledSpan>
-                  </StyledTitleDesc>
+                  </StyledPriceTitleDesc>
                 </StyledListItem>
                 <StyledLine />
                 {accommodation.roomList.map((room) => (
                   <StyledListItem key={room.roomId}>
                     <StyledCheckbox
-                      checked={
-                        checkedAllHotel ||
-                        checkedHotel.some(
-                          (a) =>
-                            a.accommodationId === accommodation.accommodationId,
-                        )
-                      }
+                      checked={checkedHotel.some(
+                        (a) =>
+                          a.accommodationId === accommodation.accommodationId,
+                      )}
                       onChange={() => handleCheckBoxChange(accommodation)}
                     />
                     <StyledMiniImage src={room.roomImageUrl} />
                     <StyleDetail>
                       <StyleRoomName>{room.type}</StyleRoomName>
                       <StyledDetailDes>
-                        체크인 {room.checkIn} - 체크아웃 {room.checkOut}{' '}
+                        체크인 {room.checkIn} - 체크아웃 {room.checkOut}
                       </StyledDetailDes>
                       <StyledDetailDes>
                         기준 {room.capacity}인 최대 {room.maxCapacity}인
@@ -169,9 +167,7 @@ export const Cart: React.FC = () => {
                     <StyleDetail>
                       <StyledDetailDes>
                         <p>
-                          {' '}
                           <span>
-                            {' '}
                             {(room.price * 1.2).toLocaleString('ko-KR')}원
                           </span>
                           {room.price.toLocaleString('ko-KR')}원
@@ -233,7 +229,12 @@ const StyleDetail = styled.div`
 
 const StyledTitleDesc = styled.div`
   display: flex;
-  padding: 0.8rem 0 0.8rem 0;
+  padding: 0.8rem 0 0.8rem 0.4rem;
+`;
+
+const StyledPriceTitleDesc = styled.div`
+  display: flex;
+  padding: 0.8rem 0 0.8rem 2.7rem;
 `;
 
 export const StyleRoomName = styled.div`
@@ -249,9 +250,9 @@ export const StyledDetailDes = styled.div`
   font-size: ${theme.fonts.body.fontSize};
 
   /* display: block; */
-  margin: 0 1rem 0.5rem 0;
+  margin: 0 1rem 0rem -1rem;
   p {
-    margin-top: 2.5rem;
+    margin: 2.5rem 0 0 -1rem;
     display: grid;
   }
   span {
@@ -259,6 +260,12 @@ export const StyledDetailDes = styled.div`
     color: ${theme.colors.gray2};
     font-size: 0.8rem;
   }
+`;
+
+export const StyledDetailDescription = styled.div`
+  font-weight: ${theme.fonts.subtitle5.fontWeight};
+  font-size: ${theme.fonts.body.fontSize};
+  margin: 0 1rem 0rem 0;
 `;
 
 const StyledCheckbox = styled(Checkbox)`
