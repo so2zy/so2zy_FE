@@ -1,43 +1,43 @@
 import styled from 'styled-components';
 import { theme } from '@styles/theme';
 import { FaStar } from 'react-icons/fa';
+import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
+
 interface ItemProps {
-  // image: string;
+  image: string;
   name: string;
-  favorites: boolean;
-  regularPrice: number;
-  discountPrice: number;
-  // salesCount: number;
+  likeCount: number;
+  price: number;
   onClick?: () => void;
 }
 
 const Item: React.FC<ItemProps> = (props: ItemProps) => {
-  // const { name, image, favorites, regularPrice, discountPrice, salesCount } = props;
-  const { name, favorites, regularPrice, discountPrice, onClick } = props;
+  // const { name, image, favorites, regularPrice, price, salesCount } = props;
+  const { name, likeCount, image, price, onClick } = props;
+  const regularPrice = price * 1.2;
 
   return (
     <StyledItem onClick={onClick}>
       <StyledImgWrapper>
-        <img
-          src="https://yaimg.yanolja.com/v5/2022/10/26/14/1280/6359424d363cb1.59078840.jpg"
-          alt="z"
-        />
+        {image ? (
+          <StyledImg src={image} alt="호텔 이미지" />
+        ) : (
+          <StyledImg src={hotelDefaultImg} alt="대체 이미지" />
+        )}
       </StyledImgWrapper>
       <StyledInfo>
         <StyledNameWrapper>
           <StyledName>{name}</StyledName>
           {/* {salesCount} */}
           <StyleStarWrapper>
-            <StyledStar className={favorites ? 'checked' : 'unchecked'} />
+            <StyledStar className={likeCount > 0 ? 'checked' : 'unchecked'} />
           </StyleStarWrapper>
         </StyledNameWrapper>
         <StyledPriceWrapper>
           <StyledRegularPrice>
             {regularPrice.toLocaleString('ko-KR')}원
           </StyledRegularPrice>
-          <StyledDiscountPrice>
-            {discountPrice.toLocaleString('ko-KR')}원
-          </StyledDiscountPrice>
+          <Styledprice>{price.toLocaleString('ko-KR')}원 ~</Styledprice>
         </StyledPriceWrapper>
       </StyledInfo>
     </StyledItem>
@@ -63,12 +63,12 @@ const StyledItem = styled.div`
   }
 `;
 
-const StyledImgWrapper = styled.div`
-  img {
-    border-radius: 0.5rem;
-    width: 90%;
-    height: 100%;
-  }
+const StyledImgWrapper = styled.div``;
+
+const StyledImg = styled.img`
+  border-radius: 0.5rem;
+  width: 90%;
+  height: 8rem;
 `;
 
 const StyledInfo = styled.div`
@@ -106,7 +106,7 @@ const StyledRegularPrice = styled.div`
   text-decoration-thickness: 2px;
 `;
 
-const StyledDiscountPrice = styled.div`
+const Styledprice = styled.div`
   font-weight: bold;
   font-size: 1.1rem;
 `;

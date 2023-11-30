@@ -45,8 +45,24 @@ function App() {
                 }
               />
 
-              <Route path="/searchList" element={<SearchList />} />
-              <Route path="/regionList" element={<RegionList />} />
+              <Route
+                path="/searchList"
+                element={
+                  <>
+                    <Header />
+                    <SearchList />
+                  </>
+                }
+              />
+              <Route
+                path="/regionList"
+                element={
+                  <>
+                    <Header />
+                    <RegionList />
+                  </>
+                }
+              />
               <Route
                 path="/place/:id"
                 element={
