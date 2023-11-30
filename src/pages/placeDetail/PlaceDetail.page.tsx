@@ -162,10 +162,8 @@ export const PlaceDetail: React.FC = () => {
     }
   };
 
-  const inputstartString: string = startDate;
-  const startResult: string = inputstartString.substr(2, 5);
-  const inputendString: string = endDate;
-  const endResult: string = inputendString.substr(2, 5);
+  const startResult: string = startDate.substr(2, 5);
+  const endResult: string = endDate.substr(2, 5);
 
   if (accessToken) {
     if (isLoading) {
