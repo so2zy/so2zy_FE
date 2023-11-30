@@ -40,7 +40,7 @@ export const Confirm: React.FC = () => {
     if (location.state && location.state.data) {
       const { dealDateTime, reservationNumber, roomList } =
         location.state.data.data;
-      console.log('room', roomList);
+      // console.log('room', roomList);
       setDealDateTime(dealDateTime);
       setReservationNumber(reservationNumber);
       setRoomList(roomList);

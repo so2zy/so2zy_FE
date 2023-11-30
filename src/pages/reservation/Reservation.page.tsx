@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 
 export const Reservation: React.FC = () => {
   const location = useLocation();
-  // console.log('Location 값 확인', location.state);
 
   const [accommodationInfo, setAccommodationInfo] =
     useState<IAccommodations | null>(null);

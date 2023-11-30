@@ -152,13 +152,14 @@ export const SearchList: React.FC = () => {
   }, [startDate, endDate]);
 
   const handleItemClick = (id: number) => {
-    navigate(`/place/${id}`, {
-      state: {
-        startDate,
-        endDate,
-        personnel: peopleCount,
-      },
-    });
+    console.log(startString, endString),
+      navigate(`/place/${id}`, {
+        state: {
+          startDate: startString,
+          endDate: endString,
+          personnel: peopleCount,
+        },
+      });
   };
 
   return (

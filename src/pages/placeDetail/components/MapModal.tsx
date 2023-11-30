@@ -25,8 +25,6 @@ const MapBox: React.FC<MapBoxProps> = ({ latitude, longitude }) => {
     });
 
     marker.setMap(map);
-
-    console.log(map);
   }, [latitude, longitude]);
 
   return <div id="map" style={{ width: '50vw', height: '50vh' }} />;

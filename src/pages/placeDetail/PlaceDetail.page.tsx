@@ -16,6 +16,7 @@ import { formatDate } from '@utils/useFormatDate';
 import { NeedLogin } from '@components/common/NeedLogin';
 import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
 import hotelDefaultImg2 from '@assets/images/hotelDefaultImg2.png';
+import _ from 'lodash';
 
 export interface IAccommodations {
   id: number;
@@ -78,7 +79,6 @@ export const PlaceDetail: React.FC = () => {
   const [modalLongitude, setModalLongitude] = useState<number>(0);
 
   const openModal = (latitude: number, longitude: number) => {
-    console.log(latitude, longitude);
     setModalLatitude(latitude);
     setModalLongitude(longitude);
     setModalIsOpen(true);
@@ -99,7 +99,6 @@ export const PlaceDetail: React.FC = () => {
   //숙소 정보 get
   const getData = async (id: any) => {
     try {
-      console.log(startDate, endDate);
       const res = await axios.get(
         `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}?startDate=${startDate}&endDate=${endDate}&personnel=${personnel}`,
         {
@@ -108,54 +107,35 @@ export const PlaceDetail: React.FC = () => {
           },
         },
       );
-      console.log('정보 가져오기 ', res.data);
       setAccommodation(res.data.data);
       setIsChecked(res.data.data.favorite);
-      console.log('정보 가져오기 성공', accommodation);
       setIsLoading(false);
     } catch (error) {
       console.error('숙소 정보 가져오기 실패', error);
     }
   };
 
-  useEffect(() => {
-    console.log('정보 가져오기 성공', accommodation);
-  }, [accommodation]);
-
   //찜
-  const toggleFavorite = async (id: any, isChecked: boolean) => {
+  const toggleFavorite = async (id: any) => {
     try {
-      if (isChecked) {
-        await axios.post(
-          `${process.env.REACT_APP_SERVER}/v1/accommodations/${id}/favorite`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Token': accessToken,
-            },
+      await axios.post(
+        `${process.env.REACT_APP_SERVER}/v1/accommodations/${id}/favorite`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Token': accessToken,
           },
-        );
-        console.log(`즐겨찾기 등록 성공`);
-      } else {
-        await axios.delete(
-          `${process.env.REACT_APP_SERVER}/v1/accommodations/${id}/favorite`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Token': accessToken,
-            },
-          },
-        );
-        console.log(`즐겨찾기 삭제 성공`);
-      }
+        },
+      );
+      console.log('찜 성공');
     } catch (error) {
-      console.error('즐겨찾기 실패:', error);
+      console.log('찜 실패', error);
     }
   };
 
   useEffect(() => {
     getData(id);
-  }, [id, startDate, endDate, personnel]);
+  }, []);
 
   //장바구니로 post
   const addCart = async (roomId: number) => {
@@ -183,6 +163,7 @@ export const PlaceDetail: React.FC = () => {
       }
     }
   };
+
   if (accessToken) {
     if (isLoading) {
       return <Loading />;
@@ -218,8 +199,9 @@ export const PlaceDetail: React.FC = () => {
               onClick={() => {
                 setIsChecked((prev) => {
                   const newChecked = !prev;
-                  console.log(newChecked);
-                  toggleFavorite(id, newChecked);
+                  console.log(accessToken);
+                  console.log('post전 클릭 값', newChecked);
+                  toggleFavorite(id);
                   return newChecked;
                 });
               }}
@@ -506,14 +488,15 @@ const StyledSpan = styled.span`
 `;
 
 const StyledButton = styled.button`
-  margin-left: 1px;
+  margin-left: 0.5rem;
   vertical-align: top;
   background-color: ${theme.colors.blue};
   color: white;
   border: none;
   border-radius: 6px;
-  height: 1.75rem;
+  // height: 2.5rem;
   padding: 0.25rem;
+  margin-bottom: 0.2rem;
   cursor: pointer;
 `;
 
