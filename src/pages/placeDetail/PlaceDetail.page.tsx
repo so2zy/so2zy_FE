@@ -14,6 +14,7 @@ import MapModal from './components/MapModal';
 import { Loading } from '@components/common/Loading';
 import { useLocation } from 'react-router-dom';
 import { formatDate } from '@utils/useFormatDate';
+import { NeedLogin } from '@components/common/NeedLogin';
 
 export interface IAccommodations {
   id: number;
@@ -299,12 +300,7 @@ export const PlaceDetail: React.FC = () => {
       );
     }
   } else {
-    return (
-      <StyledLoginWrapper>
-        <StyledLogin>로그인 정보가 없습니다.</StyledLogin>
-        <StyledLoginSub>로그인을 하셔야 이용 가능합니다.</StyledLoginSub>
-      </StyledLoginWrapper>
-    );
+    return <NeedLogin />;
   }
 };
 
@@ -313,24 +309,6 @@ const StyledNotAvailable = styled.div`
   font-size: ${theme.fonts.subtitle5.fontSize};
   font-weight: ${theme.fonts.subtitle1.fontWeight};
   margin: 1rem 0 0;
-`;
-
-const StyledLoginWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-`;
-
-const StyledLogin = styled.div`
-  color: ${theme.colors.navy};
-  font-size: ${theme.fonts.subtitle3.fontSize};
-  font-weight: ${theme.fonts.subtitle1.fontWeight};
-  margin: 15rem 15rem 0 15rem;
-`;
-
-const StyledLoginSub = styled.div`
-  color: ${theme.colors.navy};
-  font-size: ${theme.fonts.subtitle5.fontSize};
-  margin: 1rem 15rem 10rem 17rem;
 `;
 
 export const StyledLine = styled.hr`
