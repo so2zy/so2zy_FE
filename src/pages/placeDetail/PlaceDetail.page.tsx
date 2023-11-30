@@ -1,5 +1,4 @@
 import { Header } from '@components/common/Header';
-// import { Footer } from '@components/common/Footer';
 import styled from 'styled-components';
 import { GrLinkPrevious } from 'react-icons/gr';
 import { theme } from '@styles/theme';
@@ -15,6 +14,8 @@ import { Loading } from '@components/common/Loading';
 import { useLocation } from 'react-router-dom';
 import { formatDate } from '@utils/useFormatDate';
 import { NeedLogin } from '@components/common/NeedLogin';
+import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
+import hotelDefaultImg2 from '@assets/images/hotelDefaultImg2.png';
 
 export interface IAccommodations {
   id: number;
@@ -127,7 +128,6 @@ export const PlaceDetail: React.FC = () => {
       if (isChecked) {
         await axios.post(
           `${process.env.REACT_APP_SERVER}/v1/accommodations/${id}/favorite`,
-          {},
           {
             headers: {
               'Content-Type': 'application/json',
@@ -160,7 +160,6 @@ export const PlaceDetail: React.FC = () => {
   //장바구니로 post
   const addCart = async (roomId: number) => {
     const confirm = window.confirm('장바구니에 추가하시겠습니까?');
-    // console.log(startDate, endDate);
     if (confirm) {
       try {
         const res = await axios.post(
@@ -206,7 +205,11 @@ export const PlaceDetail: React.FC = () => {
             </StyledSpan>
           </StyledBar>
 
-          <StyledImg src={accommodation.accommodationUrl} />
+          {accommodation.accommodationUrl ? (
+            <StyledImg src={accommodation.accommodationUrl} />
+          ) : (
+            <StyledImg src={hotelDefaultImg} alt="사진이 없습니다." />
+          )}
 
           <StyledMainTitle>
             {accommodation.accommodationName}
@@ -215,6 +218,7 @@ export const PlaceDetail: React.FC = () => {
               onClick={() => {
                 setIsChecked((prev) => {
                   const newChecked = !prev;
+                  console.log(newChecked);
                   toggleFavorite(id, newChecked);
                   return newChecked;
                 });
@@ -246,7 +250,14 @@ export const PlaceDetail: React.FC = () => {
           accommodation.roomInfoList.length > 0 ? (
             accommodation.roomInfoList.map((room) => (
               <StyledSubContainer key={room.id}>
-                <StyledDetailImg src={room.url} />
+                {room.url ? (
+                  <StyledDetailImg src={room.url} />
+                ) : (
+                  <StyledDetailImg
+                    src={hotelDefaultImg2}
+                    alt="사진이 없습니다."
+                  />
+                )}
                 <StyledDetail>
                   <StyledWrapper>
                     <StyledRoomTitle>{room.type}</StyledRoomTitle>
