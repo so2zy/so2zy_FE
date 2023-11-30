@@ -120,6 +120,7 @@ export const PlaceDetail: React.FC = () => {
     try {
       await axios.post(
         `${process.env.REACT_APP_SERVER}/v1/accommodations/${id}/favorite`,
+        {},
         {
           headers: {
             'Content-Type': 'application/json',
@@ -127,9 +128,9 @@ export const PlaceDetail: React.FC = () => {
           },
         },
       );
-      console.log('찜 성공');
+      console.log(`즐겨찾기 등록 성공`);
     } catch (error) {
-      console.log('찜 실패', error);
+      console.error('즐겨찾기 실패:', error);
     }
   };
 
@@ -199,8 +200,6 @@ export const PlaceDetail: React.FC = () => {
               onClick={() => {
                 setIsChecked((prev) => {
                   const newChecked = !prev;
-                  console.log(accessToken);
-                  console.log('post전 클릭 값', newChecked);
                   toggleFavorite(id);
                   return newChecked;
                 });
@@ -252,7 +251,7 @@ export const PlaceDetail: React.FC = () => {
                   <StyledCapacity>
                     ({room.capacity}명 기준/최대 {room.maxCapacity}명)
                   </StyledCapacity>
-                  <StyledRealPrice>{room.price}원</StyledRealPrice>
+                  <StyledRealPrice>{room.price * 1.2}원</StyledRealPrice>
                   <StyledSalePrice> {room.price}원</StyledSalePrice>
                   {room.stock === 0 ? (
                     <StyledNoStock>예약불가</StyledNoStock>
