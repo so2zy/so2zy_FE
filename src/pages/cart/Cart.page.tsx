@@ -1,19 +1,24 @@
 import { theme } from '@styles/theme';
 import styled from 'styled-components';
 import { Checkbox } from '@mui/material';
-import { FaTrashCan } from 'react-icons/fa6';
 import {
   StyledItemDesc,
   StyledItemTitle,
   StyledBtnText,
   StyledButtonWrapper,
 } from 'pages/reservation/Reservation.page';
+import { useQuery } from '@tanstack/react-query';
+import { getCarts } from './components/getCart';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 
-export interface cartItemProps {
-  accommodationList: accommodationList[];
+export interface CartItemProps {
+  data: {
+    accommodationList: AccommodationList[];
+  };
 }
 
-export interface accommodationList {
+export interface AccommodationList {
   accommodationId: number;
   accommodationName: string;
   address: string;
@@ -31,140 +36,185 @@ export interface CartRoomList {
   startDate: string;
   endDate: string;
   roomImageUrl: string;
+  personnel: number;
 }
 export const Cart: React.FC = () => {
-  //전체 선택
-  // const [selectAllChecked, setSelectAllChecked] = useState(false);
-  // const [checkboxesChecked, setCheckboxesChecked] = useState(
-  //   Array(checkboxData.length).fill(false)
-  // );
+  const { data } = useQuery<CartItemProps>({
+    queryKey: ['mycarts'],
+    queryFn: getCarts,
+  });
 
+  const [checkedHotel, setCheckedHotel] = useState<AccommodationList[]>([]);
+  const [checkedAllHotel, setCheckedAllHotel] = useState(false);
+  const [originalPrice, setOriginalPrice] = useState<number>(0);
+  const [salePrice, setSalePrice] = useState<number>(0);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+
+  const navigate = useNavigate();
+  const handleCheckBoxChange = (accommodation: AccommodationList) => {
+    if (
+      checkedHotel.some(
+        (a) => a.accommodationId === accommodation.accommodationId,
+      )
+    ) {
+      setCheckedHotel((prev) =>
+        prev.filter((a) => a.accommodationId !== accommodation.accommodationId),
+      );
+    } else {
+      setCheckedHotel((prev) => [...prev, accommodation]);
+    }
+  };
+
+  const handleAllCheckBoxChange = () => {
+    if (checkedAllHotel) {
+      setCheckedHotel([]);
+    } else {
+      if (data && data.data) {
+        setCheckedHotel(data.data.accommodationList);
+      }
+    }
+    setCheckedAllHotel(!checkedAllHotel);
+  };
+
+  const handleReservation = () => {
+    navigate(`/cartreservation`, { state: { checkedHotel } });
+    console.log('정보 전송 성공: ', checkedHotel);
+  };
+
+  useEffect(() => {
+    const sum = checkedHotel.reduce((acc, accommodation) => {
+      return (
+        acc +
+        accommodation.roomList.reduce((roomAcc, room) => {
+          return roomAcc + room.price * 1.2;
+        }, 0)
+      );
+    }, 0);
+    const sale = checkedHotel.reduce((acc, accommodation) => {
+      return (
+        acc +
+        accommodation.roomList.reduce((roomAcc, room) => {
+          return roomAcc + room.price * 0.2;
+        }, 0)
+      );
+    }, 0);
+    const total = sum - sale;
+    setOriginalPrice(sum);
+    setSalePrice(sale);
+    setTotalPrice(total);
+  }, [checkedHotel]);
   return (
     <StyleMainWrapper>
-      <StyledItemDesc>
-        <StyledItemTitle>
-          <span>남해 글리드810 풀빌라</span>
-        </StyledItemTitle>
-        <StyledAddress>
-          <span>경상북도 남해군 남면</span>
-        </StyledAddress>
-        <br />
-      </StyledItemDesc>
-
-      <StyledBox>
-        <StyledList>
-          <StyledListItem>
-            {/* key 주기 */}
-            <Checkbox />
-            <StyledTitleDesc>
-              <StyledSpan>전체 선택</StyledSpan>
-            </StyledTitleDesc>
-            <StyledTitleDesc>
-              <StyledProductSpan>예약 상품</StyledProductSpan>
-            </StyledTitleDesc>
-            <StyledTitleDesc>
-              <StyledSpan>날짜</StyledSpan>
-            </StyledTitleDesc>
-            <StyledTitleDesc>
-              <StyledSpan>가격</StyledSpan>
-            </StyledTitleDesc>
-          </StyledListItem>
-
-          <StyledLine />
-          <StyledListItem>
-            <StyledCheckbox />
-            <StyledMiniImage src="https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg" />
-            <StyleDetail>
-              <StyleRoomName>P3</StyleRoomName>
-              <StyledDetailDes>체크인 15:00 - 체크아웃 18:00 </StyledDetailDes>
-              <StyledDetailDes>기준 2인 최대 4인</StyledDetailDes>
-            </StyleDetail>
-            <StyleDetail>
-              <StyledDetailDes>
-                <p>23.11.11-23.11.12</p>
-              </StyledDetailDes>
-            </StyleDetail>
-            <StyleDetail>
-              <StyledDetailDes>
-                <p>75,000원</p>
-              </StyledDetailDes>
-            </StyleDetail>
-            <StyleDetail>
-              <StyledTrashCan />
-            </StyleDetail>
-          </StyledListItem>
-
-          <StyledListItem>
-            <StyledCheckbox />
-            <StyledMiniImage src="https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg" />
-            <StyleDetail>
-              <StyleRoomName>P3</StyleRoomName>
-              <StyledDetailDes>체크인 15:00 - 체크아웃 18:00 </StyledDetailDes>
-              <StyledDetailDes>기준 2인 최대 4인</StyledDetailDes>
-            </StyleDetail>
-            <StyleDetail>
-              <StyledDetailDes>
-                <p>23.11.11-23.11.12</p>
-              </StyledDetailDes>
-            </StyleDetail>
-            <StyleDetail>
-              <StyledDetailDes>
-                <p>75,000원</p>
-              </StyledDetailDes>
-            </StyleDetail>
-            <StyleDetail>
-              <StyledTrashCan />
-            </StyleDetail>
-          </StyledListItem>
-        </StyledList>
-
-        <StyledListItem>
-          <StyledCheckbox />
-          <StyledMiniImage src="https://yaimg.yanolja.com/v5/2022/10/31/12/1280/635fc0f6abccc1.66460254.jpg" />
-          <StyleDetail>
-            <StyleRoomName>P3</StyleRoomName>
-            <StyledDetailDes>체크인 15:00 - 체크아웃 18:00 </StyledDetailDes>
-            <StyledDetailDes>기준 2인 최대 4인</StyledDetailDes>
-          </StyleDetail>
-          <StyleDetail>
-            <StyledDetailDes>
-              <p>23.11.11-23.11.12</p>
-            </StyledDetailDes>
-          </StyleDetail>
-          <StyleDetail>
-            <StyledDetailDes>
-              <p>75,000원</p>
-            </StyledDetailDes>
-          </StyleDetail>
-          <StyleDetail>
-            <StyledTrashCan />
-          </StyleDetail>
-        </StyledListItem>
-      </StyledBox>
-
+      {data &&
+        data.data.accommodationList.map((accommodation) => (
+          <>
+            <StyledCartItemDesc key={accommodation.accommodationId}>
+              <StyledItemTitle>
+                <span>{accommodation.accommodationName}</span>
+              </StyledItemTitle>
+              <StyledAddress>
+                <span>{accommodation.address}</span>
+              </StyledAddress>
+              <br />
+            </StyledCartItemDesc>
+            <StyledBox>
+              <StyledList>
+                <StyledListItem>
+                  <StyledCheckbox
+                    checked={checkedAllHotel}
+                    onChange={handleAllCheckBoxChange}
+                  />
+                  <StyledTitleDesc>
+                    <StyledSpan>전체 선택</StyledSpan>
+                  </StyledTitleDesc>
+                  <StyledTitleDesc>
+                    <StyledProductSpan>예약 상품</StyledProductSpan>
+                  </StyledTitleDesc>
+                  <StyledTitleDesc>
+                    <StyledSpan>날짜</StyledSpan>
+                  </StyledTitleDesc>
+                  <StyledTitleDesc>
+                    <StyledSpan>가격</StyledSpan>
+                  </StyledTitleDesc>
+                </StyledListItem>
+                <StyledLine />
+                {accommodation.roomList.map((room) => (
+                  <StyledListItem key={room.roomId}>
+                    <StyledCheckbox
+                      checked={
+                        checkedAllHotel ||
+                        checkedHotel.some(
+                          (a) =>
+                            a.accommodationId === accommodation.accommodationId,
+                        )
+                      }
+                      onChange={() => handleCheckBoxChange(accommodation)}
+                    />
+                    <StyledMiniImage src={room.roomImageUrl} />
+                    <StyleDetail>
+                      <StyleRoomName>{room.type}</StyleRoomName>
+                      <StyledDetailDes>
+                        체크인 {room.checkIn} - 체크아웃 {room.checkOut}{' '}
+                      </StyledDetailDes>
+                      <StyledDetailDes>
+                        기준 {room.capacity}인 최대 {room.maxCapacity}인
+                      </StyledDetailDes>
+                    </StyleDetail>
+                    <StyleDetail>
+                      <StyledDetailDes>
+                        <p>
+                          {room.startDate}~{room.endDate}
+                        </p>
+                      </StyledDetailDes>
+                    </StyleDetail>
+                    <StyleDetail>
+                      <StyledDetailDes>
+                        <p>
+                          {' '}
+                          <span>
+                            {' '}
+                            {(room.price * 1.2).toLocaleString('ko-KR')}원
+                          </span>
+                          {room.price.toLocaleString('ko-KR')}원
+                        </p>
+                      </StyledDetailDes>
+                    </StyleDetail>
+                  </StyledListItem>
+                ))}
+              </StyledList>
+            </StyledBox>
+          </>
+        ))}
       <StyleSubWrapper>
         <StyledPrice>예약상품</StyledPrice>
         <StyledPriceWrapper>
           <StyledPrices>상품 가격</StyledPrices>
-          <StyledPricesValue>225,000원</StyledPricesValue>
+          <StyledPricesValue>
+            {originalPrice.toLocaleString('ko-KR')}원
+          </StyledPricesValue>
         </StyledPriceWrapper>
         <StyledPriceWrapper>
           <StyledPrices>할인가</StyledPrices>
-          <StyledPricesValue>25,000원</StyledPricesValue>
+          <StyledPricesValue>
+            -{salePrice.toLocaleString('ko-KR')}원
+          </StyledPricesValue>
         </StyledPriceWrapper>
         <StyledLine />
         <StyledPriceWrapper>
           <StyledPrice>총 예상금액</StyledPrice>
-          <StyledPrice>200,000원</StyledPrice>
+          <StyledPrice>{totalPrice.toLocaleString('ko-KR')}원</StyledPrice>
         </StyledPriceWrapper>
       </StyleSubWrapper>
-
-      <StyledButtonWrapper>
+      <StyledButtonWrapper onClick={handleReservation}>
         <StyledBtnText>예약하기</StyledBtnText>
       </StyledButtonWrapper>
     </StyleMainWrapper>
   );
 };
+// 임시 추가
+const StyledCartItemDesc = styled(StyledItemDesc)`
+  margin-top: 4rem;
+`;
 const StyledProductSpan = styled.span`
   margin-right: 8.5rem;
   font-weight: ${theme.fonts.subtitle3.fontWeight};
@@ -200,14 +250,22 @@ export const StyledDetailDes = styled.div`
   font-size: ${theme.fonts.body.fontSize};
 
   /* display: block; */
-  margin: 0 0 0.5rem 0rem;
+  margin: 0 1rem 0.5rem 0;
   p {
     margin-top: 2.5rem;
+    display: grid;
+  }
+  span {
+    text-decoration: line-through;
+    color: ${theme.colors.gray2};
+    font-size: 0.8rem;
   }
 `;
 
 const StyledCheckbox = styled(Checkbox)`
   vertical-align: top;
+  box-shadow: none;
+  outline: none;
 `;
 
 const StyledList = styled.ul`
@@ -216,7 +274,7 @@ const StyledList = styled.ul`
 
 export const StyledListItem = styled.div`
   display: flex;
-  margin-top: 2rem;
+  margin: 2rem 0 2rem 0;
   gap: 1.25rem;
 `;
 
@@ -281,13 +339,13 @@ export const StyledPrices = styled.span`
   font-size: ${theme.fonts.subtitle5.fontSize};
 `;
 
-const StyledTrashCan = styled(FaTrashCan)`
-  /* padding-left: 3rem; */
-  margin: 2.5rem 0 0 5rem;
-  color: ${theme.colors.navy};
-  cursor: pointer;
+// const StyledTrashCan = styled(FaTrashCan)`
+//   /* padding-left: 3rem; */
+//   margin: 2.5rem 0 0 5rem;
+//   color: ${theme.colors.navy};
+//   cursor: pointer;
 
-  &:hover {
-    color: ${theme.colors.gray3};
-  }
-`;
+//   &:hover {
+//     color: ${theme.colors.gray3};
+//   }
+// `;
