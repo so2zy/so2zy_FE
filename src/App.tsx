@@ -16,6 +16,7 @@ import Cart from 'pages/cart';
 import Confirm from 'pages/confirm';
 import { Loading } from '@components/common/Loading';
 import { NotFound } from '@components/common/NotFound';
+import { Footer } from '@components/common/Footer';
 
 const Main = React.lazy(() => import('./pages/main'));
 // const SearchList = React.lazy(() => import('./pages/searchList'));
@@ -39,12 +40,29 @@ function App() {
                     <Card>
                       <Main />
                     </Card>
+                    <Footer />
                   </>
                 }
               />
 
-              <Route path="/searchList" element={<SearchList />} />
-              <Route path="/regionList" element={<RegionList />} />
+              <Route
+                path="/searchList"
+                element={
+                  <>
+                    <Header />
+                    <SearchList />
+                  </>
+                }
+              />
+              <Route
+                path="/regionList"
+                element={
+                  <>
+                    <Header />
+                    <RegionList />
+                  </>
+                }
+              />
               <Route
                 path="/place/:id"
                 element={
@@ -53,6 +71,7 @@ function App() {
                     <Card>
                       <PlaceDetail />
                     </Card>
+                    <Footer />
                   </>
                 }
               />

@@ -61,3 +61,13 @@ export const endDateState = atom<Date | null>({
   key: 'endDateState',
   default: null,
 });
+
+export const startStringState = atom({
+  key: 'startStringState',
+  default: '',
+});
+
+export const endStringState = atom({
+  key: 'endStringState',
+  default: '',
+});
