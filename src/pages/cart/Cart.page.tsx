@@ -11,7 +11,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getCarts } from './components/getCart';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-
+import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
 export interface CartItemProps {
   data: {
     accommodationList: AccommodationList[];
@@ -53,18 +53,41 @@ export const Cart: React.FC = () => {
   const navigate = useNavigate();
   const handleCheckBoxChange = (accommodation: AccommodationList) => {
     if (
-      checkedHotel.some(
-        (a) => a.accommodationId === accommodation.accommodationId,
-      )
+      checkedHotel.some((a) => {
+        if (a.accommodationId === accommodation.accommodationId) {
+          return a.roomList.some((room) =>
+            accommodation.roomList.some(
+              (incomingRoom) =>
+                incomingRoom.roomId === room.roomId &&
+                a.accommodationId === accommodation.accommodationId,
+            ),
+          );
+        }
+        return false;
+      })
     ) {
       setCheckedHotel((prev) =>
-        prev.filter((a) => a.accommodationId !== accommodation.accommodationId),
+        prev.map((a) => {
+          if (a.accommodationId === accommodation.accommodationId) {
+            return {
+              ...a,
+              roomList: a.roomList.filter(
+                (room) =>
+                  !accommodation.roomList.some(
+                    (incomingRoom) =>
+                      incomingRoom.roomId === room.roomId &&
+                      a.accommodationId === accommodation.accommodationId,
+                  ),
+              ),
+            };
+          }
+          return a;
+        }),
       );
     } else {
       setCheckedHotel((prev) => [...prev, accommodation]);
     }
   };
-
   const handleAllCheckBoxChange = () => {
     if (checkedAllHotel) {
       setCheckedHotel([]);
@@ -102,9 +125,18 @@ export const Cart: React.FC = () => {
     setSalePrice(sale);
     setTotalPrice(total);
   }, [checkedHotel]);
-
+  console.log(checkedHotel);
   return (
     <StyleMainWrapper>
+      <StyledTitleDesc>
+        <StyledCheckbox
+          checked={checkedAllHotel}
+          onChange={handleAllCheckBoxChange}
+        />
+        <StyledAllCheckSpan>
+          {checkedAllHotel ? '전체 해제' : '전체 선택'}
+        </StyledAllCheckSpan>
+      </StyledTitleDesc>
       {data &&
         data.data.accommodationList.map((accommodation) => (
           <>
@@ -119,54 +151,53 @@ export const Cart: React.FC = () => {
             </StyledCartItemDesc>
             <StyledBox>
               <StyledList>
-                <StyledListItem>
-                  <StyledCheckbox
-                    checked={checkedAllHotel}
-                    onChange={handleAllCheckBoxChange}
-                  />
-                  <StyledTitleDesc>
-                    <StyledSpan>전체 선택</StyledSpan>
-                  </StyledTitleDesc>
+                <StyledListTitle>
                   <StyledTitleDesc>
                     <StyledProductSpan>예약 상품</StyledProductSpan>
                   </StyledTitleDesc>
                   <StyledTitleDesc>
-                    <StyledSpan>날짜</StyledSpan>
+                    <StyledDateSpan>날짜</StyledDateSpan>
                   </StyledTitleDesc>
                   <StyledPriceTitleDesc>
                     <StyledSpan>가격</StyledSpan>
                   </StyledPriceTitleDesc>
-                </StyledListItem>
+                </StyledListTitle>
                 <StyledLine />
                 {accommodation.roomList.map((room) => (
                   <StyledListItem key={room.roomId}>
                     <StyledCheckbox
                       checked={checkedHotel.some(
                         (a) =>
-                          a.accommodationId === accommodation.accommodationId,
+                          a.accommodationId === accommodation.accommodationId &&
+                          a.roomList.some((r) => r.roomId === room.roomId),
                       )}
                       onChange={() => handleCheckBoxChange(accommodation)}
                     />
-                    <StyledMiniImage src={room.roomImageUrl} />
+                    {room.roomImageUrl ? (
+                      <StyledMiniImage src={room.roomImageUrl} />
+                    ) : (
+                      <StyledMiniImage src={hotelDefaultImg} alt="대체 사진" />
+                    )}
                     <StyleDetail>
                       <StyleRoomName>{room.type}</StyleRoomName>
-                      <StyledDetailDes>
-                        체크인 {room.checkIn} - 체크아웃 {room.checkOut}
-                      </StyledDetailDes>
-                      <StyledDetailDes>
+                      <StyledCheckInOutTitle>
+                        체크인 {room.checkIn.replace(/:00$/, '')} - 체크아웃{' '}
+                        {room.checkOut.replace(/:00$/, '')}
+                      </StyledCheckInOutTitle>
+                      <StyledCheckInOutTitle>
                         기준 {room.capacity}인 최대 {room.maxCapacity}인
-                      </StyledDetailDes>
+                      </StyledCheckInOutTitle>
                     </StyleDetail>
                     <StyleDetail>
                       <StyledDetailDes>
                         <p>
-                          {room.startDate}~{room.endDate}
+                          {room.startDate.slice(2)}~{room.endDate.slice(2)}
                         </p>
                       </StyledDetailDes>
                     </StyleDetail>
                     <StyleDetail>
                       <StyledDetailDes>
-                        <p>
+                        <p id="priceDesc">
                           <span>
                             {(room.price * 1.2).toLocaleString('ko-KR')}원
                           </span>
@@ -206,7 +237,7 @@ export const Cart: React.FC = () => {
     </StyleMainWrapper>
   );
 };
-// 임시 추가
+
 const StyledCartItemDesc = styled(StyledItemDesc)`
   margin-top: 4rem;
 `;
@@ -218,6 +249,16 @@ const StyledProductSpan = styled.span`
 const StyledSpan = styled.span`
   margin-right: 5rem;
   font-weight: ${theme.fonts.subtitle3.fontWeight};
+`;
+
+const StyledDateSpan = styled(StyledSpan)`
+  padding-left: 1.2rem;
+`;
+
+const StyledAllCheckSpan = styled(StyledSpan)`
+  padding-top: 0.9rem;
+  font-size: 1.1rem;
+  /* line-height: 2.5rem; */
 `;
 
 const StyleDetail = styled.div`
@@ -250,16 +291,30 @@ export const StyledDetailDes = styled.div`
   font-size: ${theme.fonts.body.fontSize};
 
   /* display: block; */
-  margin: 0 1rem 0rem -1rem;
+  margin: 0 1rem 0rem 0.2rem;
   p {
-    margin: 2.5rem 0 0 -1rem;
+    /* width: 12rem; */
+    margin: 2rem 0 0 -1.2rem;
     display: grid;
+  }
+  #priceDesc {
+    margin-top: 1.5rem;
+    margin-left: 2.4rem;
   }
   span {
     text-decoration: line-through;
     color: ${theme.colors.gray2};
     font-size: 0.8rem;
+    margin-bottom: 0.2rem;
   }
+  /* #sale-price {
+    margin-bottom: 0.2rem;
+  } */
+`;
+
+export const StyledCheckInOutTitle = styled(StyledDetailDes)`
+  margin-left: 0.05rem;
+  margin-bottom: 0.2rem;
 `;
 
 export const StyledDetailDescription = styled.div`
@@ -282,6 +337,11 @@ export const StyledListItem = styled.div`
   display: flex;
   margin: 2rem 0 2rem 0;
   gap: 1.25rem;
+`;
+
+const StyledListTitle = styled(StyledListItem)`
+  margin-left: 14rem;
+  gap: 2.5rem;
 `;
 
 export const StyledMiniImage = styled.img`
@@ -344,14 +404,3 @@ export const StyledPrices = styled.span`
   font-weight: ${theme.fonts.subtitle5.fontWeight};
   font-size: ${theme.fonts.subtitle5.fontSize};
 `;
-
-// const StyledTrashCan = styled(FaTrashCan)`
-//   /* padding-left: 3rem; */
-//   margin: 2.5rem 0 0 5rem;
-//   color: ${theme.colors.navy};
-//   cursor: pointer;
-
-//   &:hover {
-//     color: ${theme.colors.gray3};
-//   }
-// `;

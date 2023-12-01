@@ -4,10 +4,11 @@ const Footer = () => {
   return (
     <StyledWrapper>
       <StyledContent>
+        <StyledImgCover>
+          <img src={Logo} alt="" />
+        </StyledImgCover>
+
         <StyledDiv>
-          <span>
-            <img alt="Aroom" src={Logo} />
-          </span>
           <span>
             {' '}
             Aroom은 통신판매 중개자로서 통신판매의 당사자가 아니며 상품의 예약,
@@ -20,7 +21,13 @@ const Footer = () => {
 };
 
 export default Footer;
-
+const StyledImgCover = styled.div`
+  margin-right: 2rem;
+  img {
+    position: relative;
+    width: 6rem;
+  }
+`;
 const StyledWrapper = styled.div`
   font-weight: 700;
   text-align: center;
@@ -29,9 +36,6 @@ const StyledWrapper = styled.div`
   width: 100%;
   height: 4rem;
   img {
-    margin-right: 1rem;
-    position: relative;
-    top: 4px;
     width: 5rem;
   }
 `;
@@ -48,13 +52,9 @@ const StyledContent = styled.div`
   }
 `;
 const StyledDiv = styled.div`
-  diplay: flex;
-  justify-content: space-between;
-  width: 100%;
+  display: flex-end;
   height: 1.2rem;
   margin-top: 1.5rem;
-  position: relative;
-  top: -5px;
   font-size: 0.9rem;
   color: #919191;
   margin-top: 0.5rem;

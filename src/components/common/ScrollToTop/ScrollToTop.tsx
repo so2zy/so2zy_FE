@@ -42,8 +42,8 @@ export default ScrollTopBtn;
 const StyledWrapper = styled.button`
   border-radius: 3rem;
   position: fixed;
-  top: 50;
-  right: 30%;
+  top: 90%;
+  right: 20%;
   width: 2rem;
   height: 2rem;
   background-color: ${theme.colors.navy};
