@@ -138,13 +138,16 @@ export const PlaceDetail: React.FC = () => {
   const getData = async (id: any) => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}?startDate=${startDate}&endDate=${endDate}&personnel=${personnel}`,
+        `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}?startDate=${
+          formatStartDate || startDate
+        }&endDate=${formatEndDate || endDate}&personnel=${personnel}`,
         {
           headers: {
             'Access-Token': accessToken,
           },
         },
       );
+      console.log(res);
       setAccommodation(res.data.data);
       setIsChecked(res.data.data.favorite);
       setIsLoading(false);
@@ -155,8 +158,8 @@ export const PlaceDetail: React.FC = () => {
 
   useEffect(() => {
     getData(id);
-    // console.log('달력에서 선택된 값', formatStartDate);
-    // console.log('state로 넘어온 값', startDate);
+    console.log('달력에서 선택된 값', formatStartDate);
+    console.log('state로 넘어온 값', startDate);
   }, [formatStartDate, formatEndDate]);
 
   //찜
