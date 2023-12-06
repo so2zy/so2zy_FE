@@ -2,10 +2,9 @@ import { Checkbox } from '@mui/material';
 import { theme } from '@styles/theme';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { postPayment } from './components/postCartReservation';
 interface CartReservationHotelsProps {
   accommodationId: number;
