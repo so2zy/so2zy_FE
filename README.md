@@ -1,5 +1,5 @@
 
-## 목차
+## 📝 목차
 
 1. [**프로젝트 소개**](#1)
 2. [**기술 스택**](#2)
@@ -7,6 +7,7 @@
 4. [**화면 구성**](#4)
 5. [**팀 소개**](#5)
 6. [**폴더 구조**](#6)
+<br/>
 
 <div id="1"></div>
 
@@ -22,7 +23,8 @@
 - **테스트 계정**
   - 아이디 : test@test.com
   - 비밀번호 : test123
-
+   
+<br/>
 <div id="2"></div>
 
 ## 📌 기술 스택
@@ -72,6 +74,7 @@
     <img src="https://img.shields.io/badge/netlify-%23000000.svg?style=for-the-badge&logo=netlify&logoColor=#00C7B7" />
       <img src="https://img.shields.io/badge/craco-168363?style=for-the-badge&logo=tether&logoColor=white"/>
 </div>
+<br/>
 
 <div id="3"></div>
 
@@ -88,24 +91,23 @@
 | 예약 | 로그인한 유저가 예약하고자 하는 객실들의 예약(결제)가 가능합니다.                                                                                                                     |
 | 예약확인 | 결제까지 완료하게 되면 주문 번호와 예약번호를 확인 할 수 있습니다.                                                                                                                    |
 
+<br/>
 <div id="4"></div>
 
 ## 📌 화면 구성
-- **회원가입/로그인**
-![login](https://github.com/so2zy/so2zy_FE/assets/55376275/6911c8c6-8e6d-4f62-a10d-0d93fcdecd40)
-
-- **메인 페이지**
-![메인](https://github.com/so2zy/so2zy_FE/assets/55376275/93984f4b-961e-4be3-b110-c13033be7f31)
-
-- **검색/지역 페이지**
-![KakaoTalk_20231201_035838151](https://github.com/KDT1-FE/Y_FE_Mini-Project/assets/39702832/2d1dfaef-b9c3-48e2-b15c-46a044569656)
+|                           회원가입/로그인                   |                            메인 페이지                                        |         검색/지역 페이지                            |
+| :------------------------------------------------------| :---------------------------------------------------------------: |:------------------------------------------------------------: |
+|![login](https://github.com/so2zy/so2zy_FE/assets/55376275/6911c8c6-8e6d-4f62-a10d-0d93fcdecd40)|![메인](https://github.com/so2zy/so2zy_FE/assets/55376275/93984f4b-961e-4be3-b110-c13033be7f31)|![KakaoTalk_20231201_035838151](https://github.com/KDT1-FE/Y_FE_Mini-Project/assets/39702832/2d1dfaef-b9c3-48e2-b15c-46a044569656)|
 
 
-|                           상세/장바구니/예약 페이지                            |                                              상세/찜/장바구니/예약 페이지                                            |
-| :-------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------: |
+
+
+|                           상세/장바구니/예약 페이지                            |                                              상세/찜/장바구니/예약 페이지                                         |
+| :-------------------------------------------------------------------------------------------------------| :-------------------------------------------------------------------------------------------------------: |
 |![KakaoTalk_20231201_034241583](https://github.com/KDT1-FE/Y_FE_Mini-Project/assets/39702832/a603dbb5-33c0-45d9-999f-609079167b2c)|![zzim](https://github.com/KDT1-FE/Y_FE_Mini-Project/assets/39702832/2dabcc65-f0a4-4a0d-a3b4-cbb00f39741a)|
 
 
+<br/>
 <div id="5"></div>
 
 ## 📌 팀 소개
@@ -165,10 +167,10 @@
 | :----: | :----------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 |   -    |     공통     | - 피그마 디자인<br />- 레이아웃 구현<br />- msw로 mock 데이터 테스트<br />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | 어승준 | FE<br />팀장 | - 검색/지역 페이지<br />&nbsp;&nbsp;&nbsp;&nbsp;- 필터링 (검색/지역/날짜/인원수/가격)<br />&nbsp;&nbsp;&nbsp;&nbsp;- 정렬 (가격/판매량)<br />&nbsp;&nbsp;&nbsp;&nbsp;- 지도 (지역별 중심좌표 적용 + 숙소 마커/오버레이 표시)<br />&nbsp;&nbsp;&nbsp;&nbsp;- 무한스크롤<br />&nbsp;&nbsp;&nbsp;&nbsp;- 지역 뒤로가기 (선택지역 기록 세션스토리지 배열)<br />- 기타<br />&nbsp;&nbsp;&nbsp;&nbsp;- craco로 path alias 설정<br />&nbsp;&nbsp;&nbsp;&nbsp;- 프로젝트 폴더 구조 세팅<br />&nbsp;&nbsp;&nbsp;&nbsp;- 로딩 lottie<br />&nbsp;&nbsp;&nbsp;&nbsp;- README 작성<br /> |
-| 김민서 | FE<br />팀원 | - 상세 페이지<br />&nbsp;&nbsp;&nbsp;&nbsp;- 숙소, 객실 정보 조회/ 필터링 (인원수/날짜/재고), 지도(숙소 위치 중심좌표/ 마커) <br />&nbsp;&nbsp;&nbsp;&nbsp;- 예약/장바구니/찜 요청<br />- 예약/예약확인 페이지<br />&nbsp;&nbsp;&nbsp;&nbsp;- 예약/결제/예약확인 기능<br />- 장바구니 페이지<br />&nbsp;&nbsp;&nbsp;&nbsp;- 마크업<br />- 기타<br />&nbsp;&nbsp;&nbsp;&nbsp;- 로딩/404/needLogin <br />&nbsp;&nbsp;&nbsp;&nbsp;- theme/globalStyle 설정<br />                                                                                                               |
+| 김민서 | FE<br />팀원 | - 상세 페이지<br />&nbsp;&nbsp;&nbsp;&nbsp;- 숙소, 객실 정보 조회/ 필터링 (인원수/날짜/재고), 지도(숙소 위치 중심좌표/ 마커) <br />&nbsp;&nbsp;&nbsp;&nbsp;- 예약/장바구니/찜 요청<br />- 예약/예약확인 페이지<br />&nbsp;&nbsp;&nbsp;&nbsp;- 예약/결제/예약확인 기능<br />- 장바구니 페이지<br />&nbsp;&nbsp;&nbsp;&nbsp;- 마크업<br />- 기타<br />&nbsp;&nbsp;&nbsp;&nbsp;- 로딩/404/needLogin/카드 컴포넌트 <br />&nbsp;&nbsp;&nbsp;&nbsp;- theme/globalStyle 설정<br />&nbsp;&nbsp;&nbsp;&nbsp;- README<br />                                                                                                               |
 | 진종수 | FE<br />팀원 | - 메인 페이지<br />&nbsp;&nbsp;&nbsp;&nbsp;- 캐러셀<br />&nbsp;&nbsp;&nbsp;&nbsp;- 무한스크롤<br />&nbsp;&nbsp;&nbsp;&nbsp;- 판매량/찜 많은 순/모든 숙소<br />&nbsp;&nbsp;&nbsp;&nbsp;- 검색/지역 페이지 연결<br />- 예약 페이지<br />&nbsp;&nbsp;&nbsp;&nbsp;- 마크업<br />- 장바구니 페이지<br />&nbsp;&nbsp;&nbsp;&nbsp;- 조회, 데이터 예약페이지로 전달<br />                                                                                                                                                                                                           |
 | 채민석 | FE<br />팀원 | - 회원가입/로그인/로그아웃<br />&nbsp;&nbsp;&nbsp;&nbsp;- JWT (AccessToken/RefreshToken)<br />&nbsp;&nbsp;&nbsp;&nbsp;- 유저 정보 유효성검사<br />&nbsp;&nbsp;&nbsp;&nbsp;- 유저 정보 및 토큰 전역 관리<br />- 헤더/푸터<br />&nbsp;&nbsp;&nbsp;&nbsp;- 로고, 기능구현<br />                                                                                                                                                                                                                                                                                                |
-
+<br/>
 <div id="6"></div>
 
 ## 📌 폴더 구조
