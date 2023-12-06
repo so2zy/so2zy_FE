@@ -16,6 +16,7 @@ import { formatDate } from '@utils/useFormatDate';
 import { NeedLogin } from '@components/common/NeedLogin';
 import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
 import hotelDefaultImg2 from '@assets/images/hotelDefaultImg2.png';
+import CalendarModal from './components/CalendarModal';
 
 export interface IAccommodations {
   id: number;
@@ -77,14 +78,25 @@ export const PlaceDetail: React.FC = () => {
   const [modalLatitude, setModalLatitude] = useState<number>(0);
   const [modalLongitude, setModalLongitude] = useState<number>(0);
 
-  const openModal = (latitude: number, longitude: number) => {
+  const openMapModal = (latitude: number, longitude: number) => {
     setModalLatitude(latitude);
     setModalLongitude(longitude);
     setModalIsOpen(true);
   };
 
-  const closeModal = () => {
+  const closeMapModal = () => {
     setModalIsOpen(false);
+  };
+
+  //달력 모달
+  const [calModalIsOpen, setCalModalIsOpen] = useState(false);
+
+  const openCalModal = () => {
+    setCalModalIsOpen(true);
+  };
+
+  const closeCalModal = () => {
+    setCalModalIsOpen(false);
   };
 
   //필터링 데이터
@@ -180,9 +192,14 @@ export const PlaceDetail: React.FC = () => {
             />
             <StyledTitle>{accommodation.accommodationName}</StyledTitle>
             <StyledSpan>
-              <StyledButton>
+              <StyledButton onClick={() => openCalModal()}>
                 {startResult}~{endResult}
               </StyledButton>
+              <CalendarModal
+                isOpen={calModalIsOpen}
+                onRequestClose={closeCalModal}
+              />
+
               <StyledButton>{personnel}명</StyledButton>
             </StyledSpan>
           </StyledBar>
@@ -210,7 +227,7 @@ export const PlaceDetail: React.FC = () => {
 
           <StyledLocation
             onClick={() =>
-              openModal(accommodation.latitude, accommodation.longitude)
+              openMapModal(accommodation.latitude, accommodation.longitude)
             }
           >
             숙소 위치 보기
@@ -218,7 +235,7 @@ export const PlaceDetail: React.FC = () => {
           </StyledLocation>
           <MapModal
             isOpen={modalIsOpen}
-            onRequestClose={closeModal}
+            onRequestClose={closeMapModal}
             latitude={modalLatitude}
             longitude={modalLongitude}
           />

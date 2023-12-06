@@ -3,6 +3,19 @@ import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import { theme } from '@styles/theme';
 import { StyledLine } from '../PlaceDetail.page';
+import {
+  isCheckedCalendarState,
+  isClickedCalendarState,
+  startDateState,
+  endDateState,
+  startStringState,
+  endStringState,
+} from 'recoil/searchList';
+import { useSetRecoilState } from 'recoil';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { ko } from 'date-fns/esm/locale';
+import { subDays } from 'date-fns';
 
 export interface ModalProps {
   isOpen: boolean;
@@ -18,8 +31,8 @@ const customStyles = {
     transform: 'translate(-50%, -50%)',
     borderRadius: '2rem',
     padding: '2.5rem',
-    width: '46%',
-    height: '54%',
+    width: '20vw',
+    height: '45vh',
   },
   overlay: {
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
@@ -27,6 +40,36 @@ const customStyles = {
 };
 
 const CalendarModal: React.FC<ModalProps> = ({ isOpen, onRequestClose }) => {
+  const setGlobalStartDate = useSetRecoilState(startDateState);
+  const setGlobalEndDate = useSetRecoilState(endDateState);
+  const setGlobalStartString = useSetRecoilState(startStringState);
+  const setGlobalEndString = useSetRecoilState(endStringState);
+  const setIsCheckedCalendar = useSetRecoilState(isCheckedCalendarState);
+  const setIsClickedCalendar = useSetRecoilState(isClickedCalendarState);
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [endDate, setEndDate] = useState<Date | null>(null);
+
+  const handleFilter = () => {
+    if (startDate && endDate) {
+      setGlobalStartDate(startDate);
+      setGlobalEndDate(endDate);
+      const formattedStartDate = startDate.toLocaleDateString('ko-KR');
+      const formattedEndDate = endDate.toLocaleDateString('ko-KR');
+      setGlobalStartString(formattedStartDate);
+      setGlobalEndString(formattedEndDate);
+      setIsCheckedCalendar(true);
+      setIsClickedCalendar(false);
+    }
+  };
+
+  const onChange = (dates: [Date | null, Date | null] | null) => {
+    if (dates) {
+      const [start, end] = dates;
+      setStartDate(start);
+      setEndDate(end);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -34,10 +77,20 @@ const CalendarModal: React.FC<ModalProps> = ({ isOpen, onRequestClose }) => {
         onRequestClose={onRequestClose}
         style={customStyles}
       >
-        <StyledTitleWrapper>
-          <StyledTitle>날짜 선택</StyledTitle>
-        </StyledTitleWrapper>
-        <StyledLine />
+        <StyledTitle>날짜</StyledTitle> <StyledLine />
+        <StyledWrapper>
+          <DatePicker
+            locale={ko}
+            selectsRange={true}
+            startDate={startDate}
+            endDate={endDate}
+            minDate={subDays(new Date(), 0)}
+            onChange={onChange}
+            isClearable={true}
+            inline
+          />
+        </StyledWrapper>
+        <StyledButtonDiv onClick={handleFilter}>날짜 적용하기</StyledButtonDiv>
       </Modal>
     </>
   );
@@ -45,7 +98,18 @@ const CalendarModal: React.FC<ModalProps> = ({ isOpen, onRequestClose }) => {
 
 export default CalendarModal;
 
-const StyledTitleWrapper = styled.div`
+const StyledButtonDiv = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  padding: 1rem 0 0.8rem;
+  cursor: pointer;
+  background-color: ${theme.colors.navy};
+  color: white;
+`;
+
+const StyledWrapper = styled.div`
   display: flex;
   align-items: center;
   font-weight: ${theme.fonts.subtitle1.fontWeight};
@@ -53,6 +117,7 @@ const StyledTitleWrapper = styled.div`
 `;
 
 const StyledTitle = styled.span`
+  display: flex;
   margin: auto;
   font-size: 1.5rem;
   justify-content: center;
