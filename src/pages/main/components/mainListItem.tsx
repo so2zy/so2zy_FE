@@ -42,7 +42,6 @@ const MainListItem = ({ title }: MainListProps) => {
     queryKey: [title],
     queryFn: title === '많이 판매된 숙소' ? getMostSell : getFavorite,
   });
-  console.log(data);
   const settings = {
     infinite: true,
     speed: 500,
