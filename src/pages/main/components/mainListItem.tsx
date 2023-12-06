@@ -29,7 +29,11 @@ export interface MainItemProps {
   phoneNumber: string;
   accommodationImageUrl: string;
   price: number;
-  isAvaliable: boolean;
+  isAvailable: boolean;
+}
+
+export interface SoldOutItemProps {
+  isSoldOut: boolean;
 }
 
 const MainListItem = ({ title }: MainListProps) => {
@@ -38,6 +42,7 @@ const MainListItem = ({ title }: MainListProps) => {
     queryKey: [title],
     queryFn: title === '많이 판매된 숙소' ? getMostSell : getFavorite,
   });
+  console.log(data);
   const settings = {
     infinite: true,
     speed: 500,
@@ -83,8 +88,8 @@ const MainListItem = ({ title }: MainListProps) => {
               <StyledItemName>
                 {index + 1}. {eclipsText(item.name, 10)}
               </StyledItemName>
-              <StyledItemPrice>
-                {item.price
+              <StyledItemPrice isSoldOut={item.isAvailable === false}>
+                {item.isAvailable
                   ? `${item.price.toLocaleString('ko-KR')}원 ~`
                   : '품절'}
               </StyledItemPrice>
@@ -148,7 +153,8 @@ const StyledItemName = styled.p`
   padding-bottom: 0.2rem;
 `;
 
-const StyledItemPrice = styled.p`
+const StyledItemPrice = styled.p<SoldOutItemProps>`
   padding: 0.25rem 0.9rem;
   font-size: 0.8rem;
+  color: ${(props) => (props.isSoldOut ? 'red' : 'inherit')};
 `;
