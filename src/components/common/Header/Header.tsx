@@ -514,7 +514,7 @@ const StyledHouse = styled(House)`
 
 const StyledLeftBtn = styled(BsArrowLeft)`
   cursor: pointer;
-  color: ${theme.colors.navy};
+  color: white;
 `;
 
 export default Header;
