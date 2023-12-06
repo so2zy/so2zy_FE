@@ -1,4 +1,3 @@
-![image](https://github.com/so2zy/so2zy_FE/assets/39702832/f54e3b44-ad75-41aa-a963-7aaaa8f647f7)
 
 ## 목차
 
@@ -93,10 +92,10 @@
 
 ## 📌 화면 구성
 - **회원가입/로그인**
-![login](https://github.com/KDT1-FE/Y_FE_Mini-Project/assets/39702832/d88c23f3-db7d-4a2c-97c3-424cd3567349)
+![login](https://github.com/so2zy/so2zy_FE/assets/55376275/6911c8c6-8e6d-4f62-a10d-0d93fcdecd40)
 
 - **메인 페이지**
-![MAIN](https://github.com/KDT1-FE/Y_FE_Mini-Project/assets/39702832/5cacb756-4b87-4624-b3b8-eed0d0f9ca9d)
+![메인](https://github.com/so2zy/so2zy_FE/assets/55376275/93984f4b-961e-4be3-b110-c13033be7f31)
 
 - **검색/지역 페이지**
 ![KakaoTalk_20231201_035838151](https://github.com/KDT1-FE/Y_FE_Mini-Project/assets/39702832/2d1dfaef-b9c3-48e2-b15c-46a044569656)
