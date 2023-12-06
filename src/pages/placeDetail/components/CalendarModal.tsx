@@ -30,7 +30,7 @@ const customStyles = {
     borderRadius: '2rem',
     padding: '2.5rem',
     width: '20vw',
-    height: '50vh',
+    height: '51vh',
   },
   overlay: {
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
@@ -99,6 +99,7 @@ const StyledButtonDiv = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 1rem;
+  margin-top: 0.5rem;
   padding: 1rem 0 0.8rem;
   cursor: pointer;
   background-color: ${theme.colors.navy};
@@ -110,6 +111,7 @@ const StyledWrapper = styled.div`
   align-items: center;
   font-weight: ${theme.fonts.subtitle1.fontWeight};
   font-size: ${theme.fonts.subtitle5.fontSize};
+  margin: auto;
 `;
 
 const StyledTitle = styled.span`
