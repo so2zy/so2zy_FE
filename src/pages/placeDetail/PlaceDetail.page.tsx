@@ -80,41 +80,33 @@ export const PlaceDetail: React.FC = () => {
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
 
-  //지도 모달
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [modalLatitude, setModalLatitude] = useState<number>(0);
-  const [modalLongitude, setModalLongitude] = useState<number>(0);
+  //지도, 달력, 인원수 모달
+  const [modalState, setModalState] = useState({
+    mapModalIsOpen: false,
+    calModalIsOpen: false,
+    peopleModalIsOpen: false,
+    modalLatitude: 0,
+    modalLongitude: 0,
+  });
 
-  const openMapModal = (latitude: number, longitude: number) => {
-    setModalLatitude(latitude);
-    setModalLongitude(longitude);
-    setModalIsOpen(true);
+  const openModal = (
+    modalType: string,
+    latitude?: number,
+    longitude?: number,
+  ) => {
+    setModalState((prevState) => ({
+      ...prevState,
+      [modalType]: true,
+      modalLatitude: latitude || prevState.modalLatitude,
+      modalLongitude: longitude || prevState.modalLongitude,
+    }));
   };
 
-  const closeMapModal = () => {
-    setModalIsOpen(false);
-  };
-
-  //달력 모달
-  const [calModalIsOpen, setCalModalIsOpen] = useState(false);
-
-  const openCalModal = () => {
-    setCalModalIsOpen(true);
-  };
-
-  const closeCalModal = () => {
-    setCalModalIsOpen(false);
-  };
-
-  //인원수 모달
-  const [peopleModalIsOpen, setPeopleModalIsOpen] = useState(false);
-
-  const openPeopleModal = () => {
-    setPeopleModalIsOpen(true);
-  };
-
-  const closePeopleModal = () => {
-    setPeopleModalIsOpen(false);
+  const closeModal = (modalType: string) => {
+    setModalState((prevState) => ({
+      ...prevState,
+      [modalType]: false,
+    }));
   };
 
   //필터링 데이터
@@ -251,22 +243,22 @@ export const PlaceDetail: React.FC = () => {
             />
             <StyledTitle>{accommodation.accommodationName}</StyledTitle>
             <StyledSpan>
-              <StyledButton onClick={() => openCalModal()}>
+              <StyledButton onClick={() => openModal('calModalIsOpen')}>
                 {startCalResult
                   ? `${startCalResult}-${endCalResult}`
                   : `${startResult}-${endResult}`}
               </StyledButton>
               <CalendarModal
-                isOpen={calModalIsOpen}
-                onRequestClose={closeCalModal}
+                isOpen={modalState.calModalIsOpen}
+                onRequestClose={() => closeModal('calModalIsOpen')}
               />
 
-              <StyledButton onClick={() => openPeopleModal()}>
+              <StyledButton onClick={() => openModal('peopleModalIsOpen')}>
                 {selectedPersonnel ? selectedPersonnel : personnel}명
               </StyledButton>
               <PeopleModal
-                isOpen={peopleModalIsOpen}
-                onRequestClose={closePeopleModal}
+                isOpen={modalState.peopleModalIsOpen}
+                onRequestClose={() => closeModal('peopleModalIsOpen')}
               />
             </StyledSpan>
           </StyledBar>
@@ -294,17 +286,21 @@ export const PlaceDetail: React.FC = () => {
 
           <StyledLocation
             onClick={() =>
-              openMapModal(accommodation.latitude, accommodation.longitude)
+              openModal(
+                'mapModalIsOpen',
+                accommodation.latitude,
+                accommodation.longitude,
+              )
             }
           >
             숙소 위치 보기
             <MdPlace />
           </StyledLocation>
           <MapModal
-            isOpen={modalIsOpen}
-            onRequestClose={closeMapModal}
-            latitude={modalLatitude}
-            longitude={modalLongitude}
+            isOpen={modalState.mapModalIsOpen}
+            onRequestClose={() => closeModal('mapModalIsOpen')}
+            latitude={modalState.modalLatitude}
+            longitude={modalState.modalLongitude}
           />
 
           <StyledDescription>{accommodation.addressCode}</StyledDescription>
