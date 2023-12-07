@@ -94,7 +94,7 @@ const CalendarModal: React.FC<ModalProps> = ({ isOpen, onRequestClose }) => {
 
 export default CalendarModal;
 
-const StyledButtonDiv = styled.div`
+export const StyledButtonDiv = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -106,7 +106,7 @@ const StyledButtonDiv = styled.div`
   color: white;
 `;
 
-const StyledWrapper = styled.div`
+export const StyledWrapper = styled.div`
   display: flex;
   align-items: center;
   font-weight: ${theme.fonts.subtitle1.fontWeight};
@@ -114,7 +114,7 @@ const StyledWrapper = styled.div`
   margin: auto;
 `;
 
-const StyledTitle = styled.span`
+export const StyledTitle = styled.span`
   display: flex;
   margin: auto;
   font-size: 1.5rem;

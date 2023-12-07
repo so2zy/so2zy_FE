@@ -2,10 +2,10 @@ import { Checkbox } from '@mui/material';
 import { theme } from '@styles/theme';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-
+import { useMutation } from '@tanstack/react-query';
+import { postPayment } from './components/postCartReservation';
 interface CartReservationHotelsProps {
   accommodationId: number;
   accommodationName: string;
@@ -25,15 +25,31 @@ interface CartReservationRoomProps {
   startDate: string;
   type: string;
 }
+
+export interface PostPaymentProps {
+  roomList: CartReservationRoomProps[];
+  agreement: boolean;
+  isFromCart: boolean;
+}
 export const CartReservation: React.FC = () => {
   const location = useLocation();
   const checkedHotel = location.state?.checkedHotel;
-  const accessToken = localStorage.getItem('accessToken');
   const navigate = useNavigate();
 
   const [agreement, setAgreement] = useState(false);
 
-  const handlePayment = async () => {
+  const mutation = useMutation({
+    mutationFn: postPayment,
+    onSuccess(data) {
+      console.log(data);
+      navigate('/confirm', { state: { data } });
+    },
+    onError(err) {
+      console.log(err);
+    },
+  });
+
+  const handlePayment = () => {
     if (!agreement) {
       return;
     }
@@ -60,24 +76,9 @@ export const CartReservation: React.FC = () => {
     if (!confirm) {
       return;
     }
-
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_SERVER}/v1/reservations`,
-        data,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Token': accessToken,
-          },
-        },
-      );
-
-      navigate('/confirm', { state: { data: response.data } });
-    } catch (error) {
-      console.error('결제 실패', error);
-    }
+    mutation.mutate(data);
   };
+
   const calculatePrices = (roomInfo: CartReservationRoomProps) => {
     const originalPrice = roomInfo.price * 1.2;
     const salePrice = roomInfo.price * 0.2;

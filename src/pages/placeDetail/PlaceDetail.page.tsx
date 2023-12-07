@@ -18,7 +18,12 @@ import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
 import hotelDefaultImg2 from '@assets/images/hotelDefaultImg2.png';
 import CalendarModal from './components/CalendarModal';
 import { useRecoilValue } from 'recoil';
-import { startDateState, endDateState } from './../../recoil/searchList';
+import {
+  startDateState,
+  endDateState,
+  peopleCountState,
+} from './../../recoil/searchList';
+import PeopleModal from './components/PeopleModal';
 
 export interface IAccommodations {
   id: number;
@@ -101,13 +106,24 @@ export const PlaceDetail: React.FC = () => {
     setCalModalIsOpen(false);
   };
 
+  //인원수 모달
+  const [peopleModalIsOpen, setPeopleModalIsOpen] = useState(false);
+
+  const openPeopleModal = () => {
+    setPeopleModalIsOpen(true);
+  };
+
+  const closePeopleModal = () => {
+    setPeopleModalIsOpen(false);
+  };
+
   //필터링 데이터
   const location = useLocation();
   const { startDate, endDate, personnel } = location.state || {
     startDate: formatDate(new Date()),
     endDate: formatDate(new Date(new Date().getTime() + 24 * 60 * 60 * 1000)),
     personnel: 1,
-  }; //navigate로 페이지 넘어오는 데이터
+  }; //navigate로 페이지 넘어오는 데이터와 디폴트 데이터
 
   const [formatStartDate, setFormatStartDate] = useState('');
   const [formatEndDate, setFormatEndDate] = useState('');
@@ -134,13 +150,17 @@ export const PlaceDetail: React.FC = () => {
   const startCalResult = formatStartDate.substr(5, 10);
   const endCalResult = formatEndDate?.substr(5, 10);
 
+  const selectedPersonnel = useRecoilValue(peopleCountState);
+
   //숙소 정보 get
   const getData = async (id: any) => {
     try {
       const res = await axios.get(
         `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}?startDate=${
           formatStartDate || startDate
-        }&endDate=${formatEndDate || endDate}&personnel=${personnel}`,
+        }&endDate=${formatEndDate || endDate}&personnel=${
+          selectedPersonnel || personnel
+        }`,
         {
           headers: {
             'Access-Token': accessToken,
@@ -158,9 +178,11 @@ export const PlaceDetail: React.FC = () => {
 
   useEffect(() => {
     getData(id);
-    console.log('달력에서 선택된 값', formatStartDate);
-    console.log('state로 넘어온 값', startDate);
-  }, [formatStartDate, formatEndDate]);
+    // console.log('넘어온 날짜', startDate);
+    // console.log('달력에서 선택된 날짜', formatStartDate);
+    // console.log('넘어온 인원수', personnel);
+    // console.log('모달로 선택한 인원수', selectedPersonnel);
+  }, [formatStartDate, formatEndDate, selectedPersonnel]);
 
   //찜
   const toggleFavorite = async (id: any) => {
@@ -216,7 +238,7 @@ export const PlaceDetail: React.FC = () => {
           <StyledBar>
             <StyledBefore
               onClick={() => {
-                navigate('/'); //메인으로 이동
+                history.back();
               }}
             />
             <StyledTitle>{accommodation.accommodationName}</StyledTitle>
@@ -231,7 +253,13 @@ export const PlaceDetail: React.FC = () => {
                 onRequestClose={closeCalModal}
               />
 
-              <StyledButton>{personnel}명</StyledButton>
+              <StyledButton onClick={() => openPeopleModal()}>
+                {selectedPersonnel ? selectedPersonnel : personnel}명
+              </StyledButton>
+              <PeopleModal
+                isOpen={peopleModalIsOpen}
+                onRequestClose={closePeopleModal}
+              />
             </StyledSpan>
           </StyledBar>
 

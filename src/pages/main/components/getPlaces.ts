@@ -1,22 +1,4 @@
 import axios from 'axios';
-
-// export interface ImageList {
-//   id: number;
-//   url: string;
-// }
-
-// export interface RoomList {
-//   id: number;
-//   type: string;
-//   price: number;
-//   capacity: number;
-//   maxCapacity: number;
-//   checkIn: string;
-//   checkOut: string;
-//   stock: number;
-//   url: string;
-// }
-
 export interface RegionSelectProps {
   id: string;
   sigungu: string;
