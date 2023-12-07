@@ -1,6 +1,6 @@
 import Modal from 'react-modal';
-import { useEffect, useState } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useState } from 'react';
+import { useRecoilState } from 'recoil';
 import { StyledButtonDiv, StyledTitle, ModalProps } from './CalendarModal';
 import {
   StyledContainer,
@@ -9,11 +9,7 @@ import {
   StyledCountButton,
   StyledCountNumber,
 } from '@components/SelectPeople/SelectPeople';
-import {
-  isCheckedPeopleState,
-  isClickedPeopleState,
-  peopleCountState,
-} from '@recoil/searchList';
+import { peopleCountState } from '@recoil/searchList';
 
 const customStyles = {
   content: {
