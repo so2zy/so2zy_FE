@@ -212,7 +212,7 @@ export const PlaceDetail: React.FC = () => {
           {
             startDate: formatStartDate || startDate,
             endDate: formatEndDate || endDate,
-            personnel,
+            personnel: selectedPersonnel || personnel,
           },
           {
             headers: {
@@ -328,8 +328,12 @@ export const PlaceDetail: React.FC = () => {
                   <StyledCapacity>
                     ({room.capacity}명 기준/최대 {room.maxCapacity}명)
                   </StyledCapacity>
-                  <StyledRealPrice>{room.price * 1.2}원</StyledRealPrice>
-                  <StyledSalePrice> {room.price}원</StyledSalePrice>
+                  <StyledRealPrice>
+                    {(room.price * 1.2).toLocaleString('ko-KR')}원
+                  </StyledRealPrice>
+                  <StyledSalePrice>
+                    {room.price.toLocaleString('ko-KR')}원
+                  </StyledSalePrice>
                   {room.stock === 0 ? (
                     <StyledNoStock>예약불가</StyledNoStock>
                   ) : (
@@ -349,7 +353,7 @@ export const PlaceDetail: React.FC = () => {
                               room,
                               startDate: formatStartDate || startDate,
                               endDate: formatEndDate || endDate,
-                              personnel,
+                              personnel: selectedPersonnel || personnel,
                             },
                           });
                         }}

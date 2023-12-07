@@ -1,6 +1,6 @@
 import Modal from 'react-modal';
 import styled from 'styled-components';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { theme } from '@styles/theme';
 import { StyledLine } from '../PlaceDetail.page';
 import DatePicker from 'react-datepicker';
@@ -106,7 +106,7 @@ export const StyledButtonDiv = styled.div`
   color: white;
 `;
 
-export const StyledWrapper = styled.div`
+const StyledWrapper = styled.div`
   display: flex;
   align-items: center;
   font-weight: ${theme.fonts.subtitle1.fontWeight};
