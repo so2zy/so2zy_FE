@@ -152,15 +152,17 @@ export const Cart: React.FC = () => {
             <StyledBox>
               <StyledList>
                 <StyledListTitle>
-                  <StyledTitleDesc>
-                    <StyledProductSpan>예약 상품</StyledProductSpan>
-                  </StyledTitleDesc>
-                  <StyledTitleDesc>
-                    <StyledDateSpan>날짜</StyledDateSpan>
-                  </StyledTitleDesc>
-                  <StyledPriceTitleDesc>
-                    <StyledSpan>가격</StyledSpan>
-                  </StyledPriceTitleDesc>
+                  <StyledWrapper>
+                    <StyledTitleDesc>
+                      <StyledProductSpan>예약 상품</StyledProductSpan>
+                    </StyledTitleDesc>
+                    <StyledTitleDesc>
+                      <StyledDateSpan>날짜</StyledDateSpan>
+                    </StyledTitleDesc>
+                    <StyledPriceTitleDesc>
+                      <StyledSpan>가격</StyledSpan>
+                    </StyledPriceTitleDesc>
+                  </StyledWrapper>
                 </StyledListTitle>
                 <StyledLine />
                 {accommodation.roomList.map((room) => (
@@ -238,9 +240,21 @@ export const Cart: React.FC = () => {
   );
 };
 
-const StyledCartItemDesc = styled(StyledItemDesc)`
-  margin-top: 4rem;
+const StyledWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
 `;
+
+const StyledTitleDesc = styled.div`
+  display: flex;
+  padding: 0.8rem 0 0.8rem 0.4rem;
+`;
+
+const StyledPriceTitleDesc = styled.div`
+  display: flex;
+  padding: 0.8rem 0 0.8rem 6rem;
+`;
+
 const StyledProductSpan = styled.span`
   margin-right: 8.5rem;
   font-weight: ${theme.fonts.subtitle3.fontWeight};
@@ -255,6 +269,10 @@ const StyledDateSpan = styled(StyledSpan)`
   padding-left: 1.2rem;
 `;
 
+const StyledCartItemDesc = styled(StyledItemDesc)`
+  margin-top: 4rem;
+`;
+
 const StyledAllCheckSpan = styled(StyledSpan)`
   padding-top: 0.9rem;
   font-size: 1.1rem;
@@ -266,16 +284,6 @@ const StyleDetail = styled.div`
   flex-direction: column;
   margin-left: 1rem;
   font-weight: ${theme.fonts.subtitle3.fontWeight};
-`;
-
-const StyledTitleDesc = styled.div`
-  display: flex;
-  padding: 0.8rem 0 0.8rem 0.4rem;
-`;
-
-const StyledPriceTitleDesc = styled.div`
-  display: flex;
-  padding: 0.8rem 0 0.8rem 2.7rem;
 `;
 
 export const StyleRoomName = styled.div`
@@ -299,7 +307,7 @@ export const StyledDetailDes = styled.div`
   }
   #priceDesc {
     margin-top: 1.5rem;
-    margin-left: 2.4rem;
+    margin-left: 1.5rem;
   }
   span {
     text-decoration: line-through;

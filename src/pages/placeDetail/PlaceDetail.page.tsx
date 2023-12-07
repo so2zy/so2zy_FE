@@ -16,6 +16,9 @@ import { formatDate } from '@utils/useFormatDate';
 import { NeedLogin } from '@components/common/NeedLogin';
 import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
 import hotelDefaultImg2 from '@assets/images/hotelDefaultImg2.png';
+import CalendarModal from './components/CalendarModal';
+import { useRecoilValue } from 'recoil';
+import { startDateState, endDateState } from './../../recoil/searchList';
 
 export interface IAccommodations {
   id: number;
@@ -77,14 +80,25 @@ export const PlaceDetail: React.FC = () => {
   const [modalLatitude, setModalLatitude] = useState<number>(0);
   const [modalLongitude, setModalLongitude] = useState<number>(0);
 
-  const openModal = (latitude: number, longitude: number) => {
+  const openMapModal = (latitude: number, longitude: number) => {
     setModalLatitude(latitude);
     setModalLongitude(longitude);
     setModalIsOpen(true);
   };
 
-  const closeModal = () => {
+  const closeMapModal = () => {
     setModalIsOpen(false);
+  };
+
+  //달력 모달
+  const [calModalIsOpen, setCalModalIsOpen] = useState(false);
+
+  const openCalModal = () => {
+    setCalModalIsOpen(true);
+  };
+
+  const closeCalModal = () => {
+    setCalModalIsOpen(false);
   };
 
   //필터링 데이터
@@ -93,19 +107,47 @@ export const PlaceDetail: React.FC = () => {
     startDate: formatDate(new Date()),
     endDate: formatDate(new Date(new Date().getTime() + 24 * 60 * 60 * 1000)),
     personnel: 1,
-  };
+  }; //navigate로 페이지 넘어오는 데이터
+
+  const [formatStartDate, setFormatStartDate] = useState('');
+  const [formatEndDate, setFormatEndDate] = useState('');
+
+  const calStartDate = useRecoilValue(startDateState); //달력 선택 데이터
+  const calEndDate = useRecoilValue(endDateState);
+
+  useEffect(() => {
+    if (calStartDate && calEndDate) {
+      setFormatStartDate(formatDate(calStartDate));
+      setFormatEndDate(formatDate(calEndDate));
+    } else {
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      setFormatStartDate(formatDate(today));
+      setFormatEndDate(formatDate(tomorrow));
+    }
+  }, [calStartDate, calEndDate]);
+
+  const startResult: string = startDate.substr(5, 10);
+  const endResult: string = endDate.substr(5, 10);
+
+  const startCalResult = formatStartDate.substr(5, 10);
+  const endCalResult = formatEndDate?.substr(5, 10);
 
   //숙소 정보 get
   const getData = async (id: any) => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}?startDate=${startDate}&endDate=${endDate}&personnel=${personnel}`,
+        `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}?startDate=${
+          formatStartDate || startDate
+        }&endDate=${formatEndDate || endDate}&personnel=${personnel}`,
         {
           headers: {
             'Access-Token': accessToken,
           },
         },
       );
+      console.log(res);
       setAccommodation(res.data.data);
       setIsChecked(res.data.data.favorite);
       setIsLoading(false);
@@ -113,6 +155,12 @@ export const PlaceDetail: React.FC = () => {
       console.error('숙소 정보 가져오기 실패', error);
     }
   };
+
+  useEffect(() => {
+    getData(id);
+    console.log('달력에서 선택된 값', formatStartDate);
+    console.log('state로 넘어온 값', startDate);
+  }, [formatStartDate, formatEndDate]);
 
   //찜
   const toggleFavorite = async (id: any) => {
@@ -132,10 +180,6 @@ export const PlaceDetail: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    getData(id);
-  }, []);
-
   //장바구니로 post
   const addCart = async (roomId: number) => {
     const confirm = window.confirm('장바구니에 추가하시겠습니까?');
@@ -144,8 +188,8 @@ export const PlaceDetail: React.FC = () => {
         await axios.post(
           `${process.env.REACT_APP_SERVER}/v2/carts/${roomId}`,
           {
-            startDate,
-            endDate,
+            startDate: formatStartDate || startDate,
+            endDate: formatEndDate || endDate,
             personnel,
           },
           {
@@ -162,9 +206,6 @@ export const PlaceDetail: React.FC = () => {
     }
   };
 
-  const startResult: string = startDate.substr(5, 5);
-  const endResult: string = endDate.substr(5, 5);
-
   if (accessToken) {
     if (isLoading) {
       return <Loading />;
@@ -180,9 +221,16 @@ export const PlaceDetail: React.FC = () => {
             />
             <StyledTitle>{accommodation.accommodationName}</StyledTitle>
             <StyledSpan>
-              <StyledButton>
-                {startResult}~{endResult}
+              <StyledButton onClick={() => openCalModal()}>
+                {startCalResult
+                  ? `${startCalResult}-${endCalResult}`
+                  : `${startResult}-${endResult}`}
               </StyledButton>
+              <CalendarModal
+                isOpen={calModalIsOpen}
+                onRequestClose={closeCalModal}
+              />
+
               <StyledButton>{personnel}명</StyledButton>
             </StyledSpan>
           </StyledBar>
@@ -210,7 +258,7 @@ export const PlaceDetail: React.FC = () => {
 
           <StyledLocation
             onClick={() =>
-              openModal(accommodation.latitude, accommodation.longitude)
+              openMapModal(accommodation.latitude, accommodation.longitude)
             }
           >
             숙소 위치 보기
@@ -218,7 +266,7 @@ export const PlaceDetail: React.FC = () => {
           </StyledLocation>
           <MapModal
             isOpen={modalIsOpen}
-            onRequestClose={closeModal}
+            onRequestClose={closeMapModal}
             latitude={modalLatitude}
             longitude={modalLongitude}
           />
@@ -271,8 +319,8 @@ export const PlaceDetail: React.FC = () => {
                             state: {
                               accommodation,
                               room,
-                              startDate,
-                              endDate,
+                              startDate: formatStartDate || startDate,
+                              endDate: formatEndDate || endDate,
                               personnel,
                             },
                           });
