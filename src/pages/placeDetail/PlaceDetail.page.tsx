@@ -5,7 +5,7 @@ import { theme } from '@styles/theme';
 import { FaStar } from 'react-icons/fa';
 import { MdPlace } from 'react-icons/md';
 import { RiShoppingBagLine } from 'react-icons/ri';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -131,7 +131,7 @@ export const PlaceDetail: React.FC = () => {
   const calStartDate = useRecoilValue(startDateState); //달력 선택 데이터
   const calEndDate = useRecoilValue(endDateState);
 
-  useEffect(() => {
+  const updateDates = useCallback(() => {
     if (calStartDate && calEndDate) {
       setFormatStartDate(formatDate(calStartDate));
       setFormatEndDate(formatDate(calEndDate));
@@ -144,6 +144,10 @@ export const PlaceDetail: React.FC = () => {
     }
   }, [calStartDate, calEndDate]);
 
+  useEffect(() => {
+    updateDates();
+  }, [updateDates]);
+
   const startResult: string = startDate.substr(5, 10);
   const endResult: string = endDate.substr(5, 10);
 
@@ -153,28 +157,32 @@ export const PlaceDetail: React.FC = () => {
   const selectedPersonnel = useRecoilValue(peopleCountState);
 
   //숙소 정보 get
-  const getData = async (id: any) => {
-    try {
-      const res = await axios.get(
-        `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}?startDate=${
-          formatStartDate || startDate
-        }&endDate=${formatEndDate || endDate}&personnel=${
-          selectedPersonnel || personnel
-        }`,
-        {
-          headers: {
-            'Access-Token': accessToken,
+  const getData = useCallback(
+    async (id: any) => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}?startDate=${
+            formatStartDate || startDate
+          }&endDate=${formatEndDate || endDate}&personnel=${
+            selectedPersonnel || personnel
+          }`,
+          {
+            headers: {
+              'Access-Token': accessToken,
+            },
           },
-        },
-      );
-      console.log(res);
-      setAccommodation(res.data.data);
-      setIsChecked(res.data.data.favorite);
-      setIsLoading(false);
-    } catch (error) {
-      console.error('숙소 정보 가져오기 실패', error);
-    }
-  };
+        );
+        console.log(res);
+        setAccommodation(res.data.data);
+        setIsChecked(res.data.data.favorite);
+      } catch (error) {
+        console.error('숙소 정보 가져오기 실패', error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [formatStartDate, formatEndDate, selectedPersonnel, accessToken],
+  );
 
   useEffect(() => {
     getData(id);
@@ -182,7 +190,7 @@ export const PlaceDetail: React.FC = () => {
     // console.log('달력에서 선택된 날짜', formatStartDate);
     // console.log('넘어온 인원수', personnel);
     // console.log('모달로 선택한 인원수', selectedPersonnel);
-  }, [formatStartDate, formatEndDate, selectedPersonnel]);
+  }, [getData, id]);
 
   //찜
   const toggleFavorite = async (id: any) => {
