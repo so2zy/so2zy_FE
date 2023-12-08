@@ -262,7 +262,11 @@ export const SearchList: React.FC = () => {
           </StyledSalesButton>
         </StyledSort>
       </StyledFilterSortWrapper>
-      <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
+      <InfiniteScroll
+        hasMore={hasNextPage}
+        loadMore={() => fetchNextPage()}
+        initialLoad={false}
+      >
         {searchListData?.pages?.map((page, pageIndex) => (
           <StyledContainer key={pageIndex}>
             {page?.data?.body?.map((hotel: any, index: number) => (
