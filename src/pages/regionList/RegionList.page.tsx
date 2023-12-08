@@ -1,11 +1,6 @@
 import styled from 'styled-components';
-import { theme } from '@styles/theme';
 import { Item } from '@components/common/Item';
 import { useEffect, useState } from 'react';
-import { ReactComponent as SortUp } from '@assets/images/sort-up.svg';
-import { ReactComponent as SortDown } from '@assets/images/sort-down.svg';
-import { ReactComponent as Check } from '@assets/images/check.svg';
-import { ReactComponent as Map } from '@assets/images/map.svg';
 import { Modal } from '@components/Modal';
 import {
   isCheckedPriceState,
@@ -30,8 +25,11 @@ import { getRegionListData } from '@utils/getData';
 import InfiniteScroll from 'react-infinite-scroller';
 import { useNavigate } from 'react-router-dom';
 import { formatDate } from '@utils/useFormatDate';
+import { FilterButtons } from '@components/FilterButtons';
+import { SortButtons } from '@components/SortButtons';
 
 export const RegionList: React.FC = () => {
+  const isRegionListPage = true;
   const areaName = '서울특별시';
   const selectedSigungu = sessionStorage.getItem('selectedSigungu');
   const [regionList, setRegionList] = useRecoilState(regionListState);
@@ -57,16 +55,6 @@ export const RegionList: React.FC = () => {
   const navigate = useNavigate();
   const [formatStartDate, setFormatStartDate] = useState('');
   const [formatEndDate, setFormatEndDate] = useState('');
-
-  const shortenPrice = (price: number) => {
-    if (price === 0) {
-      return '0';
-    }
-    return price
-      .toLocaleString()
-      .replace(/,|\.\d+/g, '')
-      .slice(0, -4);
-  };
 
   const openModal = (type: string) => {
     if (type == '가격') {
@@ -204,91 +192,25 @@ export const RegionList: React.FC = () => {
   return (
     <div>
       <StyledFilterSortWrapper>
-        <StyledFilter>
-          <StyledDateRangeButton
-            onClick={() => {
-              openModal('날짜');
-            }}
-            $isChecked={isCheckedCalendar}
-          >
-            {date}
-          </StyledDateRangeButton>
-          <StyledPeopleRangeButton
-            onClick={() => {
-              openModal('인원수');
-            }}
-            $isChecked={isCheckedPeople}
-          >
-            인원수 {peopleCount}명
-          </StyledPeopleRangeButton>
-          <StyledPriceRangeButton
-            onClick={() => {
-              openModal('가격');
-            }}
-            $isChecked={isCheckedPrice}
-          >
-            {shortenPrice(priceA)}만원 ~ {shortenPrice(priceB)}만원
-          </StyledPriceRangeButton>
-          <StyledReservationButton
-            onClick={() => {
-              setIsClickedReservation(!isClickedReservation);
-            }}
-          >
-            <StyledCheck $isChecked={isClickedReservation} />
-            <StyledReservation $isChecked={isClickedReservation}>
-              예약가능
-            </StyledReservation>
-          </StyledReservationButton>
-        </StyledFilter>
-        <StyledSort>
-          <StyledPriceButton
-            onClick={() => handleSortClick('price')}
-            className={sortBy === 'price' ? 'active' : ''}
-          >
-            <StyledPrice>가격</StyledPrice>
-            <StyledSortWrapper>
-              <StyledSortUp
-                viewBox="0 -250 320 512"
-                className={
-                  sortBy === 'price' && sortOrder === 'asc' ? 'active' : ''
-                }
-              />
-              <StyledSortDown
-                viewBox="0 250 320 512"
-                className={
-                  sortBy === 'price' && sortOrder === 'desc' ? 'active' : ''
-                }
-              />
-            </StyledSortWrapper>
-          </StyledPriceButton>
-          <StyledSalesButton
-            onClick={() => handleSortClick('soldCount')}
-            className={sortBy === 'soldCount' ? 'active' : ''}
-          >
-            <StyledSales>판매량</StyledSales>
-            <StyledSortWrapper>
-              <StyledSortUp
-                viewBox="0 -250 320 512"
-                className={
-                  sortBy === 'soldCount' && sortOrder === 'asc' ? 'active' : ''
-                }
-              />
-              <StyledSortDown
-                viewBox="0 250 320 512"
-                className={
-                  sortBy === 'soldCount' && sortOrder === 'desc' ? 'active' : ''
-                }
-              />
-            </StyledSortWrapper>
-          </StyledSalesButton>
-          <StyledMapButton>
-            <StyledMap
-              onClick={() => {
-                openModal('지도');
-              }}
-            />
-          </StyledMapButton>
-        </StyledSort>
+        <FilterButtons
+          openModal={openModal}
+          isCheckedCalendar={isCheckedCalendar}
+          isCheckedPeople={isCheckedPeople}
+          isCheckedPrice={isCheckedPrice}
+          setIsClickedReservation={setIsClickedReservation}
+          date={date}
+          peopleCount={peopleCount}
+          priceA={priceA}
+          priceB={priceB}
+          isClickedReservation={isClickedReservation}
+        />
+        <SortButtons
+          openModal={openModal}
+          handleSortClick={handleSortClick}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          isRegionListPage={isRegionListPage}
+        />
       </StyledFilterSortWrapper>
       <InfiniteScroll
         hasMore={hasNextPage}
@@ -338,137 +260,4 @@ const StyledFilterSortWrapper = styled.div`
   left: 50%;
   transform: translateX(-50%);
   z-index: 1; */
-`;
-
-const StyledFilter = styled.div`
-  display: flex;
-  gap: 0.5rem;
-`;
-const StyledSort = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-`;
-
-const StyledDateRangeButton = styled.button<{ $isChecked: boolean }>`
-  border: 0.5px solid ${theme.colors.gray2};
-  border-radius: 0.5rem;
-  cursor: pointer;
-  padding: 0.5rem 0.5rem 0.25rem;
-  background-color: ${theme.colors.blue};
-  color: white;
-  font-weight: ${(props) => (props.$isChecked ? 'bold' : 'normal')};
-`;
-const StyledPeopleRangeButton = styled.button<{ $isChecked: boolean }>`
-  border: 0.5px solid ${theme.colors.gray2};
-  border-radius: 0.5rem;
-  cursor: pointer;
-  padding: 0.5rem 0.5rem 0.25rem;
-  background-color: ${theme.colors.blue};
-  color: white;
-  font-weight: ${(props) => (props.$isChecked ? 'bold' : 'normal')};
-`;
-
-const StyledPriceRangeButton = styled.button<{ $isChecked: boolean }>`
-  border: 0.5px solid ${theme.colors.gray2};
-  border-radius: 0.5rem;
-  cursor: pointer;
-  padding: 0.5rem 0.5rem 0.25rem;
-  background-color: ${theme.colors.blue};
-  color: white;
-  font-weight: ${(props) => (props.$isChecked ? 'bold' : 'normal')};
-`;
-const StyledReservationButton = styled.button`
-  border: 0.5px solid ${theme.colors.gray2};
-  border-radius: 0.5rem;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0.5rem 0.5rem 0.25rem;
-
-  background-color: ${theme.colors.blue};
-  color: white;
-`;
-const StyledReservation = styled.div<{ $isChecked: boolean }>`
-  font-weight: ${(props) => (props.$isChecked ? 'bold' : 'normal')};
-`;
-
-const StyledCheck = styled(Check)<{ $isChecked: boolean }>`
-  display: ${(props) => (props.$isChecked ? 'block' : 'none')};
-  fill: ${(props) =>
-    props.$isChecked ? props.theme.colors.navy : 'transparent'};
-  margin-right: 0.2rem;
-  width: 1rem;
-  height: 1rem;
-`;
-
-const StyledPriceButton = styled.button`
-  display: flex;
-  align-items: center;
-  padding: 0.2rem 0.5rem 0;
-  border: 0.5px solid ${theme.colors.gray2};
-  border-radius: 0.5rem;
-  cursor: pointer;
-  background-color: ${theme.colors.blue};
-  color: white;
-  &.active {
-    font-weight: bold;
-  }
-`;
-const StyledPrice = styled.div`
-  margin-right: 0.1rem;
-`;
-
-const StyledSalesButton = styled.button`
-  display: flex;
-  align-items: center;
-  padding: 0.2rem 0.5rem 0;
-  border: 0.5px solid ${theme.colors.gray2};
-  border-radius: 0.5rem;
-  cursor: pointer;
-  background-color: ${theme.colors.blue};
-  color: white;
-  &.active {
-    font-weight: bold;
-  }
-`;
-
-const StyledSales = styled.div`
-  margin-right: 0.1rem;
-`;
-
-const StyledSortWrapper = styled.span`
-  display: flex;
-  flex-direction: column;
-`;
-
-const StyledSortDown = styled(SortDown)`
-  width: 0.8125rem;
-  height: 0.8125rem;
-  fill: white;
-  &.active {
-    fill: ${theme.colors.navy};
-  }
-`;
-
-const StyledSortUp = styled(SortUp)`
-  width: 0.8125rem;
-  height: 0.8125rem;
-  fill: white;
-  &.active {
-    fill: ${theme.colors.navy};
-  }
-`;
-
-const StyledMapButton = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const StyledMap = styled(Map)`
-  height: 1.5rem;
-  fill: ${theme.colors.navy};
-  cursor: pointer;
 `;
