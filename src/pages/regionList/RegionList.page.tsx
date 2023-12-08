@@ -18,9 +18,9 @@ import {
   endStringState,
   isClickedMapState,
 } from 'recoil/searchList';
-import { regionListState, updateRegionListState } from '@recoil/regionList';
+import { regionListState } from '@recoil/regionList';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { getRegionListData } from '@utils/getData';
 import InfiniteScroll from 'react-infinite-scroller';
 import { useNavigate } from 'react-router-dom';
