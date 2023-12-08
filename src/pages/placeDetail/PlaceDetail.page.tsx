@@ -5,7 +5,7 @@ import { theme } from '@styles/theme';
 import { FaStar } from 'react-icons/fa';
 import { MdPlace } from 'react-icons/md';
 import { RiShoppingBagLine } from 'react-icons/ri';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -18,7 +18,12 @@ import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
 import hotelDefaultImg2 from '@assets/images/hotelDefaultImg2.png';
 import CalendarModal from './components/CalendarModal';
 import { useRecoilValue } from 'recoil';
-import { startDateState, endDateState } from './../../recoil/searchList';
+import {
+  startDateState,
+  endDateState,
+  peopleCountState,
+} from './../../recoil/searchList';
+import PeopleModal from './components/PeopleModal';
 
 export interface IAccommodations {
   id: number;
@@ -75,30 +80,33 @@ export const PlaceDetail: React.FC = () => {
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
 
-  //지도 모달
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [modalLatitude, setModalLatitude] = useState<number>(0);
-  const [modalLongitude, setModalLongitude] = useState<number>(0);
+  //지도, 달력, 인원수 모달
+  const [modalState, setModalState] = useState({
+    mapModalIsOpen: false,
+    calModalIsOpen: false,
+    peopleModalIsOpen: false,
+    modalLatitude: 0,
+    modalLongitude: 0,
+  });
 
-  const openMapModal = (latitude: number, longitude: number) => {
-    setModalLatitude(latitude);
-    setModalLongitude(longitude);
-    setModalIsOpen(true);
+  const openModal = (
+    modalType: string,
+    latitude?: number,
+    longitude?: number,
+  ) => {
+    setModalState((prevState) => ({
+      ...prevState,
+      [modalType]: true,
+      modalLatitude: latitude || prevState.modalLatitude,
+      modalLongitude: longitude || prevState.modalLongitude,
+    }));
   };
 
-  const closeMapModal = () => {
-    setModalIsOpen(false);
-  };
-
-  //달력 모달
-  const [calModalIsOpen, setCalModalIsOpen] = useState(false);
-
-  const openCalModal = () => {
-    setCalModalIsOpen(true);
-  };
-
-  const closeCalModal = () => {
-    setCalModalIsOpen(false);
+  const closeModal = (modalType: string) => {
+    setModalState((prevState) => ({
+      ...prevState,
+      [modalType]: false,
+    }));
   };
 
   //필터링 데이터
@@ -107,7 +115,7 @@ export const PlaceDetail: React.FC = () => {
     startDate: formatDate(new Date()),
     endDate: formatDate(new Date(new Date().getTime() + 24 * 60 * 60 * 1000)),
     personnel: 1,
-  }; //navigate로 페이지 넘어오는 데이터
+  }; //navigate로 페이지 넘어오는 데이터와 디폴트 데이터
 
   const [formatStartDate, setFormatStartDate] = useState('');
   const [formatEndDate, setFormatEndDate] = useState('');
@@ -115,7 +123,7 @@ export const PlaceDetail: React.FC = () => {
   const calStartDate = useRecoilValue(startDateState); //달력 선택 데이터
   const calEndDate = useRecoilValue(endDateState);
 
-  useEffect(() => {
+  const updateDates = useCallback(() => {
     if (calStartDate && calEndDate) {
       setFormatStartDate(formatDate(calStartDate));
       setFormatEndDate(formatDate(calEndDate));
@@ -128,39 +136,53 @@ export const PlaceDetail: React.FC = () => {
     }
   }, [calStartDate, calEndDate]);
 
+  useEffect(() => {
+    updateDates();
+  }, [updateDates]);
+
   const startResult: string = startDate.substr(5, 10);
   const endResult: string = endDate.substr(5, 10);
 
   const startCalResult = formatStartDate.substr(5, 10);
   const endCalResult = formatEndDate?.substr(5, 10);
 
+  const selectedPersonnel = useRecoilValue(peopleCountState);
+
   //숙소 정보 get
-  const getData = async (id: any) => {
-    try {
-      const res = await axios.get(
-        `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}?startDate=${
-          formatStartDate || startDate
-        }&endDate=${formatEndDate || endDate}&personnel=${personnel}`,
-        {
-          headers: {
-            'Access-Token': accessToken,
+  const getData = useCallback(
+    async (id: any) => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_SERVER}/v2/accommodations/${id}?startDate=${
+            formatStartDate || startDate
+          }&endDate=${formatEndDate || endDate}&personnel=${
+            selectedPersonnel || personnel
+          }`,
+          {
+            headers: {
+              'Access-Token': accessToken,
+            },
           },
-        },
-      );
-      console.log(res);
-      setAccommodation(res.data.data);
-      setIsChecked(res.data.data.favorite);
-      setIsLoading(false);
-    } catch (error) {
-      console.error('숙소 정보 가져오기 실패', error);
-    }
-  };
+        );
+        console.log(res);
+        setAccommodation(res.data.data);
+        setIsChecked(res.data.data.favorite);
+      } catch (error) {
+        console.error('숙소 정보 가져오기 실패', error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [formatStartDate, formatEndDate, selectedPersonnel, accessToken],
+  );
 
   useEffect(() => {
     getData(id);
-    console.log('달력에서 선택된 값', formatStartDate);
-    console.log('state로 넘어온 값', startDate);
-  }, [formatStartDate, formatEndDate]);
+    // console.log('넘어온 날짜', startDate);
+    // console.log('달력에서 선택된 날짜', formatStartDate);
+    // console.log('넘어온 인원수', personnel);
+    // console.log('모달로 선택한 인원수', selectedPersonnel);
+  }, [getData, id]);
 
   //찜
   const toggleFavorite = async (id: any) => {
@@ -190,7 +212,7 @@ export const PlaceDetail: React.FC = () => {
           {
             startDate: formatStartDate || startDate,
             endDate: formatEndDate || endDate,
-            personnel,
+            personnel: selectedPersonnel || personnel,
           },
           {
             headers: {
@@ -216,22 +238,28 @@ export const PlaceDetail: React.FC = () => {
           <StyledBar>
             <StyledBefore
               onClick={() => {
-                navigate('/'); //메인으로 이동
+                history.back();
               }}
             />
             <StyledTitle>{accommodation.accommodationName}</StyledTitle>
             <StyledSpan>
-              <StyledButton onClick={() => openCalModal()}>
+              <StyledButton onClick={() => openModal('calModalIsOpen')}>
                 {startCalResult
                   ? `${startCalResult}-${endCalResult}`
                   : `${startResult}-${endResult}`}
               </StyledButton>
               <CalendarModal
-                isOpen={calModalIsOpen}
-                onRequestClose={closeCalModal}
+                isOpen={modalState.calModalIsOpen}
+                onRequestClose={() => closeModal('calModalIsOpen')}
               />
 
-              <StyledButton>{personnel}명</StyledButton>
+              <StyledButton onClick={() => openModal('peopleModalIsOpen')}>
+                {selectedPersonnel ? selectedPersonnel : personnel}명
+              </StyledButton>
+              <PeopleModal
+                isOpen={modalState.peopleModalIsOpen}
+                onRequestClose={() => closeModal('peopleModalIsOpen')}
+              />
             </StyledSpan>
           </StyledBar>
 
@@ -258,17 +286,21 @@ export const PlaceDetail: React.FC = () => {
 
           <StyledLocation
             onClick={() =>
-              openMapModal(accommodation.latitude, accommodation.longitude)
+              openModal(
+                'mapModalIsOpen',
+                accommodation.latitude,
+                accommodation.longitude,
+              )
             }
           >
             숙소 위치 보기
             <MdPlace />
           </StyledLocation>
           <MapModal
-            isOpen={modalIsOpen}
-            onRequestClose={closeMapModal}
-            latitude={modalLatitude}
-            longitude={modalLongitude}
+            isOpen={modalState.mapModalIsOpen}
+            onRequestClose={() => closeModal('mapModalIsOpen')}
+            latitude={modalState.modalLatitude}
+            longitude={modalState.modalLongitude}
           />
 
           <StyledDescription>{accommodation.addressCode}</StyledDescription>
@@ -300,8 +332,12 @@ export const PlaceDetail: React.FC = () => {
                   <StyledCapacity>
                     ({room.capacity}명 기준/최대 {room.maxCapacity}명)
                   </StyledCapacity>
-                  <StyledRealPrice>{room.price * 1.2}원</StyledRealPrice>
-                  <StyledSalePrice> {room.price}원</StyledSalePrice>
+                  <StyledRealPrice>
+                    {(room.price * 1.2).toLocaleString('ko-KR')}원
+                  </StyledRealPrice>
+                  <StyledSalePrice>
+                    {room.price.toLocaleString('ko-KR')}원
+                  </StyledSalePrice>
                   {room.stock === 0 ? (
                     <StyledNoStock>예약불가</StyledNoStock>
                   ) : (
@@ -321,7 +357,7 @@ export const PlaceDetail: React.FC = () => {
                               room,
                               startDate: formatStartDate || startDate,
                               endDate: formatEndDate || endDate,
-                              personnel,
+                              personnel: selectedPersonnel || personnel,
                             },
                           });
                         }}

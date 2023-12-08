@@ -105,18 +105,30 @@ export const Reservation: React.FC = () => {
           </StyledPayPrice>
           <StyledItemPrice>
             <span>상품금액</span>
-            <span>숙박/1박 {roomInfo?.price ? roomInfo.price * 1.2 : 0}원</span>
+            <span>
+              숙박/1박
+              {roomInfo?.price.toLocaleString('ko-KR')
+                ? (roomInfo.price * 1.2).toLocaleString('ko-KR')
+                : 0}
+              원
+            </span>
           </StyledItemPrice>
           <StyledItemSalePrice>
             <span>할인</span>
             <StyledItemSaleText>
-              <span>-{roomInfo?.price ? roomInfo.price * 0.2 : 0}원</span>
+              <span>
+                -
+                {roomInfo?.price.toLocaleString('ko-KR')
+                  ? (roomInfo.price * 0.2).toLocaleString('ko-KR')
+                  : 0}
+                원
+              </span>
               <span id="no-refund">※ 환불 불가 </span>
             </StyledItemSaleText>
           </StyledItemSalePrice>
           <StyledFinalPayPrice>
             <span>최종 결제 금액</span>
-            <span>{roomInfo?.price}원</span>
+            <span>{roomInfo?.price.toLocaleString('ko-KR')}원</span>
           </StyledFinalPayPrice>
         </StyledPriceBox>
       </StyledWrapper>
@@ -142,7 +154,9 @@ export const Reservation: React.FC = () => {
       </StyledRuleWrapper>
       {agreement ? (
         <StyledButtonWrapper onClick={handlePayment}>
-          <StyledBtnText>{roomInfo?.price}원 결제하기</StyledBtnText>
+          <StyledBtnText>
+            {roomInfo?.price.toLocaleString('ko-KR')}원 결제하기
+          </StyledBtnText>
         </StyledButtonWrapper>
       ) : (
         ''

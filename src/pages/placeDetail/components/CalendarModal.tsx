@@ -1,6 +1,6 @@
 import Modal from 'react-modal';
 import styled from 'styled-components';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { theme } from '@styles/theme';
 import { StyledLine } from '../PlaceDetail.page';
 import DatePicker from 'react-datepicker';
@@ -94,7 +94,7 @@ const CalendarModal: React.FC<ModalProps> = ({ isOpen, onRequestClose }) => {
 
 export default CalendarModal;
 
-const StyledButtonDiv = styled.div`
+export const StyledButtonDiv = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -114,7 +114,7 @@ const StyledWrapper = styled.div`
   margin: auto;
 `;
 
-const StyledTitle = styled.span`
+export const StyledTitle = styled.span`
   display: flex;
   margin: auto;
   font-size: 1.5rem;
