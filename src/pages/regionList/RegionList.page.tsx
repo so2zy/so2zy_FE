@@ -27,6 +27,7 @@ import { useNavigate } from 'react-router-dom';
 import { formatDate } from '@utils/useFormatDate';
 import { FilterButtons } from '@components/FilterButtons';
 import { SortButtons } from '@components/SortButtons';
+import { formatDateRange } from '@utils/formatDateRange';
 
 export const RegionList: React.FC = () => {
   const isRegionListPage = true;
@@ -126,34 +127,7 @@ export const RegionList: React.FC = () => {
   });
 
   useEffect(() => {
-    if (!startDate && !endDate) {
-      const today = new Date();
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
-
-      const todayMonth = (today?.getMonth() + 1).toString();
-      const todayDate = today?.getDate();
-      const tomorrowMonth = (tomorrow.getMonth() + 1).toString();
-      const tomorrowDate = tomorrow.getDate();
-
-      setDate(
-        `${todayMonth}.${todayDate} ~ ${tomorrowMonth}.${tomorrowDate}, 1박`,
-      );
-      return;
-    }
-
-    if (startDate && endDate) {
-      const differDate = Math.floor(
-        (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
-      );
-      const startMonth = (startDate?.getMonth() + 1).toString();
-      const startDay = startDate?.getDate();
-      const endMonth = (endDate?.getMonth() + 1).toString();
-      const endDay = endDate?.getDate();
-      setDate(
-        `${startMonth}.${startDay} ~ ${endMonth}.${endDay}, ${differDate}박`,
-      );
-    }
+    setDate(formatDateRange(startDate, endDate));
   }, [startDate, endDate]);
 
   const handleItemClick = (id: number) => {
