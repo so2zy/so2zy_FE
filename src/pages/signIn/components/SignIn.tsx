@@ -76,7 +76,6 @@ export const SignIn: React.FC = () => {
         setEmail(email);
         setUserName(userName);
         setSignInButtonClick(false);
-        alert(`환영합니다! ${userName}님`);
         navigate('/');
       } else {
         setSignInButtonClick(true);
@@ -133,10 +132,7 @@ export const SignIn: React.FC = () => {
             <StyledSignInError>
               {signInButtonClick && '로그인 정보가 일치하지 않습니다.'}
             </StyledSignInError>
-            <StyledSignInButton
-              onClick={() => handleSignIn(email, pw)}
-              disabled={!email || !pw}
-            >
+            <StyledSignInButton onClick={() => handleSignIn(email, pw)}>
               로그인
             </StyledSignInButton>
             <StyledSignInGoSignUp>
@@ -178,8 +174,8 @@ const StyledSignInContent = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 70%;
-  height: 30rem;
+  width: 38rem;
+  height: 27rem;
   margin: 0 auto;
   background-color: #f3f3f3;
   border: 1px solid #a8a8a8;
@@ -188,13 +184,13 @@ const StyledSignInContent = styled.div`
   > div {
     height: 100%;
   }
-  @media (max-width: 1080px) {
+  @media (max-width: 700px) {
     width: 100%;
   }
 `;
 const StyledMainLogoTwo = styled.div`
   img {
-    width: 300px;
+    width: 15rem;
     cursor: pointer;
   }
 `;
