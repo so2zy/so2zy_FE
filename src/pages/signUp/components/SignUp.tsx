@@ -272,7 +272,9 @@ export const StyledNoHeaderWrap = styled.div`
   height: 100%;
   margin: 0 auto;
   background-color: ${theme.colors.gray1};
-  @media (max-width: 1080px) {
+  @media (max-width: 800px) {
+    background-color: ${theme.colors.gray1};
+
     width: 100%;
   }
 `;
