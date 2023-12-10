@@ -55,6 +55,7 @@ export const SignIn: React.FC = () => {
         const accessToken = response.data.accessToken;
         const refreshToken = response.data.refreshToken;
         const decodedToken = jwt.decode(accessToken);
+        console.log(decodedToken);
         const {
           'user-key': userKey,
           'user-name': userName,
