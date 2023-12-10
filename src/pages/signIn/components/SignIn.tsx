@@ -177,8 +177,8 @@ const StyledSignInContent = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 70%;
-  height: 30rem;
+  width: 38rem;
+  height: 27rem;
   margin: 0 auto;
   background-color: #f3f3f3;
   border: 1px solid #a8a8a8;
@@ -187,13 +187,13 @@ const StyledSignInContent = styled.div`
   > div {
     height: 100%;
   }
-  @media (max-width: 1080px) {
+  @media (max-width: 700px) {
     width: 100%;
   }
 `;
 const StyledMainLogoTwo = styled.div`
   img {
-    width: 300px;
+    width: 15rem;
     cursor: pointer;
   }
 `;
