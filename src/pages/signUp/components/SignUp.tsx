@@ -358,7 +358,7 @@ const StyledDiv = styled.div`
 export const WarnText = styled.div`
   position: absolute;
   bottom: -0.5rem;
-  left: 28%;
+  left: 30%;
   font-size: 0.8rem;
   color: ${theme.colors.error};
 `;
@@ -366,7 +366,7 @@ export const WarnText = styled.div`
 export const CorrectText = styled.div`
   position: absolute;
   bottom: -0.5rem;
-  left: 28%;
+  left: 30%;
   font-size: 0.8rem;
   color: ${theme.colors.success};
 `;
