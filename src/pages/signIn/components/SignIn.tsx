@@ -75,7 +75,6 @@ export const SignIn: React.FC = () => {
         setEmail(email);
         setUserName(userName);
         setSignInButtonClick(false);
-        alert(`환영합니다! ${userName}님`);
         navigate('/');
       } else {
         setSignInButtonClick(true);
@@ -132,10 +131,7 @@ export const SignIn: React.FC = () => {
             <StyledSignInError>
               {signInButtonClick && '로그인 정보가 일치하지 않습니다.'}
             </StyledSignInError>
-            <StyledSignInButton
-              onClick={() => handleSignIn(email, pw)}
-              disabled={!email || !pw}
-            >
+            <StyledSignInButton onClick={() => handleSignIn(email, pw)}>
               로그인
             </StyledSignInButton>
             <StyledSignInGoSignUp>
