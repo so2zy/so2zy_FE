@@ -181,10 +181,10 @@ const Header = () => {
     [],
   );
   const handleLogOutTimeOut = async () => {
-    alert('로그인 시간이 만료되었습니다 !');
+    alert('로그인 시간이 만료되었습니다.');
   };
   const handleLogOut = async () => {
-    if (confirm('로그아웃 하시겠습니다까 ?')) {
+    if (confirm('로그아웃 하시겠습니까?')) {
       localStorage.clear();
 
       await resetRecoilState();
