@@ -8,7 +8,7 @@ import {
   StyledButtonWrapper,
 } from 'pages/reservation/Reservation.page';
 import { useQuery } from '@tanstack/react-query';
-import { getCarts } from './components/getCart';
+import { getCarts } from 'api/getCart';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
@@ -43,6 +43,8 @@ export const Cart: React.FC = () => {
     queryKey: ['mycarts'],
     queryFn: getCarts,
   });
+
+  console.log(data);
 
   const [checkedHotel, setCheckedHotel] = useState<AccommodationList[]>([]);
   const [checkedAllHotel, setCheckedAllHotel] = useState(false);
@@ -125,7 +127,6 @@ export const Cart: React.FC = () => {
     setSalePrice(sale);
     setTotalPrice(total);
   }, [checkedHotel]);
-  console.log(checkedHotel);
   return (
     <StyleMainWrapper>
       <StyledTitleDesc>
@@ -137,82 +138,81 @@ export const Cart: React.FC = () => {
           {checkedAllHotel ? '전체 해제' : '전체 선택'}
         </StyledAllCheckSpan>
       </StyledTitleDesc>
-      {data &&
-        data.data.accommodationList.map((accommodation) => (
-          <>
-            <StyledCartItemDesc key={accommodation.accommodationId}>
-              <StyledItemTitle>
-                <span>{accommodation.accommodationName}</span>
-              </StyledItemTitle>
-              <StyledAddress>
-                <span>{accommodation.address}</span>
-              </StyledAddress>
-              <br />
-            </StyledCartItemDesc>
-            <StyledBox>
-              <StyledList>
-                <StyledListTitle>
-                  <StyledWrapper>
-                    <StyledTitleDesc>
-                      <StyledProductSpan>예약 상품</StyledProductSpan>
-                    </StyledTitleDesc>
-                    <StyledTitleDesc>
-                      <StyledDateSpan>날짜</StyledDateSpan>
-                    </StyledTitleDesc>
-                    <StyledPriceTitleDesc>
-                      <StyledSpan>가격</StyledSpan>
-                    </StyledPriceTitleDesc>
-                  </StyledWrapper>
-                </StyledListTitle>
-                <StyledLine />
-                {accommodation.roomList.map((room) => (
-                  <StyledListItem key={room.roomId}>
-                    <StyledCheckbox
-                      checked={checkedHotel.some(
-                        (a) =>
-                          a.accommodationId === accommodation.accommodationId &&
-                          a.roomList.some((r) => r.roomId === room.roomId),
-                      )}
-                      onChange={() => handleCheckBoxChange(accommodation)}
-                    />
-                    {room.roomImageUrl ? (
-                      <StyledMiniImage src={room.roomImageUrl} />
-                    ) : (
-                      <StyledMiniImage src={hotelDefaultImg} alt="대체 사진" />
+      {data?.data.accommodationList.map((accommodation) => (
+        <>
+          <StyledCartItemDesc key={accommodation.accommodationId}>
+            <StyledItemTitle>
+              <span>{accommodation.accommodationName}</span>
+            </StyledItemTitle>
+            <StyledAddress>
+              <span>{accommodation.address}</span>
+            </StyledAddress>
+            <br />
+          </StyledCartItemDesc>
+          <StyledBox>
+            <StyledList>
+              <StyledListTitle>
+                <StyledWrapper>
+                  <StyledTitleDesc>
+                    <StyledProductSpan>예약 상품</StyledProductSpan>
+                  </StyledTitleDesc>
+                  <StyledTitleDesc>
+                    <StyledDateSpan>날짜</StyledDateSpan>
+                  </StyledTitleDesc>
+                  <StyledPriceTitleDesc>
+                    <StyledSpan>가격</StyledSpan>
+                  </StyledPriceTitleDesc>
+                </StyledWrapper>
+              </StyledListTitle>
+              <StyledLine />
+              {accommodation.roomList.map((room) => (
+                <StyledListItem key={room.roomId}>
+                  <StyledCheckbox
+                    checked={checkedHotel.some(
+                      (a) =>
+                        a.accommodationId === accommodation.accommodationId &&
+                        a.roomList.some((r) => r.roomId === room.roomId),
                     )}
-                    <StyleDetail>
-                      <StyleRoomName>{room.type}</StyleRoomName>
-                      <StyledCheckInOutTitle>
-                        체크인 {room.checkIn.replace(/:00$/, '')} - 체크아웃{' '}
-                        {room.checkOut.replace(/:00$/, '')}
-                      </StyledCheckInOutTitle>
-                      <StyledCheckInOutTitle>
-                        기준 {room.capacity}인 최대 {room.maxCapacity}인
-                      </StyledCheckInOutTitle>
-                    </StyleDetail>
-                    <StyleDetail>
-                      <StyledDetailDes>
-                        <p>
-                          {room.startDate.slice(2)}~{room.endDate.slice(2)}
-                        </p>
-                      </StyledDetailDes>
-                    </StyleDetail>
-                    <StyleDetail>
-                      <StyledDetailDes>
-                        <p id="priceDesc">
-                          <span>
-                            {(room.price * 1.2).toLocaleString('ko-KR')}원
-                          </span>
-                          {room.price.toLocaleString('ko-KR')}원
-                        </p>
-                      </StyledDetailDes>
-                    </StyleDetail>
-                  </StyledListItem>
-                ))}
-              </StyledList>
-            </StyledBox>
-          </>
-        ))}
+                    onChange={() => handleCheckBoxChange(accommodation)}
+                  />
+                  {room.roomImageUrl ? (
+                    <StyledMiniImage src={room.roomImageUrl} />
+                  ) : (
+                    <StyledMiniImage src={hotelDefaultImg} alt="대체 사진" />
+                  )}
+                  <StyleDetail>
+                    <StyleRoomName>{room.type}</StyleRoomName>
+                    <StyledCheckInOutTitle>
+                      체크인 {room.checkIn.replace(/:00$/, '')} - 체크아웃{' '}
+                      {room.checkOut.replace(/:00$/, '')}
+                    </StyledCheckInOutTitle>
+                    <StyledCheckInOutTitle>
+                      기준 {room.capacity}인 최대 {room.maxCapacity}인
+                    </StyledCheckInOutTitle>
+                  </StyleDetail>
+                  <StyleDetail>
+                    <StyledDetailDes>
+                      <p>
+                        {room.startDate.slice(2)}~{room.endDate.slice(2)}
+                      </p>
+                    </StyledDetailDes>
+                  </StyleDetail>
+                  <StyleDetail>
+                    <StyledDetailDes>
+                      <p id="priceDesc">
+                        <span>
+                          {(room.price * 1.2).toLocaleString('ko-KR')}원
+                        </span>
+                        {room.price.toLocaleString('ko-KR')}원
+                      </p>
+                    </StyledDetailDes>
+                  </StyleDetail>
+                </StyledListItem>
+              ))}
+            </StyledList>
+          </StyledBox>
+        </>
+      ))}
       <StyleSubWrapper>
         <StyledPrice>예약상품</StyledPrice>
         <StyledPriceWrapper>
