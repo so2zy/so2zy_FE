@@ -40,14 +40,13 @@ const Header = () => {
   const setEmail = useSetRecoilState(emailState);
   const setPw = useSetRecoilState(pwState);
   const tokenRefreshUrl = `${process.env.REACT_APP_SERVER}/v1/refresh`;
-
   const [iatDatePlus9Hours, setIatDatePlus9Hours] = useRecoilState(
     iatDatePlus9HoursState,
   );
   const navigate = useNavigate();
   const location = useLocation();
   const checkTokenExpiration = async () => {
-    if (iatDatePlus9Hours && iatDatePlus9Hours < Date.now()) {
+    if (iatDatePlus9Hours < Date.now()) {
       try {
         const response = await axios.post(
           tokenRefreshUrl,
@@ -62,25 +61,25 @@ const Header = () => {
             },
           },
         );
-
-        if (response.status === 201) {
+        if (response.status === 200) {
           const newAccessToken = response.data.data.accessToken;
           const decodedToken = jwt.decode(newAccessToken);
           const { iat } = decodedToken;
           const iatPlus = iat * 1000 + 9 * 60 * 60 * 1000;
           setIatDatePlus9Hours(iatPlus);
-          localStorage.setItem('iatDatePlus9Hours', newAccessToken);
-          localStorage.setItem('accessToken', String(iatPlus));
-
           setToken(newAccessToken);
+
+          localStorage.setItem('iatDatePlus9Hours', String(iatPlus));
+          localStorage.setItem('accessToken', newAccessToken);
+
           console.log('재발급성공');
         } else {
           console.error('AccessToken 재발급 실패');
-          handleLogOut();
+          handleLogOutTimeOut();
         }
       } catch (error) {
         console.error('AccessToken 재발급 요청 에러:', error);
-        handleLogOut();
+        handleLogOutTimeOut();
       }
     }
   };
@@ -111,17 +110,13 @@ const Header = () => {
 
   const isSearchPage =
     location.pathname === '/' || location.pathname.startsWith('/searchList');
-  const isReservedPage = [
-    '/reservation',
-    '/confirm',
-    '/cart',
-    '/cartreservation',
-  ].includes(location.pathname);
+  const isReservedPage = ['/reservation', '/confirm', '/cart'].includes(
+    location.pathname,
+  );
   const isSignUpOrSignIn = ['/signUp', '/signIn'].includes(location.pathname);
   if (isSignUpOrSignIn) {
     return null;
   }
-
   const handleMainLogoClick = () => {
     navigate('/');
   };
@@ -136,8 +131,6 @@ const Header = () => {
     } else if (location.pathname === '/reservation') {
       history.back();
     } else if (location.pathname === '/confirm') {
-      history.back();
-    } else if (location.pathname === '/cartreservation') {
       history.back();
     } else if (location.pathname == '/regionList') {
       history.back();
@@ -187,7 +180,9 @@ const Header = () => {
       },
     [],
   );
-
+  const handleLogOutTimeOut = async () => {
+    alert('로그인 시간이 만료되었습니다.');
+  };
   const handleLogOut = async () => {
     if (confirm('로그아웃 하시겠습니까?')) {
       localStorage.clear();
@@ -197,14 +192,6 @@ const Header = () => {
   };
 
   useEffect(() => {
-    if (token) {
-      const tokenCheckInterval = setInterval(() => {
-        checkTokenExpiration();
-      }, 1800000);
-      return () => clearInterval(tokenCheckInterval);
-    }
-  }, []);
-  useEffect(() => {
     const storedLoginState = localStorage.getItem('loginState');
     if (storedLoginState === 'true') {
       const storedUserKey = localStorage.getItem('userKey') || '';
@@ -212,14 +199,22 @@ const Header = () => {
       const storedRefreshToken = localStorage.getItem('refreshToken') || '';
       const storedEmail = localStorage.getItem('email') || '';
       const storedUserName = localStorage.getItem('userName') || '';
+      const storedIatDatePlus9Hours = localStorage.getItem('iatDatePlus9Hours');
       setUserKey(storedUserKey);
       setRefreshToken(storedRefreshToken);
+      setIatDatePlus9Hours(Number(storedIatDatePlus9Hours));
       setToken(storedAccessToken);
       setEmail(storedEmail);
       setPw('');
       setUserName(storedUserName);
+      if (token) {
+        const tokenCheckInterval = setInterval(() => {
+          checkTokenExpiration();
+        }, 1800000);
+        return () => clearInterval(tokenCheckInterval);
+      }
     }
-  }, []);
+  }, [token, refreshToken]);
 
   const openModal = (type: string) => {
     if (type == '지역') {
@@ -246,15 +241,14 @@ const Header = () => {
             <div>
               <StyledBefore size="30" onClick={handleArrowLeft} />
             </div>
-            <StyledHeaderTitle onClick={handleReservationText}>
+            <div onClick={handleReservationText}>
               {location.pathname === '/cart'
                 ? '장바구니'
                 : location.pathname === '/reservation'
                   ? '예약'
-                  : location.pathname === '/cartreservation'
-                    ? '예약'
-                    : ''}
-            </StyledHeaderTitle>
+                  : ''}
+              {/* 로고 넣기 */}
+            </div>
             <StyledHeaderHomeIcon>
               <img src={HomeIcon} alt="Cart Icon" onClick={handleHomeIcon} />
             </StyledHeaderHomeIcon>
@@ -424,11 +418,6 @@ const StyledHeaderCartIcon = styled(FaCartShopping)`
   position: relative;
 `;
 
-const StyledHeaderTitle = styled.div`
-  font-weight: bold;
-  font-size: 1.6rem;
-  padding-top: 0.8rem;
-`;
 // const StyledHeaderCartCount = styled.div`
 //   /* font-size: 0.5rem; */
 //   border-radius: 3rem;
@@ -514,7 +503,7 @@ const StyledHouse = styled(House)`
 
 const StyledLeftBtn = styled(BsArrowLeft)`
   cursor: pointer;
-  color: ${theme.colors.navy};
+  color: white;
 `;
 
 export default Header;

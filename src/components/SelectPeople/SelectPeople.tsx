@@ -50,7 +50,7 @@ export default function SelectPeople({
   );
 }
 
-const StyledContainer = styled.div`
+export const StyledContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr auto;
@@ -58,7 +58,7 @@ const StyledContainer = styled.div`
   height: 10rem;
 `;
 
-const StyledButtonDiv = styled.div`
+export const StyledButtonDiv = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -71,32 +71,32 @@ const StyledButtonDiv = styled.div`
   font-size: 1.1rem;
 `;
 
-const StyledTitle = styled.div`
+export const StyledTitle = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
   font-size: 1.4rem;
 `;
-const StyledContent = styled.div`
+export const StyledContent = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 1.1rem;
 `;
 
-const StyledCountWrapper = styled.div`
+export const StyledCountWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 5.5rem;
 `;
-const StyledCountNumber = styled.div`
+export const StyledCountNumber = styled.div`
   font-weight: bold;
   font-size: 1.2rem;
   margin: 0 0.5rem;
 `;
-const StyledCountButton = styled.button`
+export const StyledCountButton = styled.button`
   border: 1px solid black;
   border-radius: 5rem;
   width: 1.5rem;
