@@ -96,7 +96,7 @@ export const Cart: React.FC = () => {
         setCheckedHotel(data.data.accommodationList);
       }
     }
-    setCheckedAllHotel(!checkedAllHotel);
+    setCheckedAllHotel((prev) => !prev);
   };
 
   const handleReservation = () => {
