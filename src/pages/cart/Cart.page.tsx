@@ -7,11 +7,13 @@ import {
   StyledBtnText,
   StyledButtonWrapper,
 } from 'pages/reservation/Reservation.page';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { getCarts } from 'api/getCart';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
+import { FaRegTrashCan } from 'react-icons/fa6';
+import { deleteCart } from '@api/deleteCart';
 export interface CartItemProps {
   data: {
     accommodationList: AccommodationList[];
@@ -27,6 +29,7 @@ export interface AccommodationList {
 
 export interface CartRoomList {
   roomId: number;
+  roomCartId: number;
   type: string;
   checkIn: string;
   checkOut: string;
@@ -46,7 +49,12 @@ export const Cart: React.FC = () => {
 
   console.log(data);
 
+  // const mutation = useMutation({
+  //   mutationFn: deleteCart,
+  // });
+
   const [checkedHotel, setCheckedHotel] = useState<AccommodationList[]>([]);
+  const [deleteHotel, setDeleteHotel] = useState<AccommodationList>();
   const [checkedAllHotel, setCheckedAllHotel] = useState(false);
   const [originalPrice, setOriginalPrice] = useState<number>(0);
   const [salePrice, setSalePrice] = useState<number>(0);
@@ -90,6 +98,7 @@ export const Cart: React.FC = () => {
       setCheckedHotel((prev) => [...prev, accommodation]);
     }
   };
+
   const handleAllCheckBoxChange = () => {
     if (checkedAllHotel) {
       setCheckedHotel([]);
@@ -104,6 +113,17 @@ export const Cart: React.FC = () => {
   const handleReservation = () => {
     navigate(`/cartreservation`, { state: { checkedHotel } });
   };
+
+  // const handleDeleteHotel = (room: CartRoomList) => {
+  //   if (room) {
+  //     setDeleteHotel(room);
+  //     const data = {
+  //       roomId: room.roomId,
+  //       startDate: room.startDate,
+  //       endDate: room.endDate,
+  //     };
+  //   }
+  // };
 
   useEffect(() => {
     const sum = checkedHotel.reduce((acc, accommodation) => {
@@ -138,9 +158,9 @@ export const Cart: React.FC = () => {
           {checkedAllHotel ? '전체 해제' : '전체 선택'}
         </StyledAllCheckSpan>
       </StyledTitleDesc>
-      {data?.data.accommodationList.map((accommodation) => (
+      {data?.data.accommodationList.map((accommodation, index) => (
         <>
-          <StyledCartItemDesc key={accommodation.accommodationId}>
+          <StyledCartItemDesc key={index}>
             <StyledItemTitle>
               <span>{accommodation.accommodationName}</span>
             </StyledItemTitle>
@@ -166,7 +186,7 @@ export const Cart: React.FC = () => {
               </StyledListTitle>
               <StyledLine />
               {accommodation.roomList.map((room) => (
-                <StyledListItem key={room.roomId}>
+                <StyledListItem key={room.roomCartId}>
                   <StyledCheckbox
                     checked={checkedHotel.some(
                       (a) =>
@@ -175,6 +195,7 @@ export const Cart: React.FC = () => {
                     )}
                     onChange={() => handleCheckBoxChange(accommodation)}
                   />
+
                   {room.roomImageUrl ? (
                     <StyledMiniImage src={room.roomImageUrl} />
                   ) : (
@@ -207,6 +228,9 @@ export const Cart: React.FC = () => {
                       </p>
                     </StyledDetailDes>
                   </StyleDetail>
+                  {/* <StyledTrashCan
+                    onClick={() => handleDeleteHotel(accommodation)}
+                  /> */}
                 </StyledListItem>
               ))}
             </StyledList>
@@ -411,4 +435,12 @@ export const StyledPrices = styled.span`
   margin: 0.5rem 0 0.5rem 1rem;
   font-weight: ${theme.fonts.subtitle5.fontWeight};
   font-size: ${theme.fonts.subtitle5.fontSize};
+`;
+
+export const StyledTrashCan = styled(FaRegTrashCan)`
+  margin: 2.2rem 0 0 2rem;
+  cursor: pointer;
+  &:hover {
+    color: ${theme.colors.gray3};
+  }
 `;
