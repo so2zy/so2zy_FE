@@ -1,7 +1,7 @@
 import { theme } from '@styles/theme';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
-import { getAllProduct } from './getPlaces';
+import { getAllProduct } from '@api/getPlaces';
 import UseIntersectionObserver from '@utils/useIntersectionObserver';
 import ScrollTopBtn from '@components/common/ScrollToTop/ScrollToTop';
 import { formatDate } from '@utils/useFormatDate';

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { PostPaymentProps } from '../CartReservation.page';
+import { PostPaymentProps } from '../pages/cartReservation/CartReservation.page';
 
 export const postPayment = async (data: PostPaymentProps) => {
   const accessToken = localStorage.getItem('accessToken');
