@@ -114,16 +114,7 @@ export const Cart: React.FC = () => {
     navigate(`/cartreservation`, { state: { checkedHotel } });
   };
 
-  // const handleDeleteHotel = (room: CartRoomList) => {
-  //   if (room) {
-  //     setDeleteHotel(room);
-  //     const data = {
-  //       roomId: room.roomId,
-  //       startDate: room.startDate,
-  //       endDate: room.endDate,
-  //     };
-  //   }
-  // };
+  const handleDeleteHotel = () => {};
 
   useEffect(() => {
     const sum = checkedHotel.reduce((acc, accommodation) => {
@@ -213,7 +204,7 @@ export const Cart: React.FC = () => {
                   </StyleDetail>
                   <StyleDetail>
                     <StyledDetailDes>
-                      <p>
+                      <p id="dateRange">
                         {room.startDate.slice(2)}~{room.endDate.slice(2)}
                       </p>
                     </StyledDetailDes>
@@ -228,9 +219,7 @@ export const Cart: React.FC = () => {
                       </p>
                     </StyledDetailDes>
                   </StyleDetail>
-                  {/* <StyledTrashCan
-                    onClick={() => handleDeleteHotel(accommodation)}
-                  /> */}
+                  {/* <StyledTrashCan onClick={() => handleDeleteHotel()} /> */}
                 </StyledListItem>
               ))}
             </StyledList>
@@ -271,6 +260,7 @@ const StyledWrapper = styled.div`
 
 const StyledTitleDesc = styled.div`
   display: flex;
+  /* width: 10rem; */
   padding: 0.8rem 0 0.8rem 0.4rem;
 `;
 
@@ -280,17 +270,20 @@ const StyledPriceTitleDesc = styled.div`
 `;
 
 const StyledProductSpan = styled.span`
-  margin-right: 8.5rem;
+  width: 5rem;
+  margin-right: 6.5rem;
   font-weight: ${theme.fonts.subtitle3.fontWeight};
 `;
 
 const StyledSpan = styled.span`
-  margin-right: 5rem;
+  width: 5rem;
+  /* margin-right: 2rem; */
   font-weight: ${theme.fonts.subtitle3.fontWeight};
 `;
 
 const StyledDateSpan = styled(StyledSpan)`
-  padding-left: 1.2rem;
+  width: 2.5em;
+  margin-right: 3.5rem;
 `;
 
 const StyledCartItemDesc = styled(StyledItemDesc)`
@@ -300,7 +293,6 @@ const StyledCartItemDesc = styled(StyledItemDesc)`
 const StyledAllCheckSpan = styled(StyledSpan)`
   padding-top: 0.9rem;
   font-size: 1.1rem;
-  /* line-height: 2.5rem; */
 `;
 
 const StyleDetail = styled.div`
@@ -325,28 +317,28 @@ export const StyledDetailDes = styled.div`
   /* display: block; */
   margin: 0 1rem 0rem 0.2rem;
   p {
-    /* width: 12rem; */
     margin: 2rem 0 0 -1.2rem;
-    display: grid;
   }
   #priceDesc {
     margin-top: 1.5rem;
-    margin-left: 1.5rem;
+    margin-left: 0.8rem;
+  }
+  #dateRange {
+    width: 9rem;
   }
   span {
     text-decoration: line-through;
     color: ${theme.colors.gray2};
     font-size: 0.8rem;
     margin-bottom: 0.2rem;
+    width: 5rem;
   }
-  /* #sale-price {
-    margin-bottom: 0.2rem;
-  } */
 `;
 
 export const StyledCheckInOutTitle = styled(StyledDetailDes)`
   margin-left: 0.05rem;
   margin-bottom: 0.2rem;
+  width: 100%;
 `;
 
 export const StyledDetailDescription = styled.div`
@@ -438,7 +430,6 @@ export const StyledPrices = styled.span`
 `;
 
 export const StyledTrashCan = styled(FaRegTrashCan)`
-  margin: 2.2rem 0 0 2rem;
   cursor: pointer;
   &:hover {
     color: ${theme.colors.gray3};
