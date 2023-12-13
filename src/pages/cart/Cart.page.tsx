@@ -50,7 +50,7 @@ export const Cart: React.FC = () => {
   const [checkedHotel, setCheckedHotel] = useState<{ [key: string]: boolean }>(
     {},
   );
-  const [checkedAllHotel, setCheckedAllHotel] = useState(false);
+  const [checkedAllHotel, setCheckedAllHotel] = useState<boolean>(false);
   const [originalPrice, setOriginalPrice] = useState<number>(0);
   const [salePrice, setSalePrice] = useState<number>(0);
   const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -62,88 +62,69 @@ export const Cart: React.FC = () => {
     roomId: number,
   ) => {
     setCheckedHotel((prevChecked) => {
-      const updatedChecked = { ...prevChecked };
       const key = `${accommodationId}-${roomCartId}-${roomId}`;
-      updatedChecked[key] = !updatedChecked[key];
+      const updatedChecked = {
+        ...prevChecked,
+        [key]: !prevChecked[key],
+      };
+
       return updatedChecked;
     });
   };
-  // console.log(data);
-  // const handleCheckBoxChange = (accommodation: AccommodationList) => {
-  //   if (
-  //     checkedHotel.some((a) => {
-  //       if (a.accommodationId === accommodation.accommodationId) {
-  //         return a.roomList.some((room) =>
-  //           accommodation.roomList.some(
-  //             (incomingRoom) =>
-  //               incomingRoom.roomId === room.roomId &&
-  //               a.accommodationId === accommodation.accommodationId,
-  //           ),
-  //         );
-  //       }
-  //       return false;
-  //     })
-  //   ) {
-  //     setCheckedHotel((prev) =>
-  //       prev.map((a) => {
-  //         if (a.accommodationId === accommodation.accommodationId) {
-  //           return {
-  //             ...a,
-  //             roomList: a.roomList.filter(
-  //               (room) =>
-  //                 !accommodation.roomList.some(
-  //                   (incomingRoom) =>
-  //                     incomingRoom.roomId === room.roomId &&
-  //                     a.accommodationId === accommodation.accommodationId,
-  //                 ),
-  //             ),
-  //           };
-  //         }
-  //         return a;
-  //       }),
-  //     );
-  //   } else {
-  //     setCheckedHotel((prev) => [...prev, accommodation]);
-  //   }
-  // };
-  // const handleAllCheckBoxChange = () => {
-  //   if (checkedAllHotel) {
-  //     setCheckedHotel([]);
-  //   } else {
-  //     if (data && data.data) {
-  //       setCheckedHotel(data.data.accommodationList);
-  //     }
-  //   }
-  //   setCheckedAllHotel((prev) => !prev);
-  // };
+  const handleAllCheckBoxChange = () => {
+    setCheckedAllHotel((prev) => !prev);
 
+    if (data && data.data) {
+      const updatedChecked: { [key: string]: boolean } = {};
+      data.data.accommodationList.forEach((accommodation) => {
+        accommodation.roomList.forEach((room) => {
+          const key = `${accommodation.accommodationId}-${room.roomCartId}-${room.roomId}`;
+          updatedChecked[key] = !checkedAllHotel;
+        });
+      });
+      setCheckedHotel(updatedChecked);
+    }
+  };
   const handleReservation = () => {
     navigate(`/cartreservation`, { state: { checkedHotel } });
   };
   useEffect(() => {
-    const sum = Object.entries(checkedHotel).reduce((acc, [key, isChecked]) => {
-      const [accommodationId, roomCartId, roomId] = key.split('-');
-      const accommodation = data?.data.accommodationList.find(
-        (acc) => acc.accommodationId === Number(accommodationId),
-      );
+    let originalSum = 0;
+    let saleSum = 0;
+    let totalSum = 0;
 
-      // 수정된 부분: roomCartId와 roomId 모두 일치하는 방을 찾도록 변경
-      const room = accommodation?.roomList.find(
-        (r) => r.roomCartId === Number(roomCartId),
-      );
+    Object.entries(checkedHotel).forEach(([key, isChecked]) => {
+      if (isChecked) {
+        const [accommodationId, roomCartId, roomId] = key.split('-');
+        const accommodation = data?.data.accommodationList.find(
+          (acc) => acc.accommodationId === Number(accommodationId),
+        );
+        const room = accommodation?.roomList.find(
+          (r) => r.roomCartId === Number(roomCartId),
+        );
 
-      return acc + (room && isChecked ? room.price : 0);
-    }, 0);
+        if (room) {
+          originalSum += room.price * 1.2;
+          saleSum += room.price * 0.2;
+          totalSum += room.price;
+        }
+      }
+    });
 
-    console.log(sum);
-    console.log(checkedHotel);
+    setOriginalPrice(originalSum);
+    setSalePrice(saleSum);
+    setTotalPrice(totalSum);
+
+    // 합산된 가격을 콘솔에 출력
+    console.log('Original Price:', originalSum);
+    console.log('Sale Price:', saleSum);
   }, [checkedHotel, data]);
   return (
     <StyleMainWrapper>
       <StyledTitleDesc>
         <StyledCheckbox
           checked={checkedAllHotel}
-          // onChange={handleAllCheckBoxChange}
+          onChange={handleAllCheckBoxChange}
         />
         <StyledAllCheckSpan>
           {checkedAllHotel ? '전체 해제' : '전체 선택'}
@@ -180,6 +161,7 @@ export const Cart: React.FC = () => {
                 <StyledListItem key={room.roomId}>
                   <StyledCheckbox
                     checked={
+                      checkedAllHotel ||
                       checkedHotel[
                         `${accommodation.accommodationId}-${room.roomCartId}-${room.roomId}`
                       ]
