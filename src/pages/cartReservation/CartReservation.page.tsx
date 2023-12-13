@@ -7,10 +7,12 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { postPayment } from '@api/postCartReservation';
 interface CartReservationHotelsProps {
-  accommodationId: number;
-  accommodationName: string;
-  address: string;
-  roomList: CartReservationRoomProps[];
+  accommodation: {
+    accommodationId: number;
+    accommodationName: string;
+    address: string;
+    roomList: CartReservationRoomProps[];
+  };
 }
 interface CartReservationRoomProps {
   capacity: number;
@@ -42,11 +44,10 @@ export const CartReservation: React.FC = () => {
   const mutation = useMutation({
     mutationFn: postPayment,
     onSuccess(data) {
-      console.log(data);
       navigate('/confirm', { state: { data } });
     },
     onError(err) {
-      console.log(err);
+      throw new Error('결제 실패');
     },
   });
 
@@ -55,16 +56,17 @@ export const CartReservation: React.FC = () => {
       return;
     }
 
-    const postData = checkedHotel?.flatMap((checkedHotel: any) =>
-      checkedHotel.accommodation.roomList.map(
-        (roomInfo: CartReservationRoomProps) => ({
-          roomId: roomInfo.roomId,
-          startDate: roomInfo.startDate,
-          endDate: roomInfo.endDate,
-          price: roomInfo.price,
-          personnel: roomInfo.personnel,
-        }),
-      ),
+    const postData = checkedHotel?.flatMap(
+      (checkedHotel: CartReservationHotelsProps) =>
+        checkedHotel.accommodation.roomList.map(
+          (roomInfo: CartReservationRoomProps) => ({
+            roomId: roomInfo.roomId,
+            startDate: roomInfo.startDate,
+            endDate: roomInfo.endDate,
+            price: roomInfo.price,
+            personnel: roomInfo.personnel,
+          }),
+        ),
     );
     console.log(postData);
 
@@ -91,7 +93,7 @@ export const CartReservation: React.FC = () => {
     let total = 0;
 
     if (checkedHotel) {
-      checkedHotel.forEach((checkedHotel: any) => {
+      checkedHotel.forEach((checkedHotel: CartReservationHotelsProps) => {
         if (checkedHotel.accommodation.roomList) {
           checkedHotel.accommodation.roomList.forEach(
             (roomInfo: CartReservationRoomProps) => {

@@ -7,12 +7,13 @@ import {
   StyledBtnText,
   StyledButtonWrapper,
 } from 'pages/reservation/Reservation.page';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getCarts } from 'api/getCart';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
 import { FaTrashCan } from 'react-icons/fa6';
+import { deleteCart } from '@api/deleteCart';
 export interface CartItemProps {
   data: {
     accommodationList: AccommodationList[];
@@ -40,6 +41,12 @@ export interface CartRoomList {
   roomImageUrl: string;
   personnel: number;
 }
+
+export interface CartDeletedProps {
+  roomId: number;
+  startDate: string;
+  endDate: string;
+}
 export const Cart: React.FC = () => {
   const { data } = useQuery<CartItemProps>({
     queryKey: ['mycarts'],
@@ -57,6 +64,8 @@ export const Cart: React.FC = () => {
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
   const navigate = useNavigate();
+
+  const queryClient = useQueryClient();
   const handleCheckboxChange = (
     accommodationId: number,
     roomCartId: number,
@@ -66,12 +75,16 @@ export const Cart: React.FC = () => {
       const key = `${accommodationId}-${roomCartId}-${roomId}`;
       const updatedChecked = {
         ...prevChecked,
-        [key]: !prevChecked[key],
+        [key]: checkedAllHotel ? !prevChecked[key] : !prevChecked[key],
       };
 
       return updatedChecked;
     });
+    if (checkedAllHotel) {
+      setCheckedAllHotel(false);
+    }
   };
+
   const handleAllCheckBoxChange = () => {
     setCheckedAllHotel((prev) => !prev);
 
@@ -83,9 +96,12 @@ export const Cart: React.FC = () => {
           updatedChecked[key] = !checkedAllHotel;
         });
       });
+
       setCheckedHotel(updatedChecked);
+      console.log(checkedHotel);
     }
   };
+
   const handleReservation = () => {
     const checkedItems = Object.entries(checkedHotel)
       .filter(([key, isChecked]) => isChecked)
@@ -106,6 +122,31 @@ export const Cart: React.FC = () => {
 
     navigate(`/cartreservation`, { state: { checkedItems } });
   };
+
+  const handleDeleteItem = async (
+    roomId: number,
+    startDate: string,
+    endDate: string,
+  ) => {
+    const confirmDelete = window.confirm('삭제하시겠습니까?');
+    if (!confirmDelete) {
+      return;
+    }
+
+    try {
+      const deleteData = {
+        roomId,
+        startDate,
+        endDate,
+      };
+      await deleteCart(deleteData);
+
+      queryClient.invalidateQueries({ queryKey: ['mycarts'] });
+    } catch (error) {
+      throw new Error('삭제 실패');
+    }
+  };
+
   useEffect(() => {
     let originalSum = 0;
     let saleSum = 0;
@@ -179,10 +220,9 @@ export const Cart: React.FC = () => {
                 <StyledListItem key={room.roomId}>
                   <StyledCheckbox
                     checked={
-                      checkedAllHotel ||
                       checkedHotel[
                         `${accommodation.accommodationId}-${room.roomCartId}-${room.roomId}`
-                      ]
+                      ] || checkedAllHotel
                     }
                     onChange={() =>
                       handleCheckboxChange(
@@ -224,7 +264,15 @@ export const Cart: React.FC = () => {
                       </p>
                     </StyledDetailDes>
                   </StyleDetail>
-                  <StyledTrashCan />
+                  <StyledTrashCan
+                    onClick={() =>
+                      handleDeleteItem(
+                        room.roomId,
+                        room.startDate,
+                        room.endDate,
+                      )
+                    }
+                  />
                 </StyledListItem>
               ))}
             </StyledList>

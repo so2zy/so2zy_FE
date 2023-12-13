@@ -1,7 +1,7 @@
-import { CartRoomList } from '@pages/cart/Cart.page';
+import { CartDeletedProps } from '@pages/cart/Cart.page';
 import axios from 'axios';
 
-export const deleteCart = async (data: CartRoomList) => {
+export const deleteCart = async (data: CartDeletedProps) => {
   const accessToken = localStorage.getItem('accessToken');
   const baseUrl = process.env.REACT_APP_SERVER;
   try {
