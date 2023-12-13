@@ -53,8 +53,6 @@ export const Cart: React.FC = () => {
     queryFn: getCarts,
   });
 
-  console.log(data);
-
   const [checkedHotel, setCheckedHotel] = useState<{ [key: string]: boolean }>(
     {},
   );
@@ -98,7 +96,6 @@ export const Cart: React.FC = () => {
       });
 
       setCheckedHotel(updatedChecked);
-      console.log(checkedHotel);
     }
   };
 
@@ -173,10 +170,6 @@ export const Cart: React.FC = () => {
     setOriginalPrice(originalSum);
     setSalePrice(saleSum);
     setTotalPrice(totalSum);
-
-    console.log('Original Price:', originalSum);
-    console.log('Sale Price:', saleSum);
-    console.log(checkedHotel);
   }, [checkedHotel, data]);
   return (
     <StyleMainWrapper>
@@ -342,7 +335,6 @@ const StyledCartItemDesc = styled(StyledItemDesc)`
 const StyledAllCheckSpan = styled(StyledSpan)`
   padding-top: 0.9rem;
   font-size: 1.1rem;
-  /* line-height: 2.5rem; */
 `;
 
 const StyleDetail = styled.div`
@@ -363,11 +355,8 @@ export const StyleRoomName = styled.div`
 export const StyledDetailDes = styled.div`
   font-weight: ${theme.fonts.subtitle5.fontWeight};
   font-size: ${theme.fonts.body.fontSize};
-
-  /* display: block; */
   margin: 0 1rem 0rem 0.2rem;
   p {
-    /* width: 12rem; */
     margin: 2rem 0 0 -1.2rem;
     display: grid;
   }
@@ -381,9 +370,6 @@ export const StyledDetailDes = styled.div`
     font-size: 0.8rem;
     margin-bottom: 0.2rem;
   }
-  /* #sale-price {
-    margin-bottom: 0.2rem;
-  } */
 `;
 
 export const StyledCheckInOutTitle = styled(StyledDetailDes)`
@@ -480,7 +466,6 @@ export const StyledPrices = styled.span`
 `;
 
 const StyledTrashCan = styled(FaTrashCan)`
-  /* padding-left: 3rem; */
   margin: 2.5rem 0 0 2rem;
   color: ${theme.colors.navy};
   cursor: pointer;

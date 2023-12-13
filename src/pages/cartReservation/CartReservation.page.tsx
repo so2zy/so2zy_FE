@@ -36,7 +36,6 @@ export interface PostPaymentProps {
 export const CartReservation: React.FC = () => {
   const location = useLocation();
   const checkedHotel = location.state?.checkedItems || [];
-  console.log(checkedHotel);
   const navigate = useNavigate();
 
   const [agreement, setAgreement] = useState(false);
@@ -48,6 +47,7 @@ export const CartReservation: React.FC = () => {
     },
     onError(err) {
       throw new Error('결제 실패');
+      console.log(err);
     },
   });
 
@@ -68,7 +68,6 @@ export const CartReservation: React.FC = () => {
           }),
         ),
     );
-    console.log(postData);
 
     const data = {
       roomList: postData,
@@ -99,21 +98,12 @@ export const CartReservation: React.FC = () => {
             (roomInfo: CartReservationRoomProps) => {
               if (roomInfo) {
                 const { originalPrice, salePrice } = calculatePrices(roomInfo);
-
-                // 디버깅을 위한 중간 결과 출력
-                console.log('Room Info:', roomInfo);
-                console.log('Original Price:', originalPrice);
-                console.log('Sale Price:', salePrice);
-
-                total += roomInfo.price; // Assuming the price is directly available in roomInfo
+                total += roomInfo.price;
               }
             },
           );
         }
       });
-
-      // 최종 합산된 가격 출력
-      console.log('Total Price:', total);
 
       return total.toLocaleString('ko-KR');
     } else {
@@ -124,7 +114,6 @@ export const CartReservation: React.FC = () => {
   return (
     <>
       {checkedHotel.map((checkedHotel: any) => (
-        // <StyledItemWrapper key={checkedHotel.accommodation.accommodationId}>
         <StyledWrapper key={checkedHotel.accommodation.accommodationId}>
           <StyledItemWrapper>
             {checkedHotel.accommodation.roomList.map(
@@ -248,11 +237,9 @@ export const StyledRuleWrapper = styled.div`
   justify-content: center;
   margin-left: 0.4rem;
   margin-top: 2rem;
-  /* border: 1px solid black; */
 `;
 
 export const StyledEssentialTerms = styled.div`
-  /* border: 1px solid black; */
   margin: 2rem;
   text-align: start;
   span {
