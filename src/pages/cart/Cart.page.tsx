@@ -12,6 +12,7 @@ import { getCarts } from 'api/getCart';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
+import { FaTrashCan } from 'react-icons/fa6';
 export interface CartItemProps {
   data: {
     accommodationList: AccommodationList[];
@@ -223,6 +224,7 @@ export const Cart: React.FC = () => {
                       </p>
                     </StyledDetailDes>
                   </StyleDetail>
+                  <StyledTrashCan />
                 </StyledListItem>
               ))}
             </StyledList>
@@ -427,4 +429,15 @@ export const StyledPrices = styled.span`
   margin: 0.5rem 0 0.5rem 1rem;
   font-weight: ${theme.fonts.subtitle5.fontWeight};
   font-size: ${theme.fonts.subtitle5.fontSize};
+`;
+
+const StyledTrashCan = styled(FaTrashCan)`
+  /* padding-left: 3rem; */
+  margin: 2.5rem 0 0 2rem;
+  color: ${theme.colors.navy};
+  cursor: pointer;
+
+  &:hover {
+    color: ${theme.colors.gray3};
+  }
 `;
