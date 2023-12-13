@@ -27,6 +27,7 @@ export interface AccommodationList {
 
 export interface CartRoomList {
   roomId: number;
+  roomCartId: number;
   type: string;
   checkIn: string;
   checkOut: string;
@@ -46,93 +47,103 @@ export const Cart: React.FC = () => {
 
   console.log(data);
 
-  const [checkedHotel, setCheckedHotel] = useState<AccommodationList[]>([]);
+  const [checkedHotel, setCheckedHotel] = useState<{ [key: string]: boolean }>(
+    {},
+  );
   const [checkedAllHotel, setCheckedAllHotel] = useState(false);
   const [originalPrice, setOriginalPrice] = useState<number>(0);
   const [salePrice, setSalePrice] = useState<number>(0);
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
   const navigate = useNavigate();
-  const handleCheckBoxChange = (accommodation: AccommodationList) => {
-    if (
-      checkedHotel.some((a) => {
-        if (a.accommodationId === accommodation.accommodationId) {
-          return a.roomList.some((room) =>
-            accommodation.roomList.some(
-              (incomingRoom) =>
-                incomingRoom.roomId === room.roomId &&
-                a.accommodationId === accommodation.accommodationId,
-            ),
-          );
-        }
-        return false;
-      })
-    ) {
-      setCheckedHotel((prev) =>
-        prev.map((a) => {
-          if (a.accommodationId === accommodation.accommodationId) {
-            return {
-              ...a,
-              roomList: a.roomList.filter(
-                (room) =>
-                  !accommodation.roomList.some(
-                    (incomingRoom) =>
-                      incomingRoom.roomId === room.roomId &&
-                      a.accommodationId === accommodation.accommodationId,
-                  ),
-              ),
-            };
-          }
-          return a;
-        }),
-      );
-    } else {
-      setCheckedHotel((prev) => [...prev, accommodation]);
-    }
+  const handleCheckboxChange = (
+    accommodationId: number,
+    roomCartId: number,
+    roomId: number,
+  ) => {
+    setCheckedHotel((prevChecked) => {
+      const updatedChecked = { ...prevChecked };
+      const key = `${accommodationId}-${roomCartId}-${roomId}`;
+      updatedChecked[key] = !updatedChecked[key];
+      return updatedChecked;
+    });
   };
-  const handleAllCheckBoxChange = () => {
-    if (checkedAllHotel) {
-      setCheckedHotel([]);
-    } else {
-      if (data && data.data) {
-        setCheckedHotel(data.data.accommodationList);
-      }
-    }
-    setCheckedAllHotel((prev) => !prev);
-  };
+  // console.log(data);
+  // const handleCheckBoxChange = (accommodation: AccommodationList) => {
+  //   if (
+  //     checkedHotel.some((a) => {
+  //       if (a.accommodationId === accommodation.accommodationId) {
+  //         return a.roomList.some((room) =>
+  //           accommodation.roomList.some(
+  //             (incomingRoom) =>
+  //               incomingRoom.roomId === room.roomId &&
+  //               a.accommodationId === accommodation.accommodationId,
+  //           ),
+  //         );
+  //       }
+  //       return false;
+  //     })
+  //   ) {
+  //     setCheckedHotel((prev) =>
+  //       prev.map((a) => {
+  //         if (a.accommodationId === accommodation.accommodationId) {
+  //           return {
+  //             ...a,
+  //             roomList: a.roomList.filter(
+  //               (room) =>
+  //                 !accommodation.roomList.some(
+  //                   (incomingRoom) =>
+  //                     incomingRoom.roomId === room.roomId &&
+  //                     a.accommodationId === accommodation.accommodationId,
+  //                 ),
+  //             ),
+  //           };
+  //         }
+  //         return a;
+  //       }),
+  //     );
+  //   } else {
+  //     setCheckedHotel((prev) => [...prev, accommodation]);
+  //   }
+  // };
+  // const handleAllCheckBoxChange = () => {
+  //   if (checkedAllHotel) {
+  //     setCheckedHotel([]);
+  //   } else {
+  //     if (data && data.data) {
+  //       setCheckedHotel(data.data.accommodationList);
+  //     }
+  //   }
+  //   setCheckedAllHotel((prev) => !prev);
+  // };
 
   const handleReservation = () => {
     navigate(`/cartreservation`, { state: { checkedHotel } });
   };
-
   useEffect(() => {
-    const sum = checkedHotel.reduce((acc, accommodation) => {
-      return (
-        acc +
-        accommodation.roomList.reduce((roomAcc, room) => {
-          return roomAcc + room.price * 1.2;
-        }, 0)
+    const sum = Object.entries(checkedHotel).reduce((acc, [key, isChecked]) => {
+      const [accommodationId, roomCartId, roomId] = key.split('-');
+      const accommodation = data?.data.accommodationList.find(
+        (acc) => acc.accommodationId === Number(accommodationId),
       );
-    }, 0);
-    const sale = checkedHotel.reduce((acc, accommodation) => {
-      return (
-        acc +
-        accommodation.roomList.reduce((roomAcc, room) => {
-          return roomAcc + room.price * 0.2;
-        }, 0)
+
+      // 수정된 부분: roomCartId와 roomId 모두 일치하는 방을 찾도록 변경
+      const room = accommodation?.roomList.find(
+        (r) => r.roomCartId === Number(roomCartId),
       );
+
+      return acc + (room && isChecked ? room.price : 0);
     }, 0);
-    const total = sum - sale;
-    setOriginalPrice(sum);
-    setSalePrice(sale);
-    setTotalPrice(total);
-  }, [checkedHotel]);
+
+    console.log(sum);
+    console.log(checkedHotel);
+  }, [checkedHotel, data]);
   return (
     <StyleMainWrapper>
       <StyledTitleDesc>
         <StyledCheckbox
           checked={checkedAllHotel}
-          onChange={handleAllCheckBoxChange}
+          // onChange={handleAllCheckBoxChange}
         />
         <StyledAllCheckSpan>
           {checkedAllHotel ? '전체 해제' : '전체 선택'}
@@ -168,12 +179,18 @@ export const Cart: React.FC = () => {
               {accommodation.roomList.map((room) => (
                 <StyledListItem key={room.roomId}>
                   <StyledCheckbox
-                    checked={checkedHotel.some(
-                      (a) =>
-                        a.accommodationId === accommodation.accommodationId &&
-                        a.roomList.some((r) => r.roomId === room.roomId),
-                    )}
-                    onChange={() => handleCheckBoxChange(accommodation)}
+                    checked={
+                      checkedHotel[
+                        `${accommodation.accommodationId}-${room.roomCartId}-${room.roomId}`
+                      ]
+                    }
+                    onChange={() =>
+                      handleCheckboxChange(
+                        accommodation.accommodationId,
+                        room.roomCartId,
+                        room.roomId,
+                      )
+                    }
                   />
                   {room.roomImageUrl ? (
                     <StyledMiniImage src={room.roomImageUrl} />
