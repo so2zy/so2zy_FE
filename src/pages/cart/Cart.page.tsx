@@ -466,7 +466,7 @@ export const StyledPrices = styled.span`
 `;
 
 const StyledTrashCan = styled(FaTrashCan)`
-  margin: 2.5rem 0 0 2rem;
+  margin: 2rem 0 0 2rem;
   color: ${theme.colors.navy};
   cursor: pointer;
 
