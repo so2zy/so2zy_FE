@@ -33,7 +33,8 @@ export interface PostPaymentProps {
 }
 export const CartReservation: React.FC = () => {
   const location = useLocation();
-  const checkedHotel = location.state?.checkedHotel;
+  const checkedHotel = location.state?.checkedItems || [];
+  console.log(checkedHotel);
   const navigate = useNavigate();
 
   const [agreement, setAgreement] = useState(false);
@@ -54,17 +55,18 @@ export const CartReservation: React.FC = () => {
       return;
     }
 
-    const postData = checkedHotel
-      ?.map((accommodation: CartReservationHotelsProps) =>
-        accommodation.roomList.map((roomInfo: CartReservationRoomProps) => ({
+    const postData = checkedHotel?.flatMap((checkedHotel: any) =>
+      checkedHotel.accommodation.roomList.map(
+        (roomInfo: CartReservationRoomProps) => ({
           roomId: roomInfo.roomId,
           startDate: roomInfo.startDate,
           endDate: roomInfo.endDate,
           price: roomInfo.price,
           personnel: roomInfo.personnel,
-        })),
-      )
-      .flat();
+        }),
+      ),
+    );
+    console.log(postData);
 
     const data = {
       roomList: postData,
@@ -89,15 +91,27 @@ export const CartReservation: React.FC = () => {
     let total = 0;
 
     if (checkedHotel) {
-      checkedHotel.forEach((accommodation: CartReservationHotelsProps) => {
-        accommodation.roomList.forEach((roomInfo: CartReservationRoomProps) => {
-          if (roomInfo) {
-            const { originalPrice } = calculatePrices(roomInfo);
-            const { salePrice } = calculatePrices(roomInfo);
-            total += roomInfo.price;
-          }
-        });
+      checkedHotel.forEach((checkedHotel: any) => {
+        if (checkedHotel.accommodation.roomList) {
+          checkedHotel.accommodation.roomList.forEach(
+            (roomInfo: CartReservationRoomProps) => {
+              if (roomInfo) {
+                const { originalPrice, salePrice } = calculatePrices(roomInfo);
+
+                // 디버깅을 위한 중간 결과 출력
+                console.log('Room Info:', roomInfo);
+                console.log('Original Price:', originalPrice);
+                console.log('Sale Price:', salePrice);
+
+                total += roomInfo.price; // Assuming the price is directly available in roomInfo
+              }
+            },
+          );
+        }
       });
+
+      // 최종 합산된 가격 출력
+      console.log('Total Price:', total);
 
       return total.toLocaleString('ko-KR');
     } else {
@@ -107,15 +121,18 @@ export const CartReservation: React.FC = () => {
 
   return (
     <>
-      {checkedHotel &&
-        checkedHotel?.map((accommodation: CartReservationHotelsProps) => (
-          <StyledWrapper key={accommodation.accommodationId}>
-            {accommodation &&
-              accommodation.roomList.map((roomInfo) => (
+      {checkedHotel.map((checkedHotel: any) => (
+        // <StyledItemWrapper key={checkedHotel.accommodation.accommodationId}>
+        <StyledWrapper key={checkedHotel.accommodation.accommodationId}>
+          <StyledItemWrapper>
+            {checkedHotel.accommodation.roomList.map(
+              (roomInfo: CartReservationRoomProps) => (
                 <StyledItemContainer key={roomInfo.roomId}>
                   <StyledItemDesc>
                     <StyledItemTitle>
-                      <span>{accommodation.accommodationName}</span>
+                      <span>
+                        {checkedHotel.accommodation.accommodationName}
+                      </span>
                     </StyledItemTitle>
                     <StyledItemSubTitle>
                       <span>{roomInfo.type}</span>
@@ -153,7 +170,6 @@ export const CartReservation: React.FC = () => {
                     <StyledItemSalePrice>
                       <span>할인</span>
                       <StyledItemSaleText>
-                        <span>-{calculatePrices(roomInfo).salePrice}원</span>
                         <span id="no-refund">※ 환불 불가 </span>
                       </StyledItemSaleText>
                     </StyledItemSalePrice>
@@ -163,9 +179,11 @@ export const CartReservation: React.FC = () => {
                     </StyledFinalPayPrice>
                   </StyledPriceBox>
                 </StyledItemContainer>
-              ))}
-          </StyledWrapper>
-        ))}
+              ),
+            )}
+          </StyledItemWrapper>
+        </StyledWrapper>
+      ))}
       <StyledRuleWrapper>
         <StyledEssentialTerms>
           <span>필수 약관 동의</span>
@@ -194,6 +212,11 @@ export const CartReservation: React.FC = () => {
   );
 };
 
+const StyledItemWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
 export const StyledButtonWrapper = styled.div`
   width: 100%;
   margin: 2rem auto 1rem auto;
@@ -240,6 +263,7 @@ export const StyledEssentialTerms = styled.div`
 const StyledItemContainer = styled.div`
   display: flex;
   gap: 11rem;
+  margin-bottom: 2.5rem;
 `;
 
 export const StyledEssentialCheckList = styled.div``;

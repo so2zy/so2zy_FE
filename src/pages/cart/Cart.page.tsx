@@ -86,7 +86,24 @@ export const Cart: React.FC = () => {
     }
   };
   const handleReservation = () => {
-    navigate(`/cartreservation`, { state: { checkedHotel } });
+    const checkedItems = Object.entries(checkedHotel)
+      .filter(([key, isChecked]) => isChecked)
+      .map(([key]) => {
+        const [accommodationId, roomCartId, roomId] = key.split('-');
+        const accommodation = data?.data.accommodationList.find(
+          (acc) => acc.accommodationId === Number(accommodationId),
+        );
+        const room = accommodation?.roomList.find(
+          (r) => r.roomCartId === Number(roomCartId),
+        );
+
+        return {
+          accommodation,
+          checkedItemId: key,
+        };
+      });
+
+    navigate(`/cartreservation`, { state: { checkedItems } });
   };
   useEffect(() => {
     let originalSum = 0;
@@ -115,9 +132,9 @@ export const Cart: React.FC = () => {
     setSalePrice(saleSum);
     setTotalPrice(totalSum);
 
-    // 합산된 가격을 콘솔에 출력
     console.log('Original Price:', originalSum);
     console.log('Sale Price:', saleSum);
+    console.log(checkedHotel);
   }, [checkedHotel, data]);
   return (
     <StyleMainWrapper>
