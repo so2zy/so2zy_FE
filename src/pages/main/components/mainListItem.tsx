@@ -1,7 +1,7 @@
 import { theme } from '@styles/theme';
 import styled from 'styled-components';
 import { useQuery } from '@tanstack/react-query';
-import { getMostSell, getFavorite } from './getPlaces';
+import { getMostSell, getFavorite } from '@api/getPlaces';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';

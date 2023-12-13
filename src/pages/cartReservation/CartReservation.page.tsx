@@ -5,12 +5,14 @@ import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { postPayment } from './components/postCartReservation';
+import { postPayment } from '@api/postCartReservation';
 interface CartReservationHotelsProps {
-  accommodationId: number;
-  accommodationName: string;
-  address: string;
-  roomList: CartReservationRoomProps[];
+  accommodation: {
+    accommodationId: number;
+    accommodationName: string;
+    address: string;
+    roomList: CartReservationRoomProps[];
+  };
 }
 interface CartReservationRoomProps {
   capacity: number;
@@ -33,7 +35,7 @@ export interface PostPaymentProps {
 }
 export const CartReservation: React.FC = () => {
   const location = useLocation();
-  const checkedHotel = location.state?.checkedHotel;
+  const checkedHotel = location.state?.checkedItems || [];
   const navigate = useNavigate();
 
   const [agreement, setAgreement] = useState(false);
@@ -41,10 +43,10 @@ export const CartReservation: React.FC = () => {
   const mutation = useMutation({
     mutationFn: postPayment,
     onSuccess(data) {
-      console.log(data);
       navigate('/confirm', { state: { data } });
     },
     onError(err) {
+      throw new Error('결제 실패');
       console.log(err);
     },
   });
@@ -54,17 +56,18 @@ export const CartReservation: React.FC = () => {
       return;
     }
 
-    const postData = checkedHotel
-      ?.map((accommodation: CartReservationHotelsProps) =>
-        accommodation.roomList.map((roomInfo: CartReservationRoomProps) => ({
-          roomId: roomInfo.roomId,
-          startDate: roomInfo.startDate,
-          endDate: roomInfo.endDate,
-          price: roomInfo.price,
-          personnel: roomInfo.personnel,
-        })),
-      )
-      .flat();
+    const postData = checkedHotel?.flatMap(
+      (checkedHotel: CartReservationHotelsProps) =>
+        checkedHotel.accommodation.roomList.map(
+          (roomInfo: CartReservationRoomProps) => ({
+            roomId: roomInfo.roomId,
+            startDate: roomInfo.startDate,
+            endDate: roomInfo.endDate,
+            price: roomInfo.price,
+            personnel: roomInfo.personnel,
+          }),
+        ),
+    );
 
     const data = {
       roomList: postData,
@@ -89,14 +92,17 @@ export const CartReservation: React.FC = () => {
     let total = 0;
 
     if (checkedHotel) {
-      checkedHotel?.forEach((accommodation: CartReservationHotelsProps) => {
-        accommodation.roomList.forEach((roomInfo: CartReservationRoomProps) => {
-          if (roomInfo) {
-            const { originalPrice } = calculatePrices(roomInfo);
-            const { salePrice } = calculatePrices(roomInfo);
-            total += roomInfo.price;
-          }
-        });
+      checkedHotel.forEach((checkedHotel: CartReservationHotelsProps) => {
+        if (checkedHotel.accommodation.roomList) {
+          checkedHotel.accommodation.roomList.forEach(
+            (roomInfo: CartReservationRoomProps) => {
+              if (roomInfo) {
+                const { originalPrice, salePrice } = calculatePrices(roomInfo);
+                total += roomInfo.price;
+              }
+            },
+          );
+        }
       });
 
       return total.toLocaleString('ko-KR');
@@ -107,68 +113,68 @@ export const CartReservation: React.FC = () => {
 
   return (
     <>
-      {checkedHotel &&
-        checkedHotel?.map((accommodation: CartReservationHotelsProps) => (
-          <StyledWrapper key={accommodation.accommodationId}>
-            {accommodation &&
-              accommodation.roomList.map(
-                (roomInfo: CartReservationRoomProps) => (
-                  <StyledItemContainer key={roomInfo.roomId}>
-                    <StyledItemDesc>
-                      <StyledItemTitle>
-                        <span>{accommodation.accommodationName}</span>
-                      </StyledItemTitle>
-                      <StyledItemSubTitle>
-                        <span>{roomInfo.type}</span>
-                      </StyledItemSubTitle>
-                      <StyledAcceptPerson>
-                        <span>
-                          기준 {roomInfo.capacity}인/최대 {roomInfo.maxCapacity}
-                          인
-                        </span>
-                      </StyledAcceptPerson>
-                      <StyledCheckIn>
-                        <p>체크인</p>
-                        <span>
-                          {roomInfo.startDate}{' '}
-                          {roomInfo.checkIn.replace(/:00$/, '')}
-                        </span>
-                      </StyledCheckIn>
-                      <StyledCheckOut>
-                        <p>체크아웃</p>
-                        <span>
-                          {roomInfo.endDate}{' '}
-                          {roomInfo.checkOut.replace(/:00$/, '')}
-                        </span>
-                      </StyledCheckOut>
-                    </StyledItemDesc>
-                    <StyledPriceBox>
-                      <StyledPayPrice>
-                        <span>결제 금액</span>
-                      </StyledPayPrice>
-                      <StyledItemPrice>
-                        <span>상품금액</span>
-                        <span>
-                          숙박/1박 {calculatePrices(roomInfo).originalPrice}원
-                        </span>
-                      </StyledItemPrice>
-                      <StyledItemSalePrice>
-                        <span>할인</span>
-                        <StyledItemSaleText>
-                          <span>-{calculatePrices(roomInfo).salePrice}원</span>
-                          <span id="no-refund">※ 환불 불가 </span>
-                        </StyledItemSaleText>
-                      </StyledItemSalePrice>
-                      <StyledFinalPayPrice>
-                        <span>최종 결제 금액</span>
-                        <span>{roomInfo.price}원</span>
-                      </StyledFinalPayPrice>
-                    </StyledPriceBox>
-                  </StyledItemContainer>
-                ),
-              )}
-          </StyledWrapper>
-        ))}
+      {checkedHotel.map((checkedHotel: any) => (
+        <StyledWrapper key={checkedHotel.accommodation.accommodationId}>
+          <StyledItemWrapper>
+            {checkedHotel.accommodation.roomList.map(
+              (roomInfo: CartReservationRoomProps) => (
+                <StyledItemContainer key={roomInfo.roomId}>
+                  <StyledItemDesc>
+                    <StyledItemTitle>
+                      <span>
+                        {checkedHotel.accommodation.accommodationName}
+                      </span>
+                    </StyledItemTitle>
+                    <StyledItemSubTitle>
+                      <span>{roomInfo.type}</span>
+                    </StyledItemSubTitle>
+                    <StyledAcceptPerson>
+                      <span>
+                        기준 {roomInfo.capacity}인/최대 {roomInfo.maxCapacity}인
+                      </span>
+                    </StyledAcceptPerson>
+                    <StyledCheckIn>
+                      <p>체크인</p>
+                      <span>
+                        {roomInfo.startDate}{' '}
+                        {roomInfo.checkIn.replace(/:00$/, '')}
+                      </span>
+                    </StyledCheckIn>
+                    <StyledCheckOut>
+                      <p>체크아웃</p>
+                      <span>
+                        {roomInfo.endDate}{' '}
+                        {roomInfo.checkOut.replace(/:00$/, '')}
+                      </span>
+                    </StyledCheckOut>
+                  </StyledItemDesc>
+                  <StyledPriceBox>
+                    <StyledPayPrice>
+                      <span>결제 금액</span>
+                    </StyledPayPrice>
+                    <StyledItemPrice>
+                      <span>상품금액</span>
+                      <span>
+                        숙박/1박 {calculatePrices(roomInfo).originalPrice}원
+                      </span>
+                    </StyledItemPrice>
+                    <StyledItemSalePrice>
+                      <span>할인</span>
+                      <StyledItemSaleText>
+                        <span id="no-refund">※ 환불 불가 </span>
+                      </StyledItemSaleText>
+                    </StyledItemSalePrice>
+                    <StyledFinalPayPrice>
+                      <span>최종 결제 금액</span>
+                      <span>{roomInfo.price}원</span>
+                    </StyledFinalPayPrice>
+                  </StyledPriceBox>
+                </StyledItemContainer>
+              ),
+            )}
+          </StyledItemWrapper>
+        </StyledWrapper>
+      ))}
       <StyledRuleWrapper>
         <StyledEssentialTerms>
           <span>필수 약관 동의</span>
@@ -192,13 +198,16 @@ export const CartReservation: React.FC = () => {
         <StyledButtonWrapper onClick={handlePayment}>
           <StyledBtnText>{calculateTotalPrice()}원 결제하기</StyledBtnText>
         </StyledButtonWrapper>
-      ) : (
-        ''
-      )}
+      ) : null}
     </>
   );
 };
 
+const StyledItemWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
 export const StyledButtonWrapper = styled.div`
   width: 100%;
   margin: 2rem auto 1rem auto;
@@ -228,11 +237,9 @@ export const StyledRuleWrapper = styled.div`
   justify-content: center;
   margin-left: 0.4rem;
   margin-top: 2rem;
-  /* border: 1px solid black; */
 `;
 
 export const StyledEssentialTerms = styled.div`
-  /* border: 1px solid black; */
   margin: 2rem;
   text-align: start;
   span {
@@ -245,6 +252,7 @@ export const StyledEssentialTerms = styled.div`
 const StyledItemContainer = styled.div`
   display: flex;
   gap: 11rem;
+  margin-bottom: 2.5rem;
 `;
 
 export const StyledEssentialCheckList = styled.div``;

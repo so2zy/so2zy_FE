@@ -1,6 +1,6 @@
 import { theme } from '@styles/theme';
 import styled from 'styled-components';
-import { RegionModalProps } from './getPlaces';
+import { RegionModalProps } from '../../../api/getPlaces';
 import { modalData } from './modalData';
 import { VscChromeClose } from 'react-icons/vsc';
 import { useRecoilState, useSetRecoilState } from 'recoil';

@@ -6,7 +6,7 @@ import styled from 'styled-components';
 const ScrollTopBtn = () => {
   const [showBtn, setShowBtn] = useState(false);
 
-  const ScrollToTop = () => {
+  const scrollToTop = () => {
     window.scroll({
       top: 0,
       behavior: 'smooth',
@@ -21,7 +21,7 @@ const ScrollTopBtn = () => {
         setShowBtn(false);
       }
     };
-    window.addEventListener('scroll', ShowBtnClick);
+    window.addEventListener('scroll', ShowBtnClick, { passive: true });
     return () => {
       window.removeEventListener('scroll', ShowBtnClick);
     };
@@ -29,7 +29,7 @@ const ScrollTopBtn = () => {
   return (
     <>
       {showBtn && (
-        <StyledWrapper onClick={ScrollToTop}>
+        <StyledWrapper onClick={scrollToTop}>
           <RxPinTop />
         </StyledWrapper>
       )}
