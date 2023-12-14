@@ -10,14 +10,12 @@ import { RecoilRoot } from 'recoil';
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <RecoilRoot>
-        <App />
-      </RecoilRoot>
-      <ReactQueryDevtools />
-    </QueryClientProvider>
-  </React.StrictMode>,
+  <QueryClientProvider client={queryClient}>
+    <RecoilRoot>
+      <App />
+    </RecoilRoot>
+    <ReactQueryDevtools />
+  </QueryClientProvider>,
 );
 
 reportWebVitals();
