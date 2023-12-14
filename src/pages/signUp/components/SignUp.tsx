@@ -151,96 +151,110 @@ export const SignUp: React.FC = () => {
           </StyledMainLogoTwo>
           <StyledSignUpWrap>
             <StyledSignUpInputWrap>
-              <span>이메일</span>
-              <StyledSignUpInput
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  setIsEmailDuplicated(undefined);
-                  setEmailCheckClicked(false);
-                }}
-                placeholder="이메일 입력"
-                onKeyDown={(e) => handleKeyDown(e, passwordInputRef)}
-              />
-              {email ? (
-                isIdentificationValid(email) === false ? (
-                  <WarnText>이메일 형식이 올바르지 않습니다</WarnText>
-                ) : isEmailDuplicated === false &&
-                  emailCheckClicked === true ? (
-                  <CorrectText>사용가능한 이메일입니다</CorrectText>
-                ) : isEmailDuplicated === true && emailCheckClicked === true ? (
-                  <WarnText>중복된 이메일입니다</WarnText>
-                ) : (
-                  <WarnText>이메일 중복체크를 해주세요</WarnText>
-                )
-              ) : null}
-              <StyledSignUpEmailCheck onClick={handleEmailCheck}>
-                중복확인
-              </StyledSignUpEmailCheck>
+              <div>이메일</div>
+              <div>
+                <StyledSignUpInput
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setIsEmailDuplicated(undefined);
+                    setEmailCheckClicked(false);
+                  }}
+                  placeholder="이메일 입력"
+                  onKeyDown={(e) => handleKeyDown(e, passwordInputRef)}
+                />
+                {email ? (
+                  isIdentificationValid(email) === false ? (
+                    <WarnText>이메일 형식이 올바르지 않습니다</WarnText>
+                  ) : isEmailDuplicated === false &&
+                    emailCheckClicked === true ? (
+                    <CorrectText>사용가능한 이메일입니다</CorrectText>
+                  ) : isEmailDuplicated === true &&
+                    emailCheckClicked === true ? (
+                    <WarnText>중복된 이메일입니다</WarnText>
+                  ) : (
+                    <WarnText>이메일 중복체크를 해주세요</WarnText>
+                  )
+                ) : null}
+              </div>
+
+              <StyledDiv>
+                <StyledSignUpEmailCheck onClick={handleEmailCheck}>
+                  중복확인
+                </StyledSignUpEmailCheck>
+              </StyledDiv>
             </StyledSignUpInputWrap>
             <hr />
             <StyledSignUpInputWrap>
-              <span>비밀번호</span>
-              <StyledSignUpInput
-                onKeyDown={(e) => handleKeyDown(e, pwCheckInputRef)}
-                value={pw}
-                type="password"
-                onChange={(e) => {
-                  setPw(e.target.value);
-                }}
-                placeholder="영문, 숫자 포함 6~20자"
-                ref={passwordInputRef}
-              />
-              {pw ? (
-                isPasswordValid(pw) ? (
-                  <CorrectText>사용가능한 비밀번호입니다</CorrectText>
-                ) : (
-                  <WarnText>영문, 숫자 포함 6~20자</WarnText>
-                )
-              ) : null}
+              <div>비밀번호</div>
+              <div>
+                <StyledSignUpInput
+                  onKeyDown={(e) => handleKeyDown(e, pwCheckInputRef)}
+                  value={pw}
+                  type="password"
+                  onChange={(e) => {
+                    setPw(e.target.value);
+                  }}
+                  placeholder="영문, 숫자 포함 6~20자"
+                  ref={passwordInputRef}
+                />
+                {pw ? (
+                  isPasswordValid(pw) ? (
+                    <CorrectText>사용가능한 비밀번호입니다</CorrectText>
+                  ) : (
+                    <WarnText>영문, 숫자 포함 6~20자</WarnText>
+                  )
+                ) : null}
+              </div>
+
               <StyledDiv></StyledDiv>
             </StyledSignUpInputWrap>
             <hr />
 
             <StyledSignUpInputWrap>
-              <span>비밀번호 확인</span>
-              <StyledSignUpInput
-                onKeyDown={(e) => handleKeyDown(e, userNameInputRef)}
-                value={pwCheck}
-                type="password"
-                onChange={(e) => {
-                  setPwCheck(e.target.value);
-                }}
-                ref={pwCheckInputRef}
-                placeholder="비밀번호 확인"
-              />
-              {pwCheck ? (
-                pw === pwCheck ? (
-                  <CorrectText>비밀번호가 일치합니다</CorrectText>
-                ) : (
-                  <WarnText>비밀번호가 일치하지 않습니다</WarnText>
-                )
-              ) : null}
+              <div>비밀번호 확인</div>
+              <div>
+                <StyledSignUpInput
+                  onKeyDown={(e) => handleKeyDown(e, userNameInputRef)}
+                  value={pwCheck}
+                  type="password"
+                  onChange={(e) => {
+                    setPwCheck(e.target.value);
+                  }}
+                  ref={pwCheckInputRef}
+                  placeholder="비밀번호 확인"
+                />
+                {pwCheck ? (
+                  pw === pwCheck ? (
+                    <CorrectText>비밀번호가 일치합니다</CorrectText>
+                  ) : (
+                    <WarnText>비밀번호가 일치하지 않습니다</WarnText>
+                  )
+                ) : null}
+              </div>
+
               <StyledDiv></StyledDiv>
             </StyledSignUpInputWrap>
             <hr />
             <StyledSignUpInputWrap>
-              <span>이름</span>
-              <StyledSignUpInput
-                onChange={(e) => {
-                  setUserName(e.target.value);
-                }}
-                placeholder="이름 2~6자"
-                ref={userNameInputRef}
-                onKeyDown={(e) => handleKeyDown(e)}
-              />
-              {userName ? (
-                isNameValid(userName) ? (
-                  <CorrectText></CorrectText>
-                ) : (
-                  <WarnText>한글이름 2글자 이상 6글자 이하입니다</WarnText>
-                )
-              ) : null}
+              <div>이름</div>
+              <div>
+                <StyledSignUpInput
+                  onChange={(e) => {
+                    setUserName(e.target.value);
+                  }}
+                  placeholder="이름 2~6자"
+                  ref={userNameInputRef}
+                  onKeyDown={(e) => handleKeyDown(e)}
+                />
+                {userName ? (
+                  isNameValid(userName) ? (
+                    <CorrectText></CorrectText>
+                  ) : (
+                    <WarnText>한글이름 2글자 이상 6글자 이하입니다</WarnText>
+                  )
+                ) : null}
+              </div>
               <StyledDiv></StyledDiv>
             </StyledSignUpInputWrap>
             <hr />
@@ -258,15 +272,17 @@ export const StyledNoHeaderWrap = styled.div`
   height: 100%;
   margin: 0 auto;
   background-color: ${theme.colors.gray1};
-  @media (max-width: 1080px) {
+  @media (max-width: 800px) {
+    background-color: ${theme.colors.gray1};
+
     width: 100%;
   }
 `;
 
 const StyledSignUpWrap = styled.div`
-  width: 60%;
+  width: 25rem;
   height: 20rem;
-  margin: 4rem auto 0 auto;
+  margin: 3rem auto 0 auto;
 `;
 const StyledMainLogoTwo = styled.div`
   text-align: center;
@@ -279,28 +295,33 @@ const StyledMainLogoTwo = styled.div`
 const StyledSignUpInputWrap = styled.div`
   position: relative;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   color: ${theme.colors.navy};
-  font-size: 1.4rem;
   font-weight: 900;
   margin-bottom: 0.8rem;
   display: flex;
-  height: 3rem;
-  span {
-    display: inline-block;
-    width: 10rem;
+  height: 2.5rem;
+  div:first-child {
+    font-size: 1.1rem;
+
+    width: 33%;
     white-space: nowrap;
+  }
+  div:nth-child(2) {
+    display: flex;
+    justify-content: end;
   }
 `;
 const StyledSignUpInput = styled.input`
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: ${theme.colors.navy};
-  width: 40%;
+  width: 95%;
   background-color: transparent;
   outline: none;
   border: none;
   &::placeholder {
+    font-size: 1rem;
     font-family: 'GmarketSans';
     src: url('./assets/fonts/GmarketSansTTFLight.ttf');
     font-weight: 500;
@@ -310,43 +331,44 @@ const StyledSignUpButton = styled.button`
   padding-top: 0.15rem;
   cursor: pointer;
   width: 100%;
-  height: 3rem;
+  height: 2.5rem;
   background-color: ${theme.colors.navy};
   color: white;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 900;
   border-radius: 10px;
-  margin-top: 2rem;
+  margin-top: 1rem;
 `;
 
 const StyledSignUpEmailCheck = styled.button`
   padding-top: 0.25rem;
-
   cursor: pointer;
-  width: 6rem;
+  width: 4rem;
   color: white;
   white-space: nowrap;
   background-color: ${theme.colors.navy};
-  font-size: 1.1rem;
-  height: 2rem;
+  font-size: 0.8rem;
+  height: 1.5rem;
   border-radius: 20px;
 `;
 const StyledDiv = styled.div`
-  width: 6rem;
+  width: 33%;
+  display: flex;
+  justify-content: flex-end;
 `;
 
 export const WarnText = styled.div`
   position: absolute;
   bottom: -0.5rem;
-  left: 35%;
-  font-size: 0.9rem;
+  left: 30%;
+  font-size: 0.8rem;
   color: ${theme.colors.error};
 `;
 
 export const CorrectText = styled.div`
   position: absolute;
   bottom: -0.5rem;
-  left: 35%;
-  font-size: 0.9rem;
+  left: 30%;
+  font-size: 0.8rem;
   color: ${theme.colors.success};
 `;

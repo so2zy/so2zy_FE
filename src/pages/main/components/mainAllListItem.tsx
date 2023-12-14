@@ -1,13 +1,13 @@
 import { theme } from '@styles/theme';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
-import { getAllProduct } from './getPlaces';
+import { getAllProduct } from '@api/getPlaces';
 import UseIntersectionObserver from '@utils/useIntersectionObserver';
 import ScrollTopBtn from '@components/common/ScrollToTop/ScrollToTop';
 import { formatDate } from '@utils/useFormatDate';
 import { useNavigate } from 'react-router-dom';
 import { eclipsText } from '@utils/textLength';
-import { MainItemProps, MainListProps } from './mainListItem';
+import { MainItemProps, MainListProps, SoldOutItemProps } from './mainListItem';
 import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
 
 const MainAllListItem = ({ title }: MainListProps) => {
@@ -74,9 +74,9 @@ const MainAllListItem = ({ title }: MainListProps) => {
                   </StyledAllItemTitle>
                   <StyledAllItemDesc>
                     <StyledAllItemPriceList>
-                      <StyledPriceSale>
-                        {item.price
-                          ? `${item.price.toLocaleString('ko-KR')}원~`
+                      <StyledPriceSale isSoldOut={item.isAvailable === false}>
+                        {item.isAvailable
+                          ? `${item.price.toLocaleString('ko-KR')}원 ~`
                           : '품절'}
                       </StyledPriceSale>
                     </StyledAllItemPriceList>
@@ -147,9 +147,10 @@ const StyledAllItemPriceList = styled.p`
   right: 1rem;
 `;
 
-const StyledPriceSale = styled.span`
+const StyledPriceSale = styled.span<SoldOutItemProps>`
   font-size: 1rem;
   font-weight: bold;
+  color: ${(props) => (props.isSoldOut ? 'red' : 'inherit')};
 `;
 
 const StyledLookBtn = styled.button`

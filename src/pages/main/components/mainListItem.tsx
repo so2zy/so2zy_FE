@@ -1,7 +1,7 @@
 import { theme } from '@styles/theme';
 import styled from 'styled-components';
 import { useQuery } from '@tanstack/react-query';
-import { getMostSell, getFavorite } from './getPlaces';
+import { getMostSell, getFavorite } from '@api/getPlaces';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -29,7 +29,11 @@ export interface MainItemProps {
   phoneNumber: string;
   accommodationImageUrl: string;
   price: number;
-  isAvaliable: boolean;
+  isAvailable: boolean;
+}
+
+export interface SoldOutItemProps {
+  isSoldOut: boolean;
 }
 
 const MainListItem = ({ title }: MainListProps) => {
@@ -83,8 +87,8 @@ const MainListItem = ({ title }: MainListProps) => {
               <StyledItemName>
                 {index + 1}. {eclipsText(item.name, 10)}
               </StyledItemName>
-              <StyledItemPrice>
-                {item.price
+              <StyledItemPrice isSoldOut={item.isAvailable === false}>
+                {item.isAvailable
                   ? `${item.price.toLocaleString('ko-KR')}원 ~`
                   : '품절'}
               </StyledItemPrice>
@@ -148,7 +152,8 @@ const StyledItemName = styled.p`
   padding-bottom: 0.2rem;
 `;
 
-const StyledItemPrice = styled.p`
+const StyledItemPrice = styled.p<SoldOutItemProps>`
   padding: 0.25rem 0.9rem;
   font-size: 0.8rem;
+  color: ${(props) => (props.isSoldOut ? 'red' : 'inherit')};
 `;

@@ -153,7 +153,7 @@ const StyleSubWrapper = styled.span`
 `;
 
 const StyleDescription = styled.div`
-  font-color: ${theme.colors.navy};
+  color: ${theme.colors.navy};
   font-size: ${theme.fonts.subtitle5.fontSize};
   font-weight: ${theme.fonts.subtitle5.fontWeight};
   line-height: ${theme.fonts.subtitle4.lineHeight};
