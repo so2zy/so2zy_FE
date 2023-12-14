@@ -7,10 +7,12 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { postPayment } from '@api/postCartReservation';
 interface CartReservationHotelsProps {
-  accommodationId: number;
-  accommodationName: string;
-  address: string;
-  roomList: CartReservationRoomProps[];
+  accommodation: {
+    accommodationId: number;
+    accommodationName: string;
+    address: string;
+    roomList: CartReservationRoomProps[];
+  };
 }
 interface CartReservationRoomProps {
   capacity: number;
@@ -33,7 +35,7 @@ export interface PostPaymentProps {
 }
 export const CartReservation: React.FC = () => {
   const location = useLocation();
-  const checkedHotel = location.state?.checkedHotel;
+  const checkedHotel = location.state?.checkedItems || [];
   const navigate = useNavigate();
 
   const [agreement, setAgreement] = useState(false);
@@ -41,10 +43,10 @@ export const CartReservation: React.FC = () => {
   const mutation = useMutation({
     mutationFn: postPayment,
     onSuccess(data) {
-      console.log(data);
       navigate('/confirm', { state: { data } });
     },
     onError(err) {
+      throw new Error('결제 실패');
       console.log(err);
     },
   });
@@ -54,17 +56,18 @@ export const CartReservation: React.FC = () => {
       return;
     }
 
-    const postData = checkedHotel
-      ?.map((accommodation: CartReservationHotelsProps) =>
-        accommodation.roomList.map((roomInfo: CartReservationRoomProps) => ({
-          roomId: roomInfo.roomId,
-          startDate: roomInfo.startDate,
-          endDate: roomInfo.endDate,
-          price: roomInfo.price,
-          personnel: roomInfo.personnel,
-        })),
-      )
-      .flat();
+    const postData = checkedHotel?.flatMap(
+      (checkedHotel: CartReservationHotelsProps) =>
+        checkedHotel.accommodation.roomList.map(
+          (roomInfo: CartReservationRoomProps) => ({
+            roomId: roomInfo.roomId,
+            startDate: roomInfo.startDate,
+            endDate: roomInfo.endDate,
+            price: roomInfo.price,
+            personnel: roomInfo.personnel,
+          }),
+        ),
+    );
 
     const data = {
       roomList: postData,
@@ -89,14 +92,17 @@ export const CartReservation: React.FC = () => {
     let total = 0;
 
     if (checkedHotel) {
-      checkedHotel.forEach((accommodation: CartReservationHotelsProps) => {
-        accommodation.roomList.forEach((roomInfo: CartReservationRoomProps) => {
-          if (roomInfo) {
-            const { originalPrice } = calculatePrices(roomInfo);
-            const { salePrice } = calculatePrices(roomInfo);
-            total += roomInfo.price;
-          }
-        });
+      checkedHotel.forEach((checkedHotel: CartReservationHotelsProps) => {
+        if (checkedHotel.accommodation.roomList) {
+          checkedHotel.accommodation.roomList.forEach(
+            (roomInfo: CartReservationRoomProps) => {
+              if (roomInfo) {
+                const { originalPrice, salePrice } = calculatePrices(roomInfo);
+                total += roomInfo.price;
+              }
+            },
+          );
+        }
       });
 
       return total.toLocaleString('ko-KR');
@@ -107,15 +113,17 @@ export const CartReservation: React.FC = () => {
 
   return (
     <>
-      {checkedHotel &&
-        checkedHotel?.map((accommodation: CartReservationHotelsProps) => (
-          <StyledWrapper key={accommodation.accommodationId}>
-            {accommodation &&
-              accommodation.roomList.map((roomInfo) => (
+      {checkedHotel.map((checkedHotel: any) => (
+        <StyledWrapper key={checkedHotel.accommodation.accommodationId}>
+          <StyledItemWrapper>
+            {checkedHotel.accommodation.roomList.map(
+              (roomInfo: CartReservationRoomProps) => (
                 <StyledItemContainer key={roomInfo.roomId}>
                   <StyledItemDesc>
                     <StyledItemTitle>
-                      <span>{accommodation.accommodationName}</span>
+                      <span>
+                        {checkedHotel.accommodation.accommodationName}
+                      </span>
                     </StyledItemTitle>
                     <StyledItemSubTitle>
                       <span>{roomInfo.type}</span>
@@ -153,7 +161,6 @@ export const CartReservation: React.FC = () => {
                     <StyledItemSalePrice>
                       <span>할인</span>
                       <StyledItemSaleText>
-                        <span>-{calculatePrices(roomInfo).salePrice}원</span>
                         <span id="no-refund">※ 환불 불가 </span>
                       </StyledItemSaleText>
                     </StyledItemSalePrice>
@@ -163,9 +170,11 @@ export const CartReservation: React.FC = () => {
                     </StyledFinalPayPrice>
                   </StyledPriceBox>
                 </StyledItemContainer>
-              ))}
-          </StyledWrapper>
-        ))}
+              ),
+            )}
+          </StyledItemWrapper>
+        </StyledWrapper>
+      ))}
       <StyledRuleWrapper>
         <StyledEssentialTerms>
           <span>필수 약관 동의</span>
@@ -194,6 +203,11 @@ export const CartReservation: React.FC = () => {
   );
 };
 
+const StyledItemWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
 export const StyledButtonWrapper = styled.div`
   width: 100%;
   margin: 2rem auto 1rem auto;
@@ -223,11 +237,9 @@ export const StyledRuleWrapper = styled.div`
   justify-content: center;
   margin-left: 0.4rem;
   margin-top: 2rem;
-  /* border: 1px solid black; */
 `;
 
 export const StyledEssentialTerms = styled.div`
-  /* border: 1px solid black; */
   margin: 2rem;
   text-align: start;
   span {
@@ -240,6 +252,7 @@ export const StyledEssentialTerms = styled.div`
 const StyledItemContainer = styled.div`
   display: flex;
   gap: 11rem;
+  margin-bottom: 2.5rem;
 `;
 
 export const StyledEssentialCheckList = styled.div``;
