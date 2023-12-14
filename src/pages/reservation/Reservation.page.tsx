@@ -254,7 +254,7 @@ export const StyledPriceBox = styled.div`
   border-radius: 8px;
   box-shadow: 4px 4px 4px ${theme.colors.gray2};
   text-align: start;
-  padding: 1rem 2rem 0 2rem;
+  padding: 1rem;
 `;
 
 export const StyledItemTitle = styled.div`

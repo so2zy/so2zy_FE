@@ -8,12 +8,13 @@ import {
   StyledButtonWrapper,
 } from 'pages/reservation/Reservation.page';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getCarts } from 'api/getCart';
+import { getCarts } from '@api/getCart';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import hotelDefaultImg from '@assets/images/hotelDefaultImg.png';
 import { FaTrashCan } from 'react-icons/fa6';
 import { deleteCart } from '@api/deleteCart';
+
 export interface CartItemProps {
   data: {
     accommodationList: AccommodationList[];
