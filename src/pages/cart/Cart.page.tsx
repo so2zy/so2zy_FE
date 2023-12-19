@@ -171,7 +171,6 @@ export const Cart: React.FC = () => {
     setOriginalPrice(originalSum);
     setSalePrice(saleSum);
     setTotalPrice(totalSum);
-    console.log(checkedHotel);
   }, [checkedHotel, data]);
   return (
     <StyleMainWrapper>
